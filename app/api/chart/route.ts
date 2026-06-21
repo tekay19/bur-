@@ -11,6 +11,12 @@ import {
   newAnonId,
   spendOne,
 } from "@/lib/credits";
+import {
+  SID_COOKIE,
+  getUserById,
+  spendUserCredit,
+  verifySession,
+} from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -40,33 +46,67 @@ export async function POST(req: NextRequest) {
 
   const data = parsed.data;
 
-  // --- Kredi kontrolü (üyeliksiz, çerez tabanlı) ---
-  // Fail-open: kredi sistemi hata verirse (örn. tablo yoksa) kullanıcıyı
-  // engelleme, analizi yine yap. Tablo hazır olunca gating devreye girer.
+  // --- Kredi kontrolü ---
+  // Giriş yapmışsa kullanıcı kredisi, değilse misafir (çerez) kredisi.
+  // Fail-open: kredi sistemi hata verirse kullanıcıyı engelleme.
+  const uid = verifySession(req.cookies.get(SID_COOKIE)?.value);
   let aid = req.cookies.get(AID_COOKIE)?.value;
   let setCookie = false;
-  if (!aid) {
-    aid = newAnonId();
-    setCookie = true;
-  }
-  let account: Awaited<ReturnType<typeof getOrCreateAccount>> | null = null;
-  try {
-    account = await getOrCreateAccount(aid);
-  } catch (e) {
-    console.error("Kredi sistemi hatası (gating atlanıyor):", e);
-  }
-  if (account && account.credits < 1) {
-    const res = NextResponse.json(
-      {
-        error: "Ücretsiz hakkın doldu. Devam etmek için kredi yükle.",
-        code: "NO_CREDITS",
-        credits: 0,
-        recoveryCode: account.recoveryCode,
-      },
-      { status: 402 },
-    );
-    if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
-    return res;
+  let mode: "user" | "guest" | "skip" = "skip";
+  let balanceBefore = 0;
+
+  if (uid) {
+    // Üye
+    try {
+      const user = await getUserById(uid);
+      if (user) {
+        mode = "user";
+        balanceBefore = user.credits;
+      }
+    } catch (e) {
+      console.error("Üye kredi okunamadı (gating atlanıyor):", e);
+    }
+    if (mode === "user" && balanceBefore < 1) {
+      return NextResponse.json(
+        {
+          error: "Kredin bitti. Premium'a geç veya kredi yükle.",
+          code: "NO_CREDITS",
+          credits: 0,
+          loggedIn: true,
+        },
+        { status: 402 },
+      );
+    }
+  } else {
+    // Misafir
+    if (!aid) {
+      aid = newAnonId();
+      setCookie = true;
+    }
+    let account: Awaited<ReturnType<typeof getOrCreateAccount>> | null = null;
+    try {
+      account = await getOrCreateAccount(aid);
+    } catch (e) {
+      console.error("Kredi sistemi hatası (gating atlanıyor):", e);
+    }
+    if (account) {
+      mode = "guest";
+      balanceBefore = account.credits;
+    }
+    if (mode === "guest" && balanceBefore < 1) {
+      const res = NextResponse.json(
+        {
+          error: "Ücretsiz hakkın doldu. Devam etmek için kredi yükle.",
+          code: "NO_CREDITS",
+          credits: 0,
+          recoveryCode: account?.recoveryCode,
+          loggedIn: false,
+        },
+        { status: 402 },
+      );
+      if (setCookie && aid) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+      return res;
+    }
   }
 
   // Koordinat/zaman dilimi yoksa şehirden geocode et
@@ -82,7 +122,7 @@ export async function POST(req: NextRequest) {
         },
         { status: 422 },
       );
-      if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+      if (setCookie && aid) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
       return res;
     }
     latitude = geo.latitude;
@@ -106,20 +146,19 @@ export async function POST(req: NextRequest) {
   try {
     const payload = await runFullAnalysis(birthInput);
     const saved = await saveAnalysis(payload);
-    // Başarılı analiz → 1 kredi harca (hesap varsa)
-    if (account) {
-      try {
-        await spendOne(aid);
-      } catch (e) {
-        console.error("Kredi düşülemedi:", e);
-      }
+    // Başarılı analiz → 1 kredi harca (moda göre)
+    try {
+      if (mode === "user" && uid) await spendUserCredit(uid);
+      else if (mode === "guest" && aid) await spendOne(aid);
+    } catch (e) {
+      console.error("Kredi düşülemedi:", e);
     }
     const res = NextResponse.json({
       id: saved.id,
       result: saved,
-      credits: account ? Math.max(0, account.credits - 1) : undefined,
+      credits: mode === "skip" ? undefined : Math.max(0, balanceBefore - 1),
     });
-    if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+    if (setCookie && aid) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
     return res;
   } catch (err) {
     console.error("Analiz üretilemedi:", err);
@@ -127,7 +166,7 @@ export async function POST(req: NextRequest) {
       { error: "Analiz oluşturulurken bir hata oluştu. Lütfen tekrar deneyin." },
       { status: 500 },
     );
-    if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+    if (setCookie && aid) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
     return res;
   }
 }

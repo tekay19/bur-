@@ -54,6 +54,20 @@ model TransitSnapshot {
   @@index([userChartId, date])
 }
 
+// Üye — e-posta + şifre (Google yok). Krediler/plan üyede tutulur.
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  name           String?
+  credits        Int      @default(0)
+  plan           String   @default("free") // free | premium
+  totalSpent     Int      @default(0)
+  totalPurchased Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
 // Üyeliksiz kredi hesabı — anonim çerez (aid) ile eşleşir
 model CreditAccount {
   id             String   @id // anonim id (aid çerezi)

@@ -8,12 +8,34 @@ import {
   getOrCreateAccount,
   newAnonId,
 } from "@/lib/credits";
+import {
+  SID_COOKIE,
+  addUserCredits,
+  getUserById,
+  verifySession,
+} from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// GET /api/credits — bakiye + kurtarma kodu (yeni ziyaretçiye çerez atar)
+// GET /api/credits — bakiye (üye ise hesap kredisi, değilse misafir)
 export async function GET(req: NextRequest) {
+  // Üye?
+  const uid = verifySession(req.cookies.get(SID_COOKIE)?.value);
+  if (uid) {
+    try {
+      const user = await getUserById(uid);
+      if (user)
+        return NextResponse.json({
+          credits: user.credits,
+          plan: user.plan,
+          loggedIn: true,
+        });
+    } catch {
+      /* misafire düş */
+    }
+  }
+
   let aid = req.cookies.get(AID_COOKIE)?.value;
   let setCookie = false;
   if (!aid) {
@@ -24,6 +46,7 @@ export async function GET(req: NextRequest) {
   const res = NextResponse.json({
     credits: acc.credits,
     recoveryCode: acc.recoveryCode,
+    loggedIn: false,
   });
   if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
   return res;
@@ -80,6 +103,15 @@ export async function POST(req: NextRequest) {
     const pack = CREDIT_PACKS.find((p) => p.id === body.pack);
     if (!pack)
       return NextResponse.json({ error: "Paket bulunamadı." }, { status: 400 });
+
+    // Üye ise hesabına ekle
+    const uid = verifySession(req.cookies.get(SID_COOKIE)?.value);
+    if (uid) {
+      const credits = await addUserCredits(uid, pack.credits);
+      return NextResponse.json({ credits, test: true });
+    }
+
+    // Misafir
     let aid = req.cookies.get(AID_COOKIE)?.value;
     let setCookie = false;
     if (!aid) {

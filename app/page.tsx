@@ -17,6 +17,7 @@ import { HeroChart } from "@/components/HeroChart";
 import { BrandLogo } from "@/components/BrandLogo";
 import { FeatureCard, type Feature } from "@/components/FeatureCard";
 import { FeatureCarousel } from "@/components/FeatureCarousel";
+import { AuthWidget } from "@/components/AuthWidget";
 
 const features: Feature[] = [
   {
@@ -141,8 +142,9 @@ export default function LandingPage() {
             </Button>
           </Link>
         </nav>
-        <div className="flex justify-end">
-          <Link href="/harita-olustur">
+        <div className="flex items-center justify-end gap-2">
+          <AuthWidget />
+          <Link href="/harita-olustur" className="hidden sm:block">
             <Button variant="gold" size="sm">
               Haritamı Oluştur
             </Button>
