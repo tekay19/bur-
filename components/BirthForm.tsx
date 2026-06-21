@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Disclaimer } from "@/components/Disclaimer";
 import { LoadingState } from "@/components/LoadingState";
+import { Paywall } from "@/components/Paywall";
 import { TR_ILLER, ilceler } from "@/lib/utils/tr-il-ilce";
 import { birthFormSchema } from "@/lib/validation";
 
@@ -82,6 +83,9 @@ export function BirthForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [paywall, setPaywall] = useState<{ recoveryCode?: string } | null>(
+    null,
+  );
 
   const up = (k: keyof typeof f, v: string) => {
     setF((s) => ({ ...s, [k]: v }));
@@ -154,6 +158,11 @@ export function BirthForm() {
       });
       const data = await res.json();
       if (!res.ok) {
+        if (res.status === 402 || data.code === "NO_CREDITS") {
+          setPaywall({ recoveryCode: data.recoveryCode });
+          setSubmitting(false);
+          return;
+        }
         setServerError(
           data.code === "GEOCODE_FAILED"
             ? "Doğum yerini bulamadık. Şehri/ilçeyi farklı yazmayı dene (örn. 'Kadıköy, İstanbul')."
@@ -182,6 +191,17 @@ export function BirthForm() {
       <div className="rounded-3xl border border-border/60 bg-card/85 p-2 backdrop-blur-md">
         <LoadingState />
       </div>
+    );
+  }
+
+  if (paywall) {
+    return (
+      <Paywall
+        recoveryCode={paywall.recoveryCode}
+        onCredits={(c) => {
+          if (c > 0) setPaywall(null); // kredi geldi → forma dön
+        }}
+      />
     );
   }
 

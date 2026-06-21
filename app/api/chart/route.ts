@@ -4,6 +4,13 @@ import type { BirthInput } from "@/lib/astrology/types";
 import { getAnalysis, saveAnalysis } from "@/lib/db/storage";
 import { geocode } from "@/lib/utils/geocoding";
 import { chartRequestSchema } from "@/lib/validation";
+import {
+  AID_COOKIE,
+  AID_COOKIE_OPTS,
+  getOrCreateAccount,
+  newAnonId,
+  spendOne,
+} from "@/lib/credits";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,12 +40,41 @@ export async function POST(req: NextRequest) {
 
   const data = parsed.data;
 
+  // --- Kredi kontrolü (üyeliksiz, çerez tabanlı) ---
+  // Fail-open: kredi sistemi hata verirse (örn. tablo yoksa) kullanıcıyı
+  // engelleme, analizi yine yap. Tablo hazır olunca gating devreye girer.
+  let aid = req.cookies.get(AID_COOKIE)?.value;
+  let setCookie = false;
+  if (!aid) {
+    aid = newAnonId();
+    setCookie = true;
+  }
+  let account: Awaited<ReturnType<typeof getOrCreateAccount>> | null = null;
+  try {
+    account = await getOrCreateAccount(aid);
+  } catch (e) {
+    console.error("Kredi sistemi hatası (gating atlanıyor):", e);
+  }
+  if (account && account.credits < 1) {
+    const res = NextResponse.json(
+      {
+        error: "Ücretsiz hakkın doldu. Devam etmek için kredi yükle.",
+        code: "NO_CREDITS",
+        credits: 0,
+        recoveryCode: account.recoveryCode,
+      },
+      { status: 402 },
+    );
+    if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+    return res;
+  }
+
   // Koordinat/zaman dilimi yoksa şehirden geocode et
   let { latitude, longitude, timezone } = data;
   if (latitude == null || longitude == null || !timezone) {
     const geo = await geocode(data.birthPlace);
     if (!geo) {
-      return NextResponse.json(
+      const res = NextResponse.json(
         {
           error:
             "Doğum yeri bulunamadı. Lütfen şehir adını kontrol edin veya farklı bir yazım deneyin.",
@@ -46,6 +82,8 @@ export async function POST(req: NextRequest) {
         },
         { status: 422 },
       );
+      if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+      return res;
     }
     latitude = geo.latitude;
     longitude = geo.longitude;
@@ -68,13 +106,29 @@ export async function POST(req: NextRequest) {
   try {
     const payload = await runFullAnalysis(birthInput);
     const saved = await saveAnalysis(payload);
-    return NextResponse.json({ id: saved.id, result: saved });
+    // Başarılı analiz → 1 kredi harca (hesap varsa)
+    if (account) {
+      try {
+        await spendOne(aid);
+      } catch (e) {
+        console.error("Kredi düşülemedi:", e);
+      }
+    }
+    const res = NextResponse.json({
+      id: saved.id,
+      result: saved,
+      credits: account ? Math.max(0, account.credits - 1) : undefined,
+    });
+    if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+    return res;
   } catch (err) {
     console.error("Analiz üretilemedi:", err);
-    return NextResponse.json(
+    const res = NextResponse.json(
       { error: "Analiz oluşturulurken bir hata oluştu. Lütfen tekrar deneyin." },
       { status: 500 },
     );
+    if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+    return res;
   }
 }
 

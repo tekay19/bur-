@@ -53,3 +53,14 @@ model TransitSnapshot {
 
   @@index([userChartId, date])
 }
+
+// Üyeliksiz kredi hesabı — anonim çerez (aid) ile eşleşir
+model CreditAccount {
+  id             String   @id // anonim id (aid çerezi)
+  credits        Int      @default(1) // yeni ziyaretçi 1 ücretsiz analiz
+  totalSpent     Int      @default(0)
+  totalPurchased Int      @default(0)
+  recoveryCode   String   @unique // çerez silinirse geri yükleme
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
