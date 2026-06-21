@@ -61,6 +61,22 @@ export async function POST(req: NextRequest) {
   // TODO: Iyzico checkout + webhook ile değiştir; kredi yalnızca ödeme
   // onayından sonra eklenmeli. Şu an doğrudan ekliyor (yalnızca geliştirme).
   if (body.action === "purchase") {
+    // ÜRETİMDE test satın alma KAPALI (bedava kredi suistimalini önler).
+    // Gerçek ödeme Iyzico ile gelene kadar canlıda kredi eklenmez.
+    // Lokal/test ortamında veya CREDITS_TEST_MODE=1 ise açık.
+    const testAllowed =
+      process.env.NODE_ENV !== "production" ||
+      process.env.CREDITS_TEST_MODE === "1";
+    if (!testAllowed) {
+      return NextResponse.json(
+        {
+          error:
+            "Ödeme sistemi yakında aktif olacak (Iyzico). Şu an kredi satın alınamıyor.",
+          code: "PAYMENT_NOT_READY",
+        },
+        { status: 503 },
+      );
+    }
     const pack = CREDIT_PACKS.find((p) => p.id === body.pack);
     if (!pack)
       return NextResponse.json({ error: "Paket bulunamadı." }, { status: 400 });
