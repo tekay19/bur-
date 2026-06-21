@@ -16,6 +16,7 @@ import { Disclaimer } from "@/components/Disclaimer";
 import { HeroChart } from "@/components/HeroChart";
 import { BrandLogo } from "@/components/BrandLogo";
 import { FeatureCard, type Feature } from "@/components/FeatureCard";
+import { FeatureCarousel } from "@/components/FeatureCarousel";
 
 const features: Feature[] = [
   {
@@ -138,7 +139,7 @@ export default function LandingPage() {
         </nav>
         <div className="flex justify-end">
           <Link href="/harita-olustur">
-            <Button variant="outline" size="sm">
+            <Button variant="gold" size="sm">
               Haritamı Oluştur
             </Button>
           </Link>
@@ -227,13 +228,13 @@ export default function LandingPage() {
           </p>
         </div>
 
-        <div className="group relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
-          <div className="flex w-max animate-marquee gap-5 px-2.5">
-            {[...features, ...features].map((f, i) => (
-              <FeatureCard key={i} f={f} />
-            ))}
-          </div>
-        </div>
+        <FeatureCarousel>
+          {features.map((f) => (
+            <div key={f.title} className="shrink-0 snap-center">
+              <FeatureCard f={f} />
+            </div>
+          ))}
+        </FeatureCarousel>
       </section>
 
       {/* SSS (SEO + GEO) */}

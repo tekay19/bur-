@@ -69,7 +69,7 @@ export default function CategoryPage({
       <div className="mb-8 flex items-center justify-between">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/50 px-3.5 py-1.5 text-sm font-medium text-foreground/85 backdrop-blur-sm transition-colors hover:border-primary/40 hover:bg-secondary hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" />
           Tüm yazılar
