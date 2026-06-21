@@ -148,3 +148,17 @@
 .intro-portal { animation: portalIn 2.6s ease-out forwards; }
 .intro-brand { animation: brandIn 2.6s ease-out forwards; }
 .intro-root { animation: introOut 2.6s ease-in forwards; }
+
+/* ---- Otomatik kayan şerit (marquee) ---- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 45s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}

@@ -15,37 +15,50 @@ import { Button } from "@/components/ui/button";
 import { Disclaimer } from "@/components/Disclaimer";
 import { HeroChart } from "@/components/HeroChart";
 import { BrandLogo } from "@/components/BrandLogo";
+import { FeatureCard, type Feature } from "@/components/FeatureCard";
 
-const features = [
+const features: Feature[] = [
   {
     icon: Star,
     title: "Doğum Haritan",
     desc: "Gezegenlerin, evlerin ve açıların görsel çark ve sade tabloyla.",
+    gradient: "from-violet-700/55 via-purple-800/40 to-indigo-950/60",
+    planet: "hsl(270 70% 60%)",
   },
   {
     icon: Orbit,
     title: "Güncel Etkiler",
     desc: "Bugünün gökyüzü senin haritana ne söylüyor — günlük dille.",
+    gradient: "from-fuchsia-700/50 via-pink-800/40 to-purple-950/60",
+    planet: "hsl(330 75% 64%)",
   },
   {
     icon: CalendarRange,
     title: "Önemli Tarihler",
     desc: "Önümüzdeki 12 ay için tarihli bir takvim: ne zaman, ne olur.",
+    gradient: "from-blue-700/50 via-indigo-800/40 to-slate-950/60",
+    planet: "hsl(220 75% 64%)",
   },
   {
     icon: Compass,
     title: "Hayat Alanların",
     desc: "Kariyer, aşk, para, sınav... her biri için net bir gösterge.",
+    gradient: "from-amber-600/45 via-orange-800/40 to-rose-950/60",
+    planet: "hsl(38 85% 60%)",
   },
   {
     icon: Sparkles,
     title: "AI Yorum",
     desc: "Haritana özel, anlaşılır ve yapıcı Türkçe yorum.",
+    gradient: "from-cyan-700/45 via-teal-800/40 to-indigo-950/60",
+    planet: "hsl(180 65% 58%)",
   },
   {
     icon: ShieldCheck,
     title: "Gizli & Ücretsiz",
     desc: "Kayıt yok, ücret yok. Bilgilerin senin kontrolünde.",
+    gradient: "from-emerald-700/45 via-green-800/40 to-slate-950/60",
+    planet: "hsl(150 60% 56%)",
   },
 ];
 
@@ -199,9 +212,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Özellikler */}
-      <section className="container py-12 sm:py-16">
-        <div className="mb-12 text-center">
+      {/* Özellikler — otomatik kayan şerit */}
+      <section className="py-12 sm:py-16">
+        <div className="container mb-12 text-center">
           <span className="text-xs font-semibold uppercase tracking-widest text-gold">
             Neler sunuyor
           </span>
@@ -213,25 +226,13 @@ export default function LandingPage() {
             diyeceksin.
           </p>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="group relative overflow-hidden rounded-3xl border border-border/60 bg-card/70 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10"
-            >
-              {/* hover parıltısı */}
-              <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary/20 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
-              <div className="relative mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/30 to-accent/20 text-primary ring-1 ring-inset ring-primary/20 transition-transform duration-300 group-hover:scale-110">
-                <f.icon className="h-5 w-5" />
-              </div>
-              <h3 className="relative font-display text-base font-semibold">
-                {f.title}
-              </h3>
-              <p className="relative mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                {f.desc}
-              </p>
-            </div>
-          ))}
+
+        <div className="group relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+          <div className="flex w-max animate-marquee gap-5 px-2.5">
+            {[...features, ...features].map((f, i) => (
+              <FeatureCard key={i} f={f} />
+            ))}
+          </div>
         </div>
       </section>
 
