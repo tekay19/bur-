@@ -132,7 +132,11 @@ export default function LandingPage() {
         </div>
         <nav className="flex justify-center">
           <Link href="/blog">
-            <Button variant="ghost" size="sm" className="px-6 text-base">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="px-6 text-base font-semibold text-gold hover:text-gold"
+            >
               Blog
             </Button>
           </Link>
