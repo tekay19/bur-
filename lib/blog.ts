@@ -807,6 +807,618 @@ export const ARTICLES: Article[] = [
       },
     ],
   },
+  {
+    slug: "koc-burcu-ozellikleri",
+    category: "burclar",
+    title: "Koç Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Koç burcu özellikleri nelerdir? Ateş elementi ve Mars yönetimindeki Koç burcunun kişiliği, güçlü-zayıf yönleri, aşk hayatı ve kariyer eğilimleri.",
+    keywords: ["koç burcu", "koç burcu özellikleri", "koç burcu kişiliği", "koç burcu aşk", "koç burcu kadını", "koç burcu erkeği"],
+    date: "2026-07-01",
+    readMinutes: 7,
+    emoji: "♈",
+    sections: [
+      {
+        h: "Koç burcu genel özellikleri",
+        body: [
+          "Koç burcu (21 Mart – 19 Nisan), zodyağın ilk burcudur ve Ateş elementine aittir. Yöneticisi savaşçı gezegen Mars'tır; bu yüzden Koçlar cesur, enerjik ve öncü bir ruha sahiptir.",
+          "Bir Koç, hayata atılgan ve doğrudan yaklaşır. Yeni başlangıçlar, rekabet ve liderlik onların doğal alanıdır. Hızlı karar verir, çabuk harekete geçer ve engellerden yılmaz.",
+        ],
+      },
+      {
+        h: "Koç burcu güçlü ve zayıf yönleri",
+        body: [
+          "Koç'un enerjisi hem en büyük gücü hem de zaman zaman zorlayıcı yanıdır. Cesareti ilham verir ama sabırsızlığı aceleci kararlara yol açabilir.",
+        ],
+        list: [
+          "Güçlü: cesaret, liderlik, dürüstlük, girişkenlik, enerji",
+          "Güçlü: çabuk toparlanma ve mücadele azmi",
+          "Zorlayıcı: sabırsızlık, ani öfke, rekabetçilik",
+          "Zorlayıcı: detaylardan sıkılma, fevri davranış",
+        ],
+      },
+      {
+        h: "Koç burcu aşk ve ilişki",
+        body: [
+          "Aşkta Koç tutkulu ve doğrudan tek harekettir. Hoşlandığı kişiye açıkça yaklaşır, oyun sevmez. İlişkide heyecanın ve tazeliğin sürmesini ister.",
+          "En uyumlu olduğu burçlar genelde diğer Ateş (Aslan, Yay) ve Hava (İkizler, Terazi, Kova) burçlarıdır. Gerçek uyum için iki kişinin tam doğum haritası karşılaştırılmalıdır.",
+        ],
+      },
+      {
+        h: "Koç burcu kariyer ve para",
+        body: [
+          "Koçlar girişimcilik, spor, liderlik ve hızlı karar gerektiren işlerde parlar. Kendi işini kurmaya ve inisiyatif almaya yatkındırlar.",
+          "Para konusunda cömert ve biraz aceleci olabilirler; ani harcamalar yerine plan yapmak onlara fayda sağlar.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Koç burcu hangi tarihler arası?", a: "Koç burcu 21 Mart – 19 Nisan tarihleri arasındadır." },
+      { q: "Koç burcunun yönetici gezegeni nedir?", a: "Koç burcunu savaşçı ve enerjik gezegen Mars yönetir." },
+      { q: "Koç burcu hangi burçlarla uyumlu?", a: "Genelde Aslan, Yay (Ateş) ve İkizler, Terazi, Kova (Hava) ile uyumludur; kesin sonuç tam harita karşılaştırmasıyla çıkar." },
+    ],
+  },
+  {
+    slug: "boga-burcu-ozellikleri",
+    category: "burclar",
+    title: "Boğa Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Boğa burcu özellikleri nelerdir? Toprak elementi ve Venüs yönetimindeki Boğa burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["boğa burcu", "boğa burcu özellikleri", "boğa burcu kişiliği", "boğa burcu aşk", "boğa burcu kadını", "boğa burcu erkeği"],
+    date: "2026-06-30",
+    readMinutes: 7,
+    emoji: "♉",
+    sections: [
+      {
+        h: "Boğa burcu genel özellikleri",
+        body: [
+          "Boğa burcu (20 Nisan – 20 Mayıs) Toprak elementine aittir ve aşk-değer gezegeni Venüs tarafından yönetilir. Bu yüzden Boğalar istikrarlı, sadık ve güzelliğe düşkündür.",
+          "Boğa sağlam, sabırlı ve güven verendir. Acele etmez; adım adım, emin biçimde ilerler. Konfor, kalite ve maddi güvenlik onun için önemlidir.",
+        ],
+      },
+      {
+        h: "Boğa burcu güçlü ve zayıf yönleri",
+        body: [
+          "Boğa'nın kararlılığı büyük bir güçtür ama aşırıya kaçınca inatçılığa dönüşebilir.",
+        ],
+        list: [
+          "Güçlü: sadakat, kararlılık, sabır, güvenilirlik",
+          "Güçlü: pratiklik ve maddi konularda sağduyu",
+          "Zorlayıcı: inatçılık, değişime direnç",
+          "Zorlayıcı: sahiplenme, konfora aşırı bağlılık",
+        ],
+      },
+      {
+        h: "Boğa burcu aşk ve ilişki",
+        body: [
+          "Boğa aşkta sadık, şefkatli ve fiziksel yakınlığa değer veren bir partnerdir. Acele etmez ama bağlandığında uzun vadeli ve sağlam bir ilişki kurar.",
+          "Genelde Toprak (Başak, Oğlak) ve Su (Yengeç, Akrep, Balık) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Boğa burcu kariyer ve para",
+        body: [
+          "Boğalar istikrar ve somut sonuç isteyen işlerde başarılıdır: finans, gayrimenkul, sanat, gastronomi ve tasarım. Sabırlı çalışmaları uzun vadede kazanç getirir.",
+          "Para yönetiminde doğal bir yetenekleri vardır; biriktirmeyi ve değer katmayı severler.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Boğa burcu hangi tarihler arası?", a: "Boğa burcu 20 Nisan – 20 Mayıs tarihleri arasındadır." },
+      { q: "Boğa burcunun yönetici gezegeni nedir?", a: "Boğa burcunu aşk ve değer gezegeni Venüs yönetir." },
+      { q: "Boğa burcu neden inatçı sayılır?", a: "Sabit bir Toprak burcu olduğu için kararlarında sağlamdır; bu kararlılık bazen inatçılık gibi görünür." },
+    ],
+  },
+  {
+    slug: "ikizler-burcu-ozellikleri",
+    category: "burclar",
+    title: "İkizler Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "İkizler burcu özellikleri nelerdir? Hava elementi ve Merkür yönetimindeki İkizler burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["ikizler burcu", "ikizler burcu özellikleri", "ikizler burcu kişiliği", "ikizler burcu aşk", "ikizler burcu kadını", "ikizler burcu erkeği"],
+    date: "2026-06-29",
+    readMinutes: 7,
+    emoji: "♊",
+    sections: [
+      {
+        h: "İkizler burcu genel özellikleri",
+        body: [
+          "İkizler burcu (21 Mayıs – 20 Haziran) Hava elementine aittir ve iletişim gezegeni Merkür tarafından yönetilir. İkizler meraklı, konuşkan ve çok yönlüdür.",
+          "Zihinsel olarak hızlı çalışır, yeni fikirlere açıktır ve sıkılmaktan hoşlanmaz. Sosyal, esprili ve uyumludur; farklı konular arasında kolayca geçiş yapar.",
+        ],
+      },
+      {
+        h: "İkizler burcu güçlü ve zayıf yönleri",
+        body: [
+          "İkizler'in çok yönlülüğü büyük bir avantajdır ama odaklanma zorluğu getirebilir.",
+        ],
+        list: [
+          "Güçlü: zekâ, iletişim, uyum yeteneği, mizah",
+          "Güçlü: merak ve hızlı öğrenme",
+          "Zorlayıcı: kararsızlık, dağınıklık",
+          "Zorlayıcı: çabuk sıkılma, yüzeysellik eğilimi",
+        ],
+      },
+      {
+        h: "İkizler burcu aşk ve ilişki",
+        body: [
+          "İkizler aşkta zihinsel uyumu ve iyi sohbeti her şeyin önüne koyar. Eğlenceli, oyunbaz ve meraklı bir partnerdir; monotonluktan kaçar.",
+          "Genelde Hava (Terazi, Kova) ve Ateş (Koç, Aslan, Yay) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "İkizler burcu kariyer ve para",
+        body: [
+          "İkizler iletişim, yazarlık, satış, medya, eğitim ve teknoloji gibi çeşitlilik ve zihinsel hareket sunan işlerde parlar.",
+          "Para konusunda esnektirler; birden fazla gelir kaynağı onlara iyi gelir.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "İkizler burcu hangi tarihler arası?", a: "İkizler burcu 21 Mayıs – 20 Haziran tarihleri arasındadır." },
+      { q: "İkizler burcunun yönetici gezegeni nedir?", a: "İkizler burcunu iletişim ve zihin gezegeni Merkür yönetir." },
+      { q: "İkizler burcu neden kararsız sayılır?", a: "Çok yönlü ve meraklı oldukları için seçenekler arasında gidip gelebilirler; bu kararsızlık gibi görünür." },
+    ],
+  },
+  {
+    slug: "yengec-burcu-ozellikleri",
+    category: "burclar",
+    title: "Yengeç Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Yengeç burcu özellikleri nelerdir? Su elementi ve Ay yönetimindeki Yengeç burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["yengeç burcu", "yengeç burcu özellikleri", "yengeç burcu kişiliği", "yengeç burcu aşk", "yengeç burcu kadını", "yengeç burcu erkeği"],
+    date: "2026-06-28",
+    readMinutes: 7,
+    emoji: "♋",
+    sections: [
+      {
+        h: "Yengeç burcu genel özellikleri",
+        body: [
+          "Yengeç burcu (21 Haziran – 22 Temmuz) Su elementine aittir ve duyguların gezegeni Ay tarafından yönetilir. Yengeçler duygusal, korumacı ve sezgisel kişilerdir.",
+          "Aile, ev ve güven onlar için çok önemlidir. Sevdiklerine derinden bağlanır, şefkatli ve besleyici bir tavır sergilerler. Güçlü bir hafıza ve sezgiye sahiptirler.",
+        ],
+      },
+      {
+        h: "Yengeç burcu güçlü ve zayıf yönleri",
+        body: [
+          "Yengeç'in duygusal derinliği hem en güzel yanı hem de incinmeye açık tarafıdır.",
+        ],
+        list: [
+          "Güçlü: şefkat, sadakat, sezgi, korumacılık",
+          "Güçlü: empati ve güçlü aile bağı",
+          "Zorlayıcı: alınganlık, ruh hali dalgalanmaları",
+          "Zorlayıcı: geçmişe takılma, içe kapanma",
+        ],
+      },
+      {
+        h: "Yengeç burcu aşk ve ilişki",
+        body: [
+          "Yengeç aşkta derin, sadık ve korumacıdır. Duygusal güven hissettiğinde tüm kalbini açar; ilişkide şefkat ve aidiyet arar.",
+          "Genelde Su (Akrep, Balık) ve Toprak (Boğa, Başak, Oğlak) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Yengeç burcu kariyer ve para",
+        body: [
+          "Yengeçler insanlara bakım ve destek sunan işlerde başarılıdır: sağlık, eğitim, gastronomi, gayrimenkul ve aile işleri. Güçlü sezgileri iş kararlarında işlerine yarar.",
+          "Para konusunda temkinli ve tasarrufludurlar; geleceği güvence altına almayı severler.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Yengeç burcu hangi tarihler arası?", a: "Yengeç burcu 21 Haziran – 22 Temmuz tarihleri arasındadır." },
+      { q: "Yengeç burcunun yönetici gezegeni nedir?", a: "Yengeç burcunu duyguların gök cismi Ay yönetir." },
+      { q: "Yengeç burcu neden duygusal sayılır?", a: "Ay tarafından yönetilen bir Su burcu olduğu için duyguları derin ve değişkendir." },
+    ],
+  },
+  {
+    slug: "aslan-burcu-ozellikleri",
+    category: "burclar",
+    title: "Aslan Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Aslan burcu özellikleri nelerdir? Ateş elementi ve Güneş yönetimindeki Aslan burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["aslan burcu", "aslan burcu özellikleri", "aslan burcu kişiliği", "aslan burcu aşk", "aslan burcu kadını", "aslan burcu erkeği"],
+    date: "2026-06-27",
+    readMinutes: 7,
+    emoji: "♌",
+    sections: [
+      {
+        h: "Aslan burcu genel özellikleri",
+        body: [
+          "Aslan burcu (23 Temmuz – 22 Ağustos) Ateş elementine aittir ve Güneş tarafından yönetilir. Aslanlar kendinden emin, cömert ve doğal liderlerdir.",
+          "Sıcak, sahnede olmayı seven ve karizmatik kişilerdir. Takdir edilmek onlar için önemlidir; sevdiklerine karşı koruyucu ve cömerttirler.",
+        ],
+      },
+      {
+        h: "Aslan burcu güçlü ve zayıf yönleri",
+        body: [
+          "Aslan'ın özgüveni ilham verir; ancak gurur incinmeye açıktır.",
+        ],
+        list: [
+          "Güçlü: liderlik, cömertlik, sadakat, sıcaklık",
+          "Güçlü: özgüven ve motive etme yeteneği",
+          "Zorlayıcı: gurur, ilgi ihtiyacı",
+          "Zorlayıcı: inatçılık, eleştiriye kapalılık",
+        ],
+      },
+      {
+        h: "Aslan burcu aşk ve ilişki",
+        body: [
+          "Aslan aşkta romantik, cömert ve gösterişlidir. Partnerini el üstünde tutar ama karşılığında sadakat ve takdir bekler. İlişkide tutku ve eğlence ister.",
+          "Genelde Ateş (Koç, Yay) ve Hava (İkizler, Terazi, Kova) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Aslan burcu kariyer ve para",
+        body: [
+          "Aslanlar görünürlük, liderlik ve yaratıcılık sunan işlerde parlar: sanat, yönetim, sahne, eğitim ve girişimcilik. Doğal otoriteleri ekipleri motive eder.",
+          "Para konusunda cömerttirler; statü ve kaliteye yatırım yapmayı severler.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Aslan burcu hangi tarihler arası?", a: "Aslan burcu 23 Temmuz – 22 Ağustos tarihleri arasındadır." },
+      { q: "Aslan burcunun yönetici gezegeni nedir?", a: "Aslan burcunu Güneş yönetir." },
+      { q: "Aslan burcu neden ilgi ister?", a: "Güneş tarafından yönetildiği için doğal olarak parlamak ve takdir edilmek ister." },
+    ],
+  },
+  {
+    slug: "basak-burcu-ozellikleri",
+    category: "burclar",
+    title: "Başak Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Başak burcu özellikleri nelerdir? Toprak elementi ve Merkür yönetimindeki Başak burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["başak burcu", "başak burcu özellikleri", "başak burcu kişiliği", "başak burcu aşk", "başak burcu kadını", "başak burcu erkeği"],
+    date: "2026-06-26",
+    readMinutes: 7,
+    emoji: "♍",
+    sections: [
+      {
+        h: "Başak burcu genel özellikleri",
+        body: [
+          "Başak burcu (23 Ağustos – 22 Eylül) Toprak elementine aittir ve Merkür tarafından yönetilir. Başaklar analitik, detaycı ve yardımseverdir.",
+          "Düzen, verimlilik ve fayda onlar için önemlidir. Pratik zekâları ve gözlem yetenekleriyle sorunları çözmekte ustadırlar; mütevazı ama güvenilirdirler.",
+        ],
+      },
+      {
+        h: "Başak burcu güçlü ve zayıf yönleri",
+        body: [
+          "Başak'ın detaycılığı mükemmel sonuçlar üretir ama aşırı eleştiriye dönüşebilir.",
+        ],
+        list: [
+          "Güçlü: analitik zekâ, titizlik, güvenilirlik, yardımseverlik",
+          "Güçlü: pratiklik ve problem çözme",
+          "Zorlayıcı: aşırı eleştiri, mükemmeliyetçilik",
+          "Zorlayıcı: endişe, fazla detaya takılma",
+        ],
+      },
+      {
+        h: "Başak burcu aşk ve ilişki",
+        body: [
+          "Başak aşkta özenli, sadık ve hizmet odaklıdır. Sevgisini büyük jestlerle değil, küçük ve düşünceli davranışlarla gösterir. Güven ve istikrar arar.",
+          "Genelde Toprak (Boğa, Oğlak) ve Su (Yengeç, Akrep, Balık) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Başak burcu kariyer ve para",
+        body: [
+          "Başaklar detay, analiz ve düzen gerektiren işlerde başarılıdır: sağlık, muhasebe, editörlük, mühendislik ve veri analizi. Titizlikleri kaliteyi yükseltir.",
+          "Para konusunda dikkatli ve planlıdırlar; bütçe yapmayı ve tasarrufu severler.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Başak burcu hangi tarihler arası?", a: "Başak burcu 23 Ağustos – 22 Eylül tarihleri arasındadır." },
+      { q: "Başak burcunun yönetici gezegeni nedir?", a: "Başak burcunu zihin ve analiz gezegeni Merkür yönetir." },
+      { q: "Başak burcu neden mükemmeliyetçi?", a: "Detaylara önem veren bir Toprak burcu olduğu için her şeyin düzgün olmasını ister." },
+    ],
+  },
+  {
+    slug: "terazi-burcu-ozellikleri",
+    category: "burclar",
+    title: "Terazi Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Terazi burcu özellikleri nelerdir? Hava elementi ve Venüs yönetimindeki Terazi burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["terazi burcu", "terazi burcu özellikleri", "terazi burcu kişiliği", "terazi burcu aşk", "terazi burcu kadını", "terazi burcu erkeği"],
+    date: "2026-06-25",
+    readMinutes: 7,
+    emoji: "♎",
+    sections: [
+      {
+        h: "Terazi burcu genel özellikleri",
+        body: [
+          "Terazi burcu (23 Eylül – 22 Ekim) Hava elementine aittir ve Venüs tarafından yönetilir. Teraziler zarif, diplomatik ve uyum arayan kişilerdir.",
+          "Adalet, denge ve estetik onlar için önemlidir. İlişkilerde ve ortamlarda huzuru korumaya çalışır; nazik, sosyal ve çekicidirler.",
+        ],
+      },
+      {
+        h: "Terazi burcu güçlü ve zayıf yönleri",
+        body: [
+          "Terazi'nin denge arayışı güzel ilişkiler kurar ama karar vermeyi zorlaştırabilir.",
+        ],
+        list: [
+          "Güçlü: diplomasi, adalet duygusu, zarafet, uyum",
+          "Güçlü: işbirliği ve estetik anlayış",
+          "Zorlayıcı: kararsızlık, çatışmadan kaçma",
+          "Zorlayıcı: onaylanma ihtiyacı, erteleme",
+        ],
+      },
+      {
+        h: "Terazi burcu aşk ve ilişki",
+        body: [
+          "Terazi ilişki burcudur; ortaklığa ve uyuma büyük değer verir. Romantik, kibar ve partner odaklıdır. İlişkide eşitlik ve karşılıklı saygı arar.",
+          "Genelde Hava (İkizler, Kova) ve Ateş (Koç, Aslan, Yay) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Terazi burcu kariyer ve para",
+        body: [
+          "Teraziler diplomasi, estetik ve işbirliği gerektiren işlerde parlar: hukuk, tasarım, diplomasi, danışmanlık ve sanat. İnsan ilişkilerinde ustadırlar.",
+          "Para konusunda kaliteyi ve güzelliği severler; bazen dengeyi tutturmak için bütçe planı iyi gelir.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Terazi burcu hangi tarihler arası?", a: "Terazi burcu 23 Eylül – 22 Ekim tarihleri arasındadır." },
+      { q: "Terazi burcunun yönetici gezegeni nedir?", a: "Terazi burcunu aşk ve estetik gezegeni Venüs yönetir." },
+      { q: "Terazi burcu neden kararsız?", a: "Her şeyi dengelemeye ve adil olmaya çalıştığı için seçenekler arasında tartar; bu kararsızlık gibi görünür." },
+    ],
+  },
+  {
+    slug: "akrep-burcu-ozellikleri",
+    category: "burclar",
+    title: "Akrep Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Akrep burcu özellikleri nelerdir? Su elementi ve Mars/Plüton yönetimindeki Akrep burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["akrep burcu", "akrep burcu özellikleri", "akrep burcu kişiliği", "akrep burcu aşk", "akrep burcu kadını", "akrep burcu erkeği"],
+    date: "2026-06-24",
+    readMinutes: 7,
+    emoji: "♏",
+    sections: [
+      {
+        h: "Akrep burcu genel özellikleri",
+        body: [
+          "Akrep burcu (23 Ekim – 21 Kasım) Su elementine aittir ve Mars ile Plüton tarafından yönetilir. Akrepler tutkulu, derin ve güçlü bir iradeye sahiptir.",
+          "Gizemli, sezgisel ve dönüştürücüdürler. Yüzeysel ilişkilerden hoşlanmaz, derinlik ve gerçeklik ararlar. Bir şeye odaklandıklarında olağanüstü kararlı olurlar.",
+        ],
+      },
+      {
+        h: "Akrep burcu güçlü ve zayıf yönleri",
+        body: [
+          "Akrep'in yoğunluğu büyük bir güçtür ama kıskançlık ve kontrol ihtiyacına dönüşebilir.",
+        ],
+        list: [
+          "Güçlü: tutku, kararlılık, sadakat, sezgi",
+          "Güçlü: kriz yönetimi ve derin bağ kurma",
+          "Zorlayıcı: kıskançlık, kontrol ihtiyacı",
+          "Zorlayıcı: kin tutma, gizlilik",
+        ],
+      },
+      {
+        h: "Akrep burcu aşk ve ilişki",
+        body: [
+          "Akrep aşkta yoğun, tutkulu ve son derece sadıktır. Tüm kalbiyle bağlanır ve aynı derinlikte bağlılık bekler. Güven onun için her şeydir.",
+          "Genelde Su (Yengeç, Balık) ve Toprak (Boğa, Başak, Oğlak) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Akrep burcu kariyer ve para",
+        body: [
+          "Akrepler araştırma, derinlik ve dönüşüm gerektiren işlerde başarılıdır: psikoloji, araştırmacılık, finans, cerrahi ve kriz yönetimi. Odaklandıklarında zirveye çıkarlar.",
+          "Para konusunda stratejik ve temkinlidirler; uzun vadeli güç ve güvenlik ararlar.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Akrep burcu hangi tarihler arası?", a: "Akrep burcu 23 Ekim – 21 Kasım tarihleri arasındadır." },
+      { q: "Akrep burcunun yönetici gezegeni nedir?", a: "Akrep burcunu geleneksel olarak Mars, modern astrolojide Plüton yönetir." },
+      { q: "Akrep burcu neden gizemli sayılır?", a: "Duygularını kolay açmaz, derinlik ve gerçeklik arar; bu yüzden gizemli görünür." },
+    ],
+  },
+  {
+    slug: "yay-burcu-ozellikleri",
+    category: "burclar",
+    title: "Yay Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Yay burcu özellikleri nelerdir? Ateş elementi ve Jüpiter yönetimindeki Yay burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["yay burcu", "yay burcu özellikleri", "yay burcu kişiliği", "yay burcu aşk", "yay burcu kadını", "yay burcu erkeği"],
+    date: "2026-06-23",
+    readMinutes: 7,
+    emoji: "♐",
+    sections: [
+      {
+        h: "Yay burcu genel özellikleri",
+        body: [
+          "Yay burcu (22 Kasım – 21 Aralık) Ateş elementine aittir ve şans gezegeni Jüpiter tarafından yönetilir. Yaylar özgür ruhlu, iyimser ve maceracıdır.",
+          "Yeni deneyimler, seyahat, felsefe ve öğrenme onları besler. Açık sözlü, neşeli ve geniş ufukludurlar; hayata büyük resimden bakarlar.",
+        ],
+      },
+      {
+        h: "Yay burcu güçlü ve zayıf yönleri",
+        body: [
+          "Yay'ın özgürlük sevgisi enerji verir ama bazen sorumluluktan kaçışa dönüşebilir.",
+        ],
+        list: [
+          "Güçlü: iyimserlik, dürüstlük, macera ruhu, geniş vizyon",
+          "Güçlü: öğrenme ve ilham verme",
+          "Zorlayıcı: sabırsızlık, fazla açık sözlülük",
+          "Zorlayıcı: bağlanma korkusu, savrukluk",
+        ],
+      },
+      {
+        h: "Yay burcu aşk ve ilişki",
+        body: [
+          "Yay aşkta özgür, samimi ve eğlencelidir. Partnerinde hem dost hem yol arkadaşı arar; kıskançlık ve baskıdan hoşlanmaz. Birlikte keşfetmek onları mutlu eder.",
+          "Genelde Ateş (Koç, Aslan) ve Hava (İkizler, Terazi, Kova) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Yay burcu kariyer ve para",
+        body: [
+          "Yaylar özgürlük, seyahat ve anlam sunan işlerde parlar: akademi, yayıncılık, turizm, hukuk ve uluslararası işler. Motivasyonları yüksek olduğunda çok üretkendirler.",
+          "Para konusunda cömert ve iyimserdirler; bazen plan yapmak savurganlığı dengeler.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Yay burcu hangi tarihler arası?", a: "Yay burcu 22 Kasım – 21 Aralık tarihleri arasındadır." },
+      { q: "Yay burcunun yönetici gezegeni nedir?", a: "Yay burcunu büyüme ve şans gezegeni Jüpiter yönetir." },
+      { q: "Yay burcu neden özgürlüğüne düşkün?", a: "Ateş elementi ve Jüpiter etkisiyle keşfetmeyi ve sınırsız hissetmeyi sever." },
+    ],
+  },
+  {
+    slug: "oglak-burcu-ozellikleri",
+    category: "burclar",
+    title: "Oğlak Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Oğlak burcu özellikleri nelerdir? Toprak elementi ve Satürn yönetimindeki Oğlak burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["oğlak burcu", "oğlak burcu özellikleri", "oğlak burcu kişiliği", "oğlak burcu aşk", "oğlak burcu kadını", "oğlak burcu erkeği"],
+    date: "2026-06-22",
+    readMinutes: 7,
+    emoji: "♑",
+    sections: [
+      {
+        h: "Oğlak burcu genel özellikleri",
+        body: [
+          "Oğlak burcu (22 Aralık – 19 Ocak) Toprak elementine aittir ve disiplin gezegeni Satürn tarafından yönetilir. Oğlaklar hırslı, sorumlu ve hedef odaklıdır.",
+          "Sabırlı ve stratejik bir şekilde tırmanırlar; uzun vadeli başarı için bugünden fedakârlık yapabilirler. Ciddi, güvenilir ve olgun bir duruşları vardır.",
+        ],
+      },
+      {
+        h: "Oğlak burcu güçlü ve zayıf yönleri",
+        body: [
+          "Oğlak'ın disiplini büyük başarılar getirir ama aşırı ciddiyet ve katılık yaratabilir.",
+        ],
+        list: [
+          "Güçlü: disiplin, sorumluluk, sabır, hırs",
+          "Güçlü: stratejik düşünme ve dayanıklılık",
+          "Zorlayıcı: katılık, aşırı ciddiyet",
+          "Zorlayıcı: duyguları bastırma, mesafelilik",
+        ],
+      },
+      {
+        h: "Oğlak burcu aşk ve ilişki",
+        body: [
+          "Oğlak aşkta ciddi, sadık ve uzun vadelidir. Hızlı bağlanmaz ama bağlandığında güvenilir ve istikrarlı bir partner olur. Sözünün eridir.",
+          "Genelde Toprak (Boğa, Başak) ve Su (Yengeç, Akrep, Balık) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Oğlak burcu kariyer ve para",
+        body: [
+          "Oğlaklar yapı, sorumluluk ve uzun vadeli başarı sunan işlerde zirveye çıkar: yönetim, finans, mühendislik, hukuk ve girişimcilik. Sabırlı çalışmaları meyvesini verir.",
+          "Para konusunda disiplinli ve öngörülüdürler; birikim ve güvenlik önceliklidir.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Oğlak burcu hangi tarihler arası?", a: "Oğlak burcu 22 Aralık – 19 Ocak tarihleri arasındadır." },
+      { q: "Oğlak burcunun yönetici gezegeni nedir?", a: "Oğlak burcunu disiplin ve sorumluluk gezegeni Satürn yönetir." },
+      { q: "Oğlak burcu neden mesafeli sayılır?", a: "Duygularını kolay göstermez; güveni zamanla kurar, bu yüzden başta mesafeli görünebilir." },
+    ],
+  },
+  {
+    slug: "kova-burcu-ozellikleri",
+    category: "burclar",
+    title: "Kova Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Kova burcu özellikleri nelerdir? Hava elementi ve Satürn/Uranüs yönetimindeki Kova burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["kova burcu", "kova burcu özellikleri", "kova burcu kişiliği", "kova burcu aşk", "kova burcu kadını", "kova burcu erkeği"],
+    date: "2026-06-21",
+    readMinutes: 7,
+    emoji: "♒",
+    sections: [
+      {
+        h: "Kova burcu genel özellikleri",
+        body: [
+          "Kova burcu (20 Ocak – 18 Şubat) Hava elementine aittir ve Satürn ile Uranüs tarafından yönetilir. Kovalar özgün, bağımsız ve yenilikçidir.",
+          "Geleceğe dönük, fikir odaklı ve insancıldırlar. Kalıpların dışında düşünür, özgürlüğe ve bireyselliğe değer verirler. Topluluk ve idealler onlar için önemlidir.",
+        ],
+      },
+      {
+        h: "Kova burcu güçlü ve zayıf yönleri",
+        body: [
+          "Kova'nın özgünlüğü ilham verir ama duygusal mesafeye yol açabilir.",
+        ],
+        list: [
+          "Güçlü: yenilikçilik, bağımsızlık, vizyon, insancıllık",
+          "Güçlü: özgün düşünce ve objektiflik",
+          "Zorlayıcı: duygusal mesafe, inatçılık",
+          "Zorlayıcı: asilik, öngörülemezlik",
+        ],
+      },
+      {
+        h: "Kova burcu aşk ve ilişki",
+        body: [
+          "Kova aşkta önce arkadaşlık ister; zihinsel uyum ve özgürlük onun için şarttır. Sıra dışı, dürüst ve bağımsız bir partnerdir; sahiplenilmekten hoşlanmaz.",
+          "Genelde Hava (İkizler, Terazi) ve Ateş (Koç, Aslan, Yay) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Kova burcu kariyer ve para",
+        body: [
+          "Kovalar yenilik, teknoloji ve toplumsal fayda sunan işlerde parlar: bilim, teknoloji, sosyal girişim, tasarım ve araştırma. Özgün fikirleriyle fark yaratırlar.",
+          "Para konusunda alışılmadık yaklaşımları olabilir; özgürlüklerini kısıtlamayan bir düzen onlara iyi gelir.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Kova burcu hangi tarihler arası?", a: "Kova burcu 20 Ocak – 18 Şubat tarihleri arasındadır." },
+      { q: "Kova burcunun yönetici gezegeni nedir?", a: "Kova burcunu geleneksel olarak Satürn, modern astrolojide Uranüs yönetir." },
+      { q: "Kova burcu neden farklı sayılır?", a: "Kalıpların dışında düşünen, özgün ve bağımsız bir Hava burcu olduğu için sıra dışı görünür." },
+    ],
+  },
+  {
+    slug: "balik-burcu-ozellikleri",
+    category: "burclar",
+    title: "Balık Burcu Özellikleri: Kişilik, Aşk ve Kariyer (Tam Rehber)",
+    excerpt:
+      "Balık burcu özellikleri nelerdir? Su elementi ve Jüpiter/Neptün yönetimindeki Balık burcunun kişiliği, güçlü-zayıf yönleri, aşk ve kariyer eğilimleri.",
+    keywords: ["balık burcu", "balık burcu özellikleri", "balık burcu kişiliği", "balık burcu aşk", "balık burcu kadını", "balık burcu erkeği"],
+    date: "2026-06-20",
+    readMinutes: 7,
+    emoji: "♓",
+    sections: [
+      {
+        h: "Balık burcu genel özellikleri",
+        body: [
+          "Balık burcu (19 Şubat – 20 Mart) Su elementine aittir ve Jüpiter ile Neptün tarafından yönetilir. Balıklar şefkatli, sezgisel ve hayalperesttir.",
+          "Empati yetenekleri çok güçlüdür; başkalarının duygularını derinden hisseder. Sanatsal, romantik ve ruhsal eğilimleri vardır; sınırları yumuşaktır.",
+        ],
+      },
+      {
+        h: "Balık burcu güçlü ve zayıf yönleri",
+        body: [
+          "Balık'ın empatisi ve hayal gücü büyük bir armağandır ama gerçeklerden kaçışa açıktır.",
+        ],
+        list: [
+          "Güçlü: empati, sezgi, yaratıcılık, şefkat",
+          "Güçlü: uyum ve fedakârlık",
+          "Zorlayıcı: gerçeklerden kaçış, sınır koyamama",
+          "Zorlayıcı: aşırı duygusallık, kararsızlık",
+        ],
+      },
+      {
+        h: "Balık burcu aşk ve ilişki",
+        body: [
+          "Balık aşkta romantik, şefkatli ve fedakârdır. Ruhsal ve duygusal bir bağ arar; partnerine derin bir sevgiyle bağlanır. İncelik ve anlayış onun dilidir.",
+          "Genelde Su (Yengeç, Akrep) ve Toprak (Boğa, Başak, Oğlak) burçlarıyla uyumludur.",
+        ],
+      },
+      {
+        h: "Balık burcu kariyer ve para",
+        body: [
+          "Balıklar yaratıcılık, şefkat ve sezgi gerektiren işlerde parlar: sanat, müzik, sağlık, psikoloji ve sosyal hizmet. Hayal güçleri ilham kaynağıdır.",
+          "Para konusunda cömert ve bazen dağınık olabilirler; net bir bütçe ve sınır onlara fayda sağlar.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Balık burcu hangi tarihler arası?", a: "Balık burcu 19 Şubat – 20 Mart tarihleri arasındadır." },
+      { q: "Balık burcunun yönetici gezegeni nedir?", a: "Balık burcunu geleneksel olarak Jüpiter, modern astrolojide Neptün yönetir." },
+      { q: "Balık burcu neden hayalperest sayılır?", a: "Neptün etkisindeki bir Su burcu olduğu için sezgisel, duygusal ve hayal gücü yüksektir." },
+    ],
+  },
 ];
 
 export function getAllArticles(): Article[] {

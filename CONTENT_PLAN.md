@@ -38,18 +38,18 @@ hedef anahtar kelimesi ve kategorisiyle birlikte verilmiştir.
 
 | # | Başlık | Hedef Anahtar Kelime | Durum |
 |---|--------|----------------------|-------|
-| 11 | Koç Burcu Özellikleri ve Kişiliği | koç burcu özellikleri | ⬜ |
-| 12 | Boğa Burcu Özellikleri ve Kişiliği | boğa burcu özellikleri | ⬜ |
-| 13 | İkizler Burcu Özellikleri ve Kişiliği | ikizler burcu özellikleri | ⬜ |
-| 14 | Yengeç Burcu Özellikleri ve Kişiliği | yengeç burcu özellikleri | ⬜ |
-| 15 | Aslan Burcu Özellikleri ve Kişiliği | aslan burcu özellikleri | ⬜ |
-| 16 | Başak Burcu Özellikleri ve Kişiliği | başak burcu özellikleri | ⬜ |
-| 17 | Terazi Burcu Özellikleri ve Kişiliği | terazi burcu özellikleri | ⬜ |
-| 18 | Akrep Burcu Özellikleri ve Kişiliği | akrep burcu özellikleri | ⬜ |
-| 19 | Yay Burcu Özellikleri ve Kişiliği | yay burcu özellikleri | ⬜ |
-| 20 | Oğlak Burcu Özellikleri ve Kişiliği | oğlak burcu özellikleri | ⬜ |
-| 21 | Kova Burcu Özellikleri ve Kişiliği | kova burcu özellikleri | ⬜ |
-| 22 | Balık Burcu Özellikleri ve Kişiliği | balık burcu özellikleri | ⬜ |
+| 11 | Koç Burcu Özellikleri ve Kişiliği | koç burcu özellikleri | ✅ |
+| 12 | Boğa Burcu Özellikleri ve Kişiliği | boğa burcu özellikleri | ✅ |
+| 13 | İkizler Burcu Özellikleri ve Kişiliği | ikizler burcu özellikleri | ✅ |
+| 14 | Yengeç Burcu Özellikleri ve Kişiliği | yengeç burcu özellikleri | ✅ |
+| 15 | Aslan Burcu Özellikleri ve Kişiliği | aslan burcu özellikleri | ✅ |
+| 16 | Başak Burcu Özellikleri ve Kişiliği | başak burcu özellikleri | ✅ |
+| 17 | Terazi Burcu Özellikleri ve Kişiliği | terazi burcu özellikleri | ✅ |
+| 18 | Akrep Burcu Özellikleri ve Kişiliği | akrep burcu özellikleri | ✅ |
+| 19 | Yay Burcu Özellikleri ve Kişiliği | yay burcu özellikleri | ✅ |
+| 20 | Oğlak Burcu Özellikleri ve Kişiliği | oğlak burcu özellikleri | ✅ |
+| 21 | Kova Burcu Özellikleri ve Kişiliği | kova burcu özellikleri | ✅ |
+| 22 | Balık Burcu Özellikleri ve Kişiliği | balık burcu özellikleri | ✅ |
 
 ## C) Yükselen Burçlar (Kategori: burclar)
 
