@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* "Kozmik" — koyu uzay teması (lacivert/mor + gül-pembe + altın) */
+    --background: 252 45% 6%;
+    --foreground: 280 28% 92%;
+
+    --card: 256 38% 12%;
+    --card-foreground: 280 25% 92%;
+
+    --primary: 270 75% 66%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 255 30% 18%;
+    --secondary-foreground: 280 22% 86%;
+
+    --muted: 255 25% 16%;
+    --muted-foreground: 272 14% 64%;
+
+    --accent: 330 80% 68%;
+    --accent-foreground: 0 0% 100%;
+
+    --gold: 42 88% 64%;
+    --gold-foreground: 252 45% 10%;
+
+    --destructive: 350 75% 64%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 150 55% 52%;
+    --success-foreground: 150 60% 8%;
+
+    --warning: 30 85% 62%;
+    --warning-foreground: 30 80% 10%;
+
+    --border: 255 28% 22%;
+    --input: 255 28% 22%;
+    --ring: 270 75% 66%;
+
+    --radius: 1.1rem;
+
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-display: "Playfair Display", Georgia, serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Nebula — derin uzay gradyanı */
+.nebula {
+  background:
+    radial-gradient(45% 38% at 18% 12%, hsl(270 80% 30% / 0.5), transparent 70%),
+    radial-gradient(45% 40% at 85% 16%, hsl(330 70% 32% / 0.4), transparent 70%),
+    radial-gradient(50% 45% at 60% 95%, hsl(255 80% 28% / 0.45), transparent 70%),
+    radial-gradient(40% 40% at 8% 80%, hsl(290 70% 30% / 0.35), transparent 70%),
+    linear-gradient(170deg, hsl(252 50% 7%), hsl(258 55% 5%));
+}
+
+/* Yıldız alanı (çok katmanlı küçük noktalar) */
+.starfield {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 28% 62%, rgba(214, 200, 255, 0.8), transparent),
+    radial-gradient(1.5px 1.5px at 44% 32%, rgba(255, 245, 220, 0.85), transparent),
+    radial-gradient(1px 1px at 62% 72%, rgba(255, 255, 255, 0.75), transparent),
+    radial-gradient(1.5px 1.5px at 78% 22%, rgba(248, 200, 235, 0.8), transparent),
+    radial-gradient(1px 1px at 88% 58%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 36% 88%, rgba(214, 200, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 6% 44%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 54% 8%, rgba(255, 245, 220, 0.75), transparent),
+    radial-gradient(1px 1px at 70% 92%, rgba(255, 255, 255, 0.7), transparent);
+  background-repeat: repeat;
+  background-size: 420px 420px;
+}
+
+.glass {
+  background: hsl(256 38% 12% / 0.6);
+  backdrop-filter: blur(14px);
+  border: 1px solid hsl(270 40% 60% / 0.18);
+}
+
+.gold-text {
+  background: linear-gradient(135deg, hsl(44 95% 72%), hsl(34 85% 58%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-text {
+  background: linear-gradient(
+    120deg,
+    hsl(270 85% 78%),
+    hsl(330 85% 74%),
+    hsl(42 90% 66%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(255 30% 9%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(255 25% 26%);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(270 45% 45%);
+}
+
+/* ---- Giriş (evrene geçiş) animasyonları ---- */
+@keyframes warpZoom {
+  0% { transform: scale(1); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: scale(8); opacity: 0; }
+}
+@keyframes portalIn {
+  0% { transform: scale(0.2); opacity: 0; }
+  45% { opacity: 0.95; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes brandIn {
+  0%, 12% { opacity: 0; transform: translateY(10px) scale(0.96); letter-spacing: 0.5em; }
+  45% { opacity: 1; transform: none; letter-spacing: 0.12em; }
+  82% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes introOut {
+  0%, 72% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.intro-warp { animation: warpZoom 2.6s ease-in forwards; }
+.intro-portal { animation: portalIn 2.6s ease-out forwards; }
+.intro-brand { animation: brandIn 2.6s ease-out forwards; }
+.intro-root { animation: introOut 2.6s ease-in forwards; }

@@ -1,0 +1,55 @@
+// AstroTransit AI — Prisma şeması
+// PostgreSQL (Neon / Supabase) ile uyumludur.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserChart {
+  id                String   @id @default(cuid())
+  name              String
+  gender            String?
+  birthDate         String // ISO yyyy-MM-dd
+  birthTime         String? // HH:mm
+  birthPlace        String
+  latitude          Float
+  longitude         Float
+  timezone          String
+  birthTimeAccuracy String // "exact" | "approx" | "unknown"
+  focusArea         String // "general" | "career" | "exam" | ...
+  createdAt         DateTime @default(now())
+
+  results   ChartResult[]
+  snapshots TransitSnapshot[]
+}
+
+model ChartResult {
+  id                    String   @id @default(cuid())
+  userChartId           String
+  natalJson             Json
+  transitJson           Json
+  scoresJson            Json
+  aiInterpretationJson  Json
+  createdAt             DateTime @default(now())
+
+  userChart UserChart @relation(fields: [userChartId], references: [id], onDelete: Cascade)
+
+  @@index([userChartId])
+}
+
+model TransitSnapshot {
+  id          String   @id @default(cuid())
+  userChartId String
+  date        String // ISO yyyy-MM-dd
+  transitJson Json
+  createdAt   DateTime @default(now())
+
+  userChart UserChart @relation(fields: [userChartId], references: [id], onDelete: Cascade)
+
+  @@index([userChartId, date])
+}
