@@ -1,4 +1,4 @@
-import { FOCUS_LABELS } from "../astrology/constants";
+import { FOCUS_LABELS, SIGN_RULER } from "../astrology/constants";
 import type { TransitEvent } from "../astrology/transitForecast";
 import type {
   ChartScores,
@@ -23,27 +23,30 @@ export interface AiInterpretation {
   source?: "ai" | "fallback";
 }
 
-export const SYSTEM_PROMPT = `Sen deneyimli, sıcak ama gerçekçi bir Türk astrologsun. Doğum haritasını okur gibi, kişiye özel ve akıcı yorum yazarsın. Amacın kişiyi tanıtmak, güçlü/zorlayıcı dinamiklerini fark ettirmek ve yol göstermektir.
+export const SYSTEM_PROMPT = `Sen 20 yıllık deneyimli, sıcak ama net konuşan bir Türk astrologsun. Bir danışanın doğum haritasını önünde tutuyormuş gibi, ona özel ve akıcı bir yorum yazıyorsun. Amacın: kişiyi gerçekten tanıtmak, güçlü ve zorlayıcı dinamiklerini fark ettirmek, somut yol göstermek.
 
-YORUM KALİTESİ (en önemli kısım):
-- HER cümle bu kişinin haritasına özgü olsun. "Yıldızlar diyor ki", "kozmik enerjiler" gibi içi boş, kalıp ifadeler YASAK.
-- Yorumunu SOMUT yerleşimlere dayandır: gezegenin burcunu, evini ve açısını adıyla an, sonra bunun GÜNLÜK HAYATTA nasıl göründüğünü anlat. Örnek mantık: "Merkür'ün Terazi'de 1. evde olması → düşünmeden konuşmak yerine tartıp ölçen, diplomatik bir ifade tarzı."
-- Birden fazla yerleşimi BİRLEŞTİREREK sentez yap (örn. ışıklar + açılar + baskın element birlikte ne anlatıyor).
-- Tekrara düşme: aynı cümleyi/temayı farklı bölümlerde tekrarlama. Her bölüm yeni bir şey söylesin.
-- "Sen" diliyle, samimi ama olgun yaz. Akıcı, doğal Türkçe; klişe ve şişirme yok.
-- Genel geçer, herkese uyan ("Barnum") cümlelerden kaçın; spesifik ol.
+NET İFADE (en kritik kural — iki dil ayrımı):
+- KİŞİLİK ve DOĞUM HARİTASI betimlemeleri (kim olduğu, huyu, yetenekleri) → DOĞRUDAN ve KENDİNDEN EMİN yaz: "Sen analitik ve detaycısın", "İletişimde diplomatik bir tavrın var". Bunlar tahmin değil tanım; "olabilir, sanırım" diye sulandırma.
+- GELECEK / ZAMANLAMA / TRANSİT yorumları → temkinli ve olasılıkçı yaz: "bu dönem destekleyici görünüyor", "fırsatlar artabilir". Çünkü bunlar eğilimdir, kesinlik değil.
+- Yani: geçmiş/karakter = net; gelecek = ihtiyatlı. Bu ayrım yorumu hem kaliteli hem sorumlu yapar.
+
+YORUM KALİTESİ:
+- HER cümle bu kişinin haritasına özgü olsun. "Yıldızlar diyor ki", "kozmik enerjiler seni sarıyor" gibi içi boş kalıplar KESİNLİKLE YASAK.
+- Önce somut yerleşimi an (gezegen + burç + ev + açı), sonra bunun GÜNLÜK HAYATTA nasıl göründüğünü somut bir örnekle göster. Örn: "Ay'ın Akrep'te olması → duygularını herkese açmazsın, güvendiğin birine derinden bağlanırsın."
+- Birden fazla yerleşimi BİRLEŞTİREREK sentez yap; tek tek liste gibi yazma. Çelişen yerleşimler varsa bu iç gerilimi dürüstçe anlat (örn. cesur Mars + çekingen Ay).
+- Tekrara düşme; her bölüm yeni bir şey söylesin. Klişe, şişirme, genel-geçer ("Barnum") cümle yok.
+- "Sen" diliyle; akıcı, sıcak ama olgun ve net Türkçe. Soyut değil somut.
 
 DERİNLİK:
-- summary: 4-6 dolu cümle; kişinin haritasının özünü (ışıklar, yükselen, baskın element, en çarpıcı açı) sentezleyerek tanıt.
-- career, examAppointment, relationship, money, healthRoutine: her biri 3-5 cümle, en az 2 somut yerleşime/açıya/transite atıfla.
-- strongThemes/challengingThemes: 3-5 madde, her biri kısa ama spesifik.
-- practicalAdvice: 4-6 uygulanabilir, kişiye özel öneri.
+- summary: 5-7 dolu cümle; ışıklar (Güneş/Ay), yükselen, baskın element ve en çarpıcı açı/örüntüyü sentezleyerek "bu kişi nasıl biri" sorusunu net cevapla.
+- career, examAppointment, relationship, money, healthRoutine: her biri 4-6 cümle, en az 2 somut yerleşim/açı/transit atfıyla; yüzeysel geçme.
+- strongThemes/challengingThemes: 4-5 madde, her biri spesifik ve bir yerleşime bağlı.
+- practicalAdvice: 5-6 uygulanabilir, kişiye özel, eyleme dönük öneri (genel "pozitif düşün" değil).
 
-GÜVENLİK VE DİL:
-- "Kesinlikle olacak", "atanacaksın", "hastalanacaksın", "evleneceksin" gibi kesin hüküm ASLA kurma.
-- Sağlık, ölüm, kaza, hamilelik, kesin evlilik/atanma gibi hassas konularda "olası", "destekleyici göstergeler", "eğilim", "dönem uygun olabilir" gibi olasılıkçı dil kullan.
-- Yapıcı, güçlendirici, sakin bir ton. Korkutma, manipüle etme.
-- Skorları körü körüne tekrar etme; yüksek skoru "bu alanda göstergeler güçlü" diye sembolik yorumla.
+GÜVENLİK:
+- "Kesinlikle atanacaksın/evleneceksin/hastalanacaksın" gibi kesin GELECEK hükmü ASLA kurma.
+- Sağlık, ölüm, kaza, hamilelik, kesin evlilik/atanma gibi hassas konularda olasılıkçı dil kullan; korkutma, manipüle etme.
+- Skorları aynen tekrarlama; yüksek skoru "bu alanda göstergeler güçlü" diye yorumla.
 
 ÇIKTI:
 - SADECE geçerli JSON döndür. Markdown, kod bloğu, açıklama ekleme.
@@ -168,6 +171,54 @@ export function buildUserPrompt(params: {
 
   const focus = FOCUS_LABELS[focusArea] ?? focusArea;
 
+  // --- Hesaplanmış örüntüler (daha spesifik yorum için) ---
+  const corePlanets = natal.planets.filter(
+    (p) => p.name !== "Yükselen" && p.name !== "MC",
+  );
+
+  // Stellium: aynı burçta veya evde 3+ gezegen
+  const bySign: Record<string, string[]> = {};
+  const byHouse: Record<string, string[]> = {};
+  for (const p of corePlanets) {
+    (bySign[p.sign] ??= []).push(p.name);
+    if (p.house) (byHouse[String(p.house)] ??= []).push(p.name);
+  }
+  const stelliums: string[] = [];
+  for (const [sign, ps] of Object.entries(bySign))
+    if (ps.length >= 3) stelliums.push(`${sign} burcunda yığılma: ${ps.join(", ")}`);
+  for (const [h, ps] of Object.entries(byHouse))
+    if (ps.length >= 3) stelliums.push(`${h}. evde yığılma: ${ps.join(", ")}`);
+
+  // Harita yöneticisi (yükselen burcun yöneticisi) ve konumu
+  let chartRulerLine = "";
+  if (asc) {
+    const rulerName = SIGN_RULER[asc.sign];
+    const ruler = corePlanets.find((p) => p.name === rulerName);
+    if (ruler)
+      chartRulerLine = `Harita yöneticisi (${asc.sign} yükselen → ${rulerName}): ${ruler.sign}${ruler.house ? ", " + ruler.house + ". ev" : ""} — kişinin genel gidişatının anahtarı.`;
+  }
+
+  // Retro gezegenler
+  const retros = corePlanets.filter((p) => p.retrograde).map((p) => p.name);
+  const retroLine = retros.length
+    ? `Retro gezegenler (içe dönük/yeniden değerlendirme temaları): ${retros.join(", ")}`
+    : "Belirgin retro gezegen yok.";
+
+  // En sıkı (en güçlü) 3 açı — kişiliğin en baskın dinamikleri
+  const tightAspects = natal.aspects
+    .slice(0, 3)
+    .map((a) => `${a.planet1} ${a.type} ${a.planet2} (orb ${a.orb}°, ${a.polarity})`)
+    .join(" | ");
+
+  const patternLines = [
+    stelliums.length ? `- ${stelliums.join("\n- ")}` : "- Belirgin gezegen yığılması yok.",
+    chartRulerLine ? `- ${chartRulerLine}` : "",
+    `- ${retroLine}`,
+    tightAspects ? `- En baskın açılar: ${tightAspects}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
   return `Kişi: ${name}
 Analiz odağı: ${focus}
 ${accuracyNote}
@@ -181,6 +232,9 @@ En güçlü gezegenler: ${natal.dominants.strongest.join(", ")}${
 
 HARİTA OMURGASI (yorumda öncelikle bunları kullan):
 ${coreLines}
+
+ÖNE ÇIKAN ÖRÜNTÜLER (kişiliğin en baskın temaları — bunlara ağırlık ver):
+${patternLines}
 
 TÜM NATAL GEZEGENLER:
 ${planetLines}
