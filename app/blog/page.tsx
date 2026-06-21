@@ -87,7 +87,7 @@ export default function BlogIndexPage() {
       <div className="grid gap-5 sm:grid-cols-2">
         {articles.map((a) => (
           <Link key={a.slug} href={`/blog/${a.slug}`} className="group">
-            <article className="flex h-full flex-col rounded-3xl border border-primary/15 bg-card/60 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10">
+            <article className="flex h-full flex-col rounded-3xl border border-primary/15 bg-card/80 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10">
               <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/30 to-accent/20 text-xl">
                 {a.emoji}
               </div>

@@ -217,7 +217,7 @@ export default function LandingPage() {
           {features.map((f) => (
             <div
               key={f.title}
-              className="group relative overflow-hidden rounded-3xl border border-border/60 bg-card/40 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10"
+              className="group relative overflow-hidden rounded-3xl border border-border/60 bg-card/70 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10"
             >
               {/* hover parıltısı */}
               <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary/20 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
@@ -249,7 +249,7 @@ export default function LandingPage() {
           {faqs.map((f) => (
             <details
               key={f.q}
-              className="group rounded-2xl border border-primary/15 bg-card/50 p-5 backdrop-blur-md [&_summary::-webkit-details-marker]:hidden"
+              className="group rounded-2xl border border-primary/15 bg-card/70 p-5 backdrop-blur-md [&_summary::-webkit-details-marker]:hidden"
             >
               <summary className="flex cursor-pointer items-center justify-between gap-3 font-medium">
                 {f.q}

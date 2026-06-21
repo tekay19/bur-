@@ -177,7 +177,7 @@ export default function ArticlePage({
             {a.faq.map((f) => (
               <details
                 key={f.q}
-                className="rounded-2xl border border-primary/15 bg-card/50 p-4 backdrop-blur-md [&_summary::-webkit-details-marker]:hidden"
+                className="rounded-2xl border border-primary/15 bg-card/80 p-4 backdrop-blur-md [&_summary::-webkit-details-marker]:hidden"
               >
                 <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm font-medium">
                   {f.q}
@@ -219,7 +219,7 @@ export default function ArticlePage({
             <Link
               key={r.slug}
               href={`/blog/${r.slug}`}
-              className="rounded-2xl border border-primary/15 bg-card/50 p-4 text-sm font-medium backdrop-blur-md transition-colors hover:border-primary/40"
+              className="rounded-2xl border border-primary/15 bg-card/80 p-4 text-sm font-medium backdrop-blur-md transition-colors hover:border-primary/40"
             >
               <span className="mr-2">{r.emoji}</span>
               {r.title}

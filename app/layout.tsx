@@ -120,7 +120,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" className={`${inter.variable} ${playfair.variable} dark`}>
-      <body className="min-h-screen bg-background font-sans">
+      <body className="min-h-screen overflow-x-hidden bg-background font-sans">
         <SpaceBackground />
         <IntroOverlay />
         <div className="relative min-h-screen">{children}</div>

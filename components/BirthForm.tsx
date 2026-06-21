@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Disclaimer } from "@/components/Disclaimer";
 import { LoadingState } from "@/components/LoadingState";
-import { listCities } from "@/lib/utils/geocoding";
+import { TR_ILLER, ilceler } from "@/lib/utils/tr-il-ilce";
 import { birthFormSchema } from "@/lib/validation";
 
 const MONTHS = [
@@ -65,7 +65,6 @@ const pad = (n: string) => n.padStart(2, "0");
 
 export function BirthForm() {
   const router = useRouter();
-  const cities = useMemo(() => listCities(), []);
 
   const [f, setF] = useState({
     name: "",
@@ -75,7 +74,8 @@ export function BirthForm() {
     year: "",
     hour: "",
     minute: "",
-    place: "",
+    il: "",
+    ilce: "",
     accuracy: "exact" as "exact" | "approx" | "unknown",
     focus: "general",
   });
@@ -113,12 +113,14 @@ export function BirthForm() {
         ? `${pad(f.hour)}:${pad(f.minute)}`
         : "";
 
+    const birthPlace = f.ilce ? `${f.ilce}, ${f.il}` : f.il;
+
     const payload = {
       name: f.name,
       gender: f.gender as "female" | "male" | "other" | "",
       birthDate,
       birthTime,
-      birthPlace: f.place,
+      birthPlace,
       birthTimeAccuracy: f.accuracy,
       focusArea: f.focus as (typeof FOCUS_OPTIONS)[number]["value"],
     };
@@ -132,6 +134,8 @@ export function BirthForm() {
         if (msgs && msgs[0]) fieldErrors[k] = msgs[0];
       }
     }
+    if (!f.il) fieldErrors.birthPlace = "İl ve ilçeni seç";
+    else if (!f.ilce) fieldErrors.birthPlace = "İlçeni seç";
     if (!birthDate) fieldErrors.birthDate = "Gün, ay ve yılı seç";
     if (!unknownTime && !birthTime)
       fieldErrors.birthTime = "Saati seç veya 'Bilmiyorum'u işaretle";
@@ -175,7 +179,7 @@ export function BirthForm() {
 
   if (submitting) {
     return (
-      <div className="rounded-3xl border border-border/60 bg-card/60 p-2 backdrop-blur-md">
+      <div className="rounded-3xl border border-border/60 bg-card/85 p-2 backdrop-blur-md">
         <LoadingState />
       </div>
     );
@@ -211,7 +215,7 @@ export function BirthForm() {
       {/* Adım 2 — Doğum anı */}
       <Step n={2} title="Ne zaman doğdun?">
         <Field label="Doğum tarihi" error={errors.birthDate}>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 [&>*]:min-w-0">
             <Select value={f.day} onChange={(e) => up("day", e.target.value)}>
               <option value="">Gün</option>
               {days.map((d) => (
@@ -281,7 +285,7 @@ export function BirthForm() {
         </Field>
 
         <Field label="Doğum saatini biliyor musun?">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 [&>*]:min-w-0">
             {ACCURACY.map((opt) => (
               <button
                 key={opt.v}
@@ -308,26 +312,42 @@ export function BirthForm() {
 
       {/* Adım 3 — Yer */}
       <Step n={3} title="Nerede doğdun?">
-        <Field label="Şehir veya ilçe" icon={MapPin} error={errors.birthPlace}>
-          <Input
-            list="city-list"
-            value={f.place}
-            onChange={(e) => up("place", e.target.value)}
-            placeholder="örn. Kadıköy, İstanbul"
-            autoComplete="off"
-          />
-          <datalist id="city-list">
-            {cities.map((c) => (
-              <option key={c.label} value={c.value}>
-                {c.label}
-              </option>
-            ))}
-          </datalist>
-          <p className="text-xs text-muted-foreground">
-            İlçe de yazabilirsin — tüm Türkiye ilçeleri ve dünya şehirleri
-            destekleniyor.
-          </p>
-        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="İl" icon={MapPin} error={errors.birthPlace}>
+            <Select
+              value={f.il}
+              onChange={(e) => {
+                up("il", e.target.value);
+                up("ilce", "");
+              }}
+            >
+              <option value="">İl seç</option>
+              {TR_ILLER.map((il) => (
+                <option key={il} value={il}>
+                  {il}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label="İlçe">
+            <Select
+              value={f.ilce}
+              onChange={(e) => up("ilce", e.target.value)}
+              disabled={!f.il}
+            >
+              <option value="">{f.il ? "İlçe seç" : "Önce il seç"}</option>
+              {f.il &&
+                ilceler(f.il).map((ic) => (
+                  <option key={ic} value={ic}>
+                    {ic}
+                  </option>
+                ))}
+            </Select>
+          </Field>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Doğru yükselen ve ev hesabı için il ve ilçeni seç.
+        </p>
       </Step>
 
       {/* Adım 4 — Odak */}
@@ -380,7 +400,7 @@ function Step({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-3xl border border-border/60 bg-card/50 p-5 backdrop-blur-md sm:p-6">
+    <div className="rounded-3xl border border-border/60 bg-card/85 p-5 backdrop-blur-md sm:p-6">
       <div className="mb-4 flex items-center gap-3">
         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/15 text-sm font-bold text-gold">
           {n}
@@ -421,7 +441,7 @@ function Field({
 }
 
 function pill(active: boolean): string {
-  return `rounded-xl border px-3 py-2.5 text-sm font-medium transition-all ${
+  return `min-w-0 truncate rounded-xl border px-2 py-2.5 text-sm font-medium transition-all ${
     active
       ? "border-primary bg-primary/15 text-foreground"
       : "border-border bg-secondary/30 text-muted-foreground hover:border-primary/40"

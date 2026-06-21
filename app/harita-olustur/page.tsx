@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function CreateChartPage() {
   return (
-    <main className="container max-w-xl py-6 sm:py-10">
+    <main className="mx-auto w-full max-w-xl px-4 py-6 sm:px-6 sm:py-10">
       <div className="mb-8 flex items-center justify-between">
         <Link
           href="/"
