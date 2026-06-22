@@ -82,7 +82,7 @@ export function ScoreRing({
           {value}
         </span>
         {label && (
-          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+          <span className="text-xs uppercase tracking-wide text-muted-foreground">
             {label}
           </span>
         )}

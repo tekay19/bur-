@@ -14,6 +14,7 @@ import {
   getUserById,
   verifySession,
 } from "@/lib/auth";
+import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -54,6 +55,11 @@ export async function GET(req: NextRequest) {
 
 // POST /api/credits — { action: "redeem" | "purchase", code?, pack? }
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  // Genel POST sınırı (IP başına).
+  const rl = rateLimit(`credits:ip:${ip}`, 30, 15 * 60_000);
+  if (!rl.ok) return tooManyRequests(rl.retryAfter);
+
   let body: { action?: string; code?: string; pack?: string };
   try {
     body = await req.json();
@@ -65,6 +71,9 @@ export async function POST(req: NextRequest) {
   if (body.action === "redeem") {
     if (!body.code)
       return NextResponse.json({ error: "Kod gerekli." }, { status: 400 });
+    // Kurtarma kodu brute-force'una karşı sıkı sınır (IP başına).
+    const codeRl = rateLimit(`redeem:ip:${ip}`, 10, 15 * 60_000);
+    if (!codeRl.ok) return tooManyRequests(codeRl.retryAfter);
     const acc = await findByRecoveryCode(body.code);
     if (!acc)
       return NextResponse.json(

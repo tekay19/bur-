@@ -22,10 +22,13 @@ model UserChart {
   timezone          String
   birthTimeAccuracy String // "exact" | "approx" | "unknown"
   focusArea         String // "general" | "career" | "exam" | ...
+  ownerKey          String? // oluşturan: üye uid veya misafir aid (IDOR koruması)
   createdAt         DateTime @default(now())
 
   results   ChartResult[]
   snapshots TransitSnapshot[]
+
+  @@index([ownerKey])
 }
 
 model ChartResult {

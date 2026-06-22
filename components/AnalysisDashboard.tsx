@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
@@ -39,15 +39,48 @@ type State =
   | { status: "ready"; data: AnalysisResult };
 
 const NAV = [
-  { id: "summary", label: "Genel Özet", icon: LayoutGrid },
-  { id: "scores", label: "Skorlar", icon: Star },
-  { id: "exam", label: "Sınav / Atanma", icon: Target },
-  { id: "planets", label: "Natal Tablo", icon: Table },
-  { id: "houses", label: "Ev Analizi", icon: Home },
-  { id: "aspects", label: "Açılar", icon: GitCompareArrows },
-  { id: "transits", label: "Transit & Zaman", icon: CalendarClock },
-  { id: "ai", label: "AI Yorumu", icon: Sparkles },
+  { id: "ai", label: "AI Yorumu", short: "AI Yorumu", icon: Sparkles },
+  { id: "scores", label: "Skorlar", short: "Skorlar", icon: Star },
+  { id: "summary", label: "Genel Özet", short: "Özet", icon: LayoutGrid },
+  { id: "exam", label: "Sınav / Atanma", short: "Sınav", icon: Target },
+  { id: "planets", label: "Natal Tablo", short: "Natal", icon: Table },
+  { id: "houses", label: "Ev Analizi", short: "Evler", icon: Home },
+  { id: "aspects", label: "Açılar", short: "Açılar", icon: GitCompareArrows },
+  {
+    id: "transits",
+    label: "Transit & Zaman",
+    short: "Transit",
+    icon: CalendarClock,
+  },
 ];
+
+const ALL_NAV_IDS = NAV.map((n) => n.id);
+
+// Görünür bölümü izleyip mobil sekme şeridinde vurgular (scroll spy)
+function useScrollSpy(ids: string[], enabled: boolean) {
+  const [active, setActive] = useState<string>("");
+  useEffect(() => {
+    if (!enabled) return;
+    const els = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+    if (els.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort(
+            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
+          );
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-25% 0px -65% 0px", threshold: 0 },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [enabled, ids.join(",")]);
+  return active;
+}
 
 export function AnalysisDashboard({ id }: { id: string }) {
   const [state, setState] = useState<State>({ status: "loading" });
@@ -97,6 +130,8 @@ export function AnalysisDashboard({ id }: { id: string }) {
     };
   }, [id]);
 
+  const activeId = useScrollSpy(ALL_NAV_IDS, state.status === "ready");
+
   if (state.status === "loading") return <DashboardSkeleton />;
   if (state.status === "error") return <ErrorView message={state.message} />;
 
@@ -104,6 +139,7 @@ export function AnalysisDashboard({ id }: { id: string }) {
   const { natal, scores, ai, houseAnalysis, transit, forecast, input } = data;
   const showExam =
     input.focusArea === "exam" || input.focusArea === "career";
+  const navItems = NAV.filter((n) => n.id !== "exam" || showExam);
 
   const scoreList = [
     scores.career,
@@ -121,9 +157,13 @@ export function AnalysisDashboard({ id }: { id: string }) {
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            aria-label="Ana sayfaya dön"
+            className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
           >
             <Moon className="h-5 w-5 text-gold" />
+            <span className="hidden text-sm font-medium sm:inline">
+              Ana sayfa
+            </span>
           </Link>
           <div>
             <h1 className="font-display text-xl font-bold sm:text-2xl">
@@ -145,6 +185,8 @@ export function AnalysisDashboard({ id }: { id: string }) {
         </div>
       </header>
 
+      <MobileNav items={navItems} activeId={activeId} />
+
       {input.birthTimeAccuracy !== "exact" && (
         <Disclaimer
           className="mb-6"
@@ -160,22 +202,51 @@ export function AnalysisDashboard({ id }: { id: string }) {
         {/* Sol menü */}
         <aside className="hidden lg:block">
           <nav className="sticky top-6 space-y-1">
-            {NAV.filter((n) => n.id !== "exam" || showExam).map((n) => (
-              <a
-                key={n.id}
-                href={`#${n.id}`}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              >
-                <n.icon className="h-4 w-4" />
-                {n.label}
-              </a>
-            ))}
+            {navItems.map((n) => {
+              const active = n.id === activeId;
+              return (
+                <a
+                  key={n.id}
+                  href={`#${n.id}`}
+                  aria-current={active ? "true" : undefined}
+                  className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors ${
+                    active
+                      ? "bg-secondary font-medium text-foreground"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
+                >
+                  <n.icon className="h-4 w-4" />
+                  {n.label}
+                </a>
+              );
+            })}
           </nav>
         </aside>
 
         {/* İçerik */}
         <div className="min-w-0 space-y-12">
-          <section id="summary" className="scroll-mt-6 space-y-6">
+          {/* 1) AI Yorumu — kişiselleştirilmiş, herkesin anlayacağı metin */}
+          <section id="ai" className="scroll-mt-24 lg:scroll-mt-6">
+            <AiInterpretation ai={ai} />
+          </section>
+
+          {/* 2) Skorlar / Özet kartlar */}
+          <section id="scores" className="scroll-mt-24 lg:scroll-mt-6 space-y-4">
+            <SectionTitle
+              icon={Star}
+              title="Hayat Alanı Skorları"
+              subtitle="Her alanın sembolik destek düzeyi (0-100)"
+            />
+            <ScoreCard score={scores.overall} />
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {scoreList.map((s) => (
+                <CompactScoreCard key={s.category} score={s} />
+              ))}
+            </div>
+          </section>
+
+          {/* 3) Genel Özet — natal çark görseli */}
+          <section id="summary" className="scroll-mt-24 lg:scroll-mt-6 space-y-6">
             <Card>
               <CardContent className="p-4 sm:p-6">
                 <NatalWheel natal={natal} />
@@ -204,54 +275,94 @@ export function AnalysisDashboard({ id }: { id: string }) {
             <ChartSummary natal={natal} scores={scores} />
           </section>
 
-          <section id="scores" className="scroll-mt-6 space-y-4">
-            <SectionTitle
-              icon={Star}
-              title="Hayat Alanı Skorları"
-              subtitle="Her alanın sembolik destek düzeyi (0-100)"
-            />
-            <ScoreCard score={scores.overall} />
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {scoreList.map((s) => (
-                <CompactScoreCard key={s.category} score={s} />
-              ))}
-            </div>
-          </section>
-
           {showExam && (
-            <section id="exam" className="scroll-mt-6">
+            <section id="exam" className="scroll-mt-24 lg:scroll-mt-6">
               <ExamModule scores={scores} aiText={ai.examAppointment} />
             </section>
           )}
 
-          <section id="planets" className="scroll-mt-6">
+          {/* 4) Teknik Detaylar — meraklısı için ham tablolar */}
+          <div className="flex items-center gap-3 pt-2">
+            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Teknik Detaylar
+            </span>
+            <span className="h-px flex-1 bg-border/60" />
+          </div>
+
+          <section id="planets" className="scroll-mt-24 lg:scroll-mt-6">
             <PlanetTable natal={natal} />
           </section>
 
-          <section id="houses" className="scroll-mt-6">
+          <section id="houses" className="scroll-mt-24 lg:scroll-mt-6">
             <HouseAnalysis
               houses={houseAnalysis}
               hasHouses={natal.meta.hasHouses}
             />
           </section>
 
-          <section id="aspects" className="scroll-mt-6">
+          <section id="aspects" className="scroll-mt-24 lg:scroll-mt-6">
             <AspectTable natal={natal} />
           </section>
 
-          <section id="transits" className="scroll-mt-6 space-y-6">
-            <TransitForecast forecast={forecast ?? []} />
+          <section id="transits" className="scroll-mt-24 lg:scroll-mt-6 space-y-6">
+            <TransitForecast
+              forecast={forecast ?? []}
+              asOf={transit?.meta?.date}
+            />
             <TransitTimeline transit={transit} timeline={ai.timeline} />
-          </section>
-
-          <section id="ai" className="scroll-mt-6">
-            <AiInterpretation ai={ai} />
           </section>
 
           <Disclaimer text="Bu yorumlar astrolojik sembolizm ve eğlence/kişisel farkındalık amaçlıdır. Kesin gelecek tahmini değildir. Sağlık, hukuki ve finansal kararlarda uzmana danışın." />
         </div>
       </div>
     </div>
+  );
+}
+
+function MobileNav({
+  items,
+  activeId,
+}: {
+  items: { id: string; short: string; icon: typeof Star }[];
+  activeId: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Aktif sekmeyi şerit içinde ortala
+  useEffect(() => {
+    const el = ref.current?.querySelector(
+      `[data-id="${activeId}"]`,
+    ) as HTMLElement | null;
+    el?.scrollIntoView({ inline: "center", block: "nearest" });
+  }, [activeId]);
+
+  return (
+    <nav className="sticky top-0 z-30 -mx-6 mb-6 border-b border-border/60 bg-background/85 px-6 py-2 backdrop-blur-md lg:hidden">
+      <div
+        ref={ref}
+        className="flex gap-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((n) => {
+          const active = n.id === activeId;
+          return (
+            <a
+              key={n.id}
+              href={`#${n.id}`}
+              data-id={n.id}
+              aria-current={active ? "true" : undefined}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                active
+                  ? "border-primary/50 bg-primary/15 text-foreground"
+                  : "border-border bg-secondary/30 text-muted-foreground"
+              }`}
+            >
+              <n.icon className="h-3.5 w-3.5" />
+              {n.short}
+            </a>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
 

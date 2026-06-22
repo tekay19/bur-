@@ -15,7 +15,21 @@ export function IntroOverlay() {
     } catch {
       /* yoksay */
     }
-    if (seen) return;
+
+    // Hareket azaltma tercihi: intro'yu hiç oynatma (erişilebilirlik)
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (seen || prefersReduced) {
+      try {
+        sessionStorage.setItem("introSeen", "1");
+      } catch {
+        /* yoksay */
+      }
+      return;
+    }
+
     setShow(true);
     const t = setTimeout(() => {
       setShow(false);
@@ -24,7 +38,7 @@ export function IntroOverlay() {
       } catch {
         /* yoksay */
       }
-    }, 2550);
+    }, 1200);
     return () => clearTimeout(t);
   }, []);
 

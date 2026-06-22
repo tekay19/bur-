@@ -13,10 +13,23 @@ import { hasDatabase, prisma } from "./db/prisma";
 // DATABASE_URL yoksa bellek yedeği kullanılır (geliştirme).
 // ============================================================
 
-const SECRET =
-  process.env.SESSION_SECRET ??
-  process.env.AUTH_SECRET ??
-  "dev-insecure-secret-change-in-production";
+const RAW_SECRET = process.env.SESSION_SECRET ?? process.env.AUTH_SECRET;
+const IS_PROD = process.env.NODE_ENV === "production";
+
+// Üretimde oturum sırrı ZORUNLU. Build'i kırmamak için import anında değil,
+// ilk oturum üretimi/doğrulamasında sert şekilde devreye girer (fail-fast):
+// - signSession: sır yoksa istisna fırlatır (login/register başarısız olur).
+// - verifySession: sır yoksa tüm oturumları reddeder (forge'a karşı güvenli).
+if (!RAW_SECRET && IS_PROD) {
+  console.error(
+    "KRİTİK GÜVENLİK: SESSION_SECRET (veya AUTH_SECRET) üretimde tanımlı değil. " +
+      "Oturum imzalama güvensiz; tüm oturumlar reddedilecek. Ortam değişkenini ayarla.",
+  );
+}
+
+const SECRET = RAW_SECRET ?? "dev-insecure-secret-change-in-production";
+// Üretimde gerçek bir sır yoksa oturumlar güvenilmez sayılır.
+const SECRET_OK = Boolean(RAW_SECRET) || !IS_PROD;
 
 export const SID_COOKIE = "sid";
 export const SID_COOKIE_OPTS = {
@@ -44,6 +57,8 @@ export function hashPassword(pw: string): string {
 }
 
 export function verifyPassword(pw: string, stored: string): boolean {
+  // Aşırı uzun parolayla scrypt-DoS'a karşı savunma (gerçek parolalar <=200).
+  if (pw.length > 1024) return false;
   const [salt, dk] = stored.split(":");
   if (!salt || !dk) return false;
   const calc = scryptSync(pw, salt, 64);
@@ -51,12 +66,21 @@ export function verifyPassword(pw: string, stored: string): boolean {
   return a.length === calc.length && timingSafeEqual(a, calc);
 }
 
+// Kullanıcı bulunamadığında bile scrypt çalıştırıp SABİT-ZAMANLI davranmak
+// için kukla hash. Login'de "kullanıcı var mı?" timing sızıntısını kapatır.
+export const DUMMY_PASSWORD_HASH = hashPassword(randomBytes(16).toString("hex"));
+
 // --- Oturum (JWT HS256) ---
 function b64url(s: string): string {
   return Buffer.from(s).toString("base64url");
 }
 
 export function signSession(uid: string): string {
+  if (!SECRET_OK) {
+    throw new Error(
+      "SESSION_SECRET tanımlı değil — güvenli oturum üretilemiyor.",
+    );
+  }
   const header = b64url(JSON.stringify({ alg: "HS256", typ: "JWT" }));
   const exp = Date.now() + SID_COOKIE_OPTS.maxAge * 1000;
   const body = b64url(JSON.stringify({ uid, exp }));
@@ -66,7 +90,8 @@ export function signSession(uid: string): string {
 }
 
 export function verifySession(token: string | undefined): string | null {
-  if (!token) return null;
+  // Üretimde gerçek sır yoksa hiçbir oturuma güvenme (forge edilmiş olabilir).
+  if (!token || !SECRET_OK) return null;
   try {
     const [h, b, s] = token.split(".");
     if (!h || !b || !s) return null;
@@ -175,16 +200,35 @@ export async function spendUserCredit(id: string): Promise<boolean> {
   return false;
 }
 
+// Analiz başarısız olursa harcanan krediyi geri ver (totalSpent de geri alınır).
+export async function refundUserCredit(id: string): Promise<void> {
+  if (hasDatabase && prisma) {
+    await prisma.user.updateMany({
+      where: { id },
+      data: { credits: { increment: 1 }, totalSpent: { decrement: 1 } },
+    });
+    return;
+  }
+  for (const u of memUsers.values())
+    if (u.id === id) {
+      u.credits += 1;
+      return;
+    }
+}
+
 export async function addUserCredits(
   id: string,
   n: number,
 ): Promise<number> {
   if (hasDatabase && prisma) {
-    const u = await prisma.user.update({
+    // updateMany: kullanıcı yoksa fırlatmaz (spend/refund ile tutarlı davranır).
+    const res = await prisma.user.updateMany({
       where: { id },
       data: { credits: { increment: n }, totalPurchased: { increment: n } },
     });
-    return u.credits;
+    if (res.count === 0) return 0;
+    const u = await prisma.user.findUnique({ where: { id } });
+    return u?.credits ?? 0;
   }
   for (const u of memUsers.values())
     if (u.id === id) {

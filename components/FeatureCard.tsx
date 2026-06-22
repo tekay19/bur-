@@ -11,8 +11,10 @@ export interface Feature {
 // Otomatik kayan şerit için büyük, görselli özellik kartı
 export function FeatureCard({ f }: { f: Feature }) {
   const Icon = f.icon;
+  // SVG gradient id'si boşluk/Türkçe karakter içeremez (url(#...) kırılır)
+  const gradId = `pl-${f.title.replace(/[^a-zA-Z0-9]/g, "")}`;
   return (
-    <article className="relative h-[380px] w-[290px] shrink-0 overflow-hidden rounded-[1.75rem] border border-white/10 shadow-2xl shadow-black/40 sm:w-[340px]">
+    <article className="relative h-[380px] w-full max-w-[340px] overflow-hidden rounded-[1.75rem] border border-white/10 shadow-2xl shadow-black/40">
       {/* Renkli kozmik zemin (resim yerine) */}
       <div className={`absolute inset-0 bg-gradient-to-br ${f.gradient}`} />
       <div className="absolute inset-0 bg-[hsl(252_50%_6%)]/30" />
@@ -25,7 +27,7 @@ export function FeatureCard({ f }: { f: Feature }) {
         aria-hidden="true"
       >
         <defs>
-          <radialGradient id={`pl-${f.title}`} cx="38%" cy="34%" r="70%">
+          <radialGradient id={gradId} cx="38%" cy="34%" r="70%">
             <stop offset="0%" stopColor="white" stopOpacity="0.9" />
             <stop offset="45%" stopColor={f.planet} stopOpacity="0.95" />
             <stop offset="100%" stopColor={f.planet} stopOpacity="0.2" />
@@ -49,7 +51,7 @@ export function FeatureCard({ f }: { f: Feature }) {
         ))}
         {/* yörünge + gezegen (sağ üst) */}
         <circle cx="250" cy="95" r="62" fill="none" stroke="white" strokeOpacity="0.12" strokeWidth="1" />
-        <circle cx="250" cy="95" r="44" fill={`url(#pl-${f.title})`} />
+        <circle cx="250" cy="95" r="44" fill={`url(#${gradId})`} />
         <ellipse cx="250" cy="95" rx="70" ry="18" fill="none" stroke="white" strokeOpacity="0.18" strokeWidth="2" transform="rotate(-20 250 95)" />
       </svg>
 

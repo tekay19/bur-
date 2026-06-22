@@ -54,6 +54,17 @@ export function zonedTimeToUtc(
   return new Date(utc);
 }
 
+// IANA zaman dilimi geçerli mi? (ör. "UTC+3"/"GMT+3"/yazım hatası geçersizdir)
+export function isValidTimeZone(tz: string | null | undefined): boolean {
+  if (!tz) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // "yyyy-MM-dd" + "HH:mm" -> UTC Date
 export function buildUtcDate(
   dateStr: string,
@@ -61,7 +72,8 @@ export function buildUtcDate(
   timeZone: string,
 ): { utc: Date; usedTime: boolean } {
   const [y, mo, d] = dateStr.split("-").map(Number);
-  if (timeStr && /^\d{1,2}:\d{2}$/.test(timeStr)) {
+  // Saat 00-23 / dakika 00-59 sınırlı; taşan değer saatsiz kabul edilir.
+  if (timeStr && /^([01]?\d|2[0-3]):[0-5]\d$/.test(timeStr)) {
     const [h, mi] = timeStr.split(":").map(Number);
     return { utc: zonedTimeToUtc(y, mo, d, h, mi, timeZone), usedTime: true };
   }

@@ -32,14 +32,14 @@ function TransitCard({ hit }: { hit: TransitHit }) {
       </p>
 
       <div className="mb-2">
-        <div className="mb-1 flex items-center justify-between text-[11px] text-muted-foreground">
+        <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
           <span>Etki gücü</span>
           <span>{hit.score}/100</span>
         </div>
         <Progress value={hit.score} />
       </div>
 
-      <div className="flex items-center justify-between text-[11px] text-muted-foreground/70">
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span>
           {PLANET_GLYPH[hit.transitPlanet]} {hit.transitPlanet}
           {hit.aspect !== "Geçiş" ? ` · ${hit.target}` : ` · ${hit.target}`}

@@ -84,7 +84,7 @@ export function Paywall({
             }`}
           >
             {p.popular && (
-              <span className="absolute -top-2.5 rounded-full bg-gold px-2 py-0.5 text-[10px] font-bold text-gold-foreground">
+              <span className="absolute -top-2.5 rounded-full bg-gold px-2 py-0.5 text-xs font-bold text-gold-foreground">
                 EN POPÜLER
               </span>
             )}
@@ -104,7 +104,7 @@ export function Paywall({
         ))}
       </div>
 
-      <p className="mt-3 text-center text-[11px] text-muted-foreground">
+      <p className="mt-3 text-center text-xs text-muted-foreground">
         Şu an <strong>test modu</strong> — gerçek ödeme alınmaz. Iyzico
         entegrasyonu yakında.
       </p>
@@ -114,7 +114,7 @@ export function Paywall({
         <div className="mt-5 rounded-xl border border-border bg-secondary/30 p-3 text-center text-xs">
           <span className="text-muted-foreground">Kurtarma kodun: </span>
           <strong className="text-gold">{recoveryCode}</strong>
-          <p className="mt-1 text-muted-foreground/70">
+          <p className="mt-1 text-xs text-muted-foreground">
             Bu kodu sakla; çerez silinirse kredilerini geri yüklersin.
           </p>
         </div>

@@ -11,11 +11,16 @@ import { hasDatabase, prisma } from "./prisma";
 
 // Bellek-içi depo globalThis üzerinde tutulur; böylece Next dev modülü
 // yeniden değerlendirse de (HMR) kayıtlar korunur.
+// Kayıtla birlikte sahibini (ownerKey) de tutarız (IDOR koruması).
+interface MemEntry {
+  ownerKey: string | null;
+  data: AnalysisResult;
+}
 const globalForMem = globalThis as unknown as {
-  __astroMemory?: Map<string, AnalysisResult>;
+  __astroMemory?: Map<string, MemEntry>;
 };
-const memory: Map<string, AnalysisResult> =
-  globalForMem.__astroMemory ?? new Map<string, AnalysisResult>();
+const memory: Map<string, MemEntry> =
+  globalForMem.__astroMemory ?? new Map<string, MemEntry>();
 globalForMem.__astroMemory = memory;
 
 function genId(): string {
@@ -28,6 +33,7 @@ function genId(): string {
 
 export async function saveAnalysis(
   payload: Omit<AnalysisResult, "id" | "createdAt">,
+  ownerKey: string | null = null,
 ): Promise<AnalysisResult> {
   const createdAt = new Date().toISOString();
 
@@ -44,6 +50,7 @@ export async function saveAnalysis(
         timezone: payload.input.timezone,
         birthTimeAccuracy: payload.input.birthTimeAccuracy,
         focusArea: payload.input.focusArea,
+        ownerKey,
       },
     });
 
@@ -72,11 +79,17 @@ export async function saveAnalysis(
 
   const id = genId();
   const result: AnalysisResult = { ...payload, id, createdAt };
-  memory.set(id, result);
+  memory.set(id, { ownerKey, data: result });
   return result;
 }
 
-export async function getAnalysis(id: string): Promise<AnalysisResult | null> {
+// requesterKeys: isteği yapanın kimlikleri (üye uid ve/veya misafir aid).
+// Kayıtta ownerKey varsa ve eşleşmiyorsa null döner (IDOR koruması) — varlığı
+// da ele vermemek için çağıran taraf bunu 404 olarak gösterir.
+export async function getAnalysis(
+  id: string,
+  requesterKeys: string[] = [],
+): Promise<AnalysisResult | null> {
   if (hasDatabase && prisma) {
     const userChart = await prisma.userChart.findUnique({
       where: { id },
@@ -85,6 +98,8 @@ export async function getAnalysis(id: string): Promise<AnalysisResult | null> {
       },
     });
     if (!userChart || userChart.results.length === 0) return null;
+    if (userChart.ownerKey && !requesterKeys.includes(userChart.ownerKey))
+      return null;
     const r = userChart.results[0];
     return {
       id: userChart.id,
@@ -117,5 +132,8 @@ export async function getAnalysis(id: string): Promise<AnalysisResult | null> {
     };
   }
 
-  return memory.get(id) ?? null;
+  const entry = memory.get(id);
+  if (!entry) return null;
+  if (entry.ownerKey && !requesterKeys.includes(entry.ownerKey)) return null;
+  return entry.data;
 }

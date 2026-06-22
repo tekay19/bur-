@@ -88,7 +88,17 @@ export function BirthForm() {
   );
 
   const up = (k: keyof typeof f, v: string) => {
-    setF((s) => ({ ...s, [k]: v }));
+    setF((s) => {
+      const next = { ...s, [k]: v };
+      // Ay/yıl değişince geçersiz kalan günü sıfırla (örn. 31 seçiliyken Şubat).
+      if (k === "month" || k === "year") {
+        const m = Number(next.month);
+        const y = Number(next.year) || 2000;
+        const dim = m ? new Date(y, m, 0).getDate() : 31;
+        if (Number(next.day) > dim) next.day = "";
+      }
+      return next;
+    });
     setErrors((e) => ({ ...e, [k]: "", birthDate: "", birthTime: "" }));
   };
 
@@ -422,7 +432,7 @@ function Step({
   return (
     <div className="rounded-3xl border border-border/60 bg-card/85 p-5 backdrop-blur-md sm:p-6">
       <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/15 text-sm font-bold text-gold">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary/60 text-sm font-bold text-foreground">
           {n}
         </span>
         <h3 className="font-display text-base font-semibold">{title}</h3>

@@ -144,10 +144,19 @@
   0%, 72% { opacity: 1; }
   100% { opacity: 0; }
 }
-.intro-warp { animation: warpZoom 2.6s ease-in forwards; }
-.intro-portal { animation: portalIn 2.6s ease-out forwards; }
-.intro-brand { animation: brandIn 2.6s ease-out forwards; }
-.intro-root { animation: introOut 2.6s ease-in forwards; }
+.intro-warp { animation: warpZoom 1.2s ease-in forwards; }
+.intro-portal { animation: portalIn 1.2s ease-out forwards; }
+.intro-brand { animation: brandIn 1.2s ease-out forwards; }
+.intro-root { animation: introOut 1.2s ease-in forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-warp,
+  .intro-portal,
+  .intro-brand,
+  .intro-root {
+    animation: none;
+  }
+}
 
 /* ---- Otomatik kayan şerit (marquee) ---- */
 @keyframes marquee {

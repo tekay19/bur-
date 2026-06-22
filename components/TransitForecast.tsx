@@ -15,11 +15,20 @@ function fmt(iso: string): string {
   });
 }
 
-export function TransitForecast({ forecast }: { forecast: TransitEvent[] }) {
+export function TransitForecast({
+  forecast,
+  asOf,
+}: {
+  forecast: TransitEvent[];
+  asOf?: string; // analiz tarihi — dönem grupları bununla hizalanır
+}) {
   if (!forecast || forecast.length === 0) return null;
-  const periods = groupForecastByPeriod(forecast).filter(
-    (p) => p.events.length > 0,
-  );
+  // Dönemleri analizin yapıldığı tarihe göre grupla (görüntüleme anına göre
+  // değil) — yoksa geçmiş transitler "Bu ay" altında görünür.
+  const periods = groupForecastByPeriod(
+    forecast,
+    asOf ? new Date(asOf) : undefined,
+  ).filter((p) => p.events.length > 0);
 
   return (
     <Card>
@@ -62,7 +71,7 @@ export function TransitForecast({ forecast }: { forecast: TransitEvent[] }) {
                   <p className="text-xs leading-relaxed text-muted-foreground">
                     {e.note}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground/60">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {PLANET_GLYPH[e.transitPlanet]} {e.transitPlanet} ·{" "}
                     {e.natalTarget}
                     {e.retrograde ? " · geri hareket" : ""}

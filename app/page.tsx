@@ -19,48 +19,58 @@ import { FeatureCard, type Feature } from "@/components/FeatureCard";
 import { FeatureCarousel } from "@/components/FeatureCarousel";
 import { AuthWidget } from "@/components/AuthWidget";
 
+// Sade renk paleti: yalnızca mor / pembe / nötr (dönüşümlü). Her kart farklı renk değil.
+const PALETTE = {
+  purple: {
+    gradient: "from-violet-700/55 via-purple-800/40 to-indigo-950/60",
+    planet: "hsl(270 70% 60%)",
+  },
+  pink: {
+    gradient: "from-fuchsia-700/50 via-pink-800/40 to-purple-950/60",
+    planet: "hsl(330 75% 64%)",
+  },
+  muted: {
+    gradient: "from-indigo-700/45 via-slate-800/45 to-slate-950/60",
+    planet: "hsl(240 30% 62%)",
+  },
+} as const;
+
 const features: Feature[] = [
   {
     icon: Star,
     title: "Doğum Haritan",
     desc: "Gezegenlerin, evlerin ve açıların görsel çark ve sade tabloyla.",
-    gradient: "from-violet-700/55 via-purple-800/40 to-indigo-950/60",
-    planet: "hsl(270 70% 60%)",
+    ...PALETTE.purple,
   },
   {
     icon: Orbit,
     title: "Güncel Etkiler",
     desc: "Bugünün gökyüzü senin haritana ne söylüyor — günlük dille.",
-    gradient: "from-fuchsia-700/50 via-pink-800/40 to-purple-950/60",
-    planet: "hsl(330 75% 64%)",
+    ...PALETTE.pink,
   },
   {
     icon: CalendarRange,
     title: "Önemli Tarihler",
     desc: "Önümüzdeki 12 ay için tarihli bir takvim: ne zaman, ne olur.",
-    gradient: "from-blue-700/50 via-indigo-800/40 to-slate-950/60",
-    planet: "hsl(220 75% 64%)",
+    ...PALETTE.muted,
   },
   {
     icon: Compass,
     title: "Hayat Alanların",
     desc: "Kariyer, aşk, para, sınav... her biri için net bir gösterge.",
-    gradient: "from-amber-600/45 via-orange-800/40 to-rose-950/60",
-    planet: "hsl(38 85% 60%)",
+    ...PALETTE.purple,
   },
   {
     icon: Sparkles,
     title: "AI Yorum",
     desc: "Haritana özel, anlaşılır ve yapıcı Türkçe yorum.",
-    gradient: "from-cyan-700/45 via-teal-800/40 to-indigo-950/60",
-    planet: "hsl(180 65% 58%)",
+    ...PALETTE.pink,
   },
   {
     icon: ShieldCheck,
     title: "Gizli & Ücretsiz",
     desc: "Kayıt yok, ücret yok. Bilgilerin senin kontrolünde.",
-    gradient: "from-emerald-700/45 via-green-800/40 to-slate-950/60",
-    planet: "hsl(150 60% 56%)",
+    ...PALETTE.muted,
   },
 ];
 
@@ -127,29 +137,20 @@ export default function LandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       {/* Header */}
-      <header className="container grid grid-cols-3 items-center py-6">
-        <div className="flex justify-start">
-          <BrandLogo />
-        </div>
-        <nav className="flex justify-center">
+      <header className="container flex items-center justify-between py-6">
+        <BrandLogo />
+        <nav className="flex items-center gap-2 sm:gap-4">
           <Link href="/blog">
             <Button
               variant="ghost"
               size="sm"
-              className="px-6 text-base font-semibold text-gold hover:text-gold"
+              className="text-base font-semibold text-muted-foreground hover:text-foreground"
             >
               Blog
             </Button>
           </Link>
-        </nav>
-        <div className="flex items-center justify-end gap-2">
           <AuthWidget />
-          <Link href="/harita-olustur" className="hidden sm:block">
-            <Button variant="gold" size="sm">
-              Haritamı Oluştur
-            </Button>
-          </Link>
-        </div>
+        </nav>
       </header>
 
       {/* HERO */}
@@ -188,7 +189,7 @@ export default function LandingPage() {
       {/* Nasıl çalışır */}
       <section className="container py-14 sm:py-20">
         <div className="mb-12 text-center">
-          <span className="text-xs font-semibold uppercase tracking-widest text-gold">
+          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Nasıl çalışır
           </span>
           <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
@@ -207,7 +208,7 @@ export default function LandingPage() {
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-white shadow-xl shadow-primary/30 ring-4 ring-background">
                 <s.icon className="h-7 w-7" />
               </div>
-              <div className="mt-4 text-xs font-bold tracking-wide text-gold">
+              <div className="mt-4 text-xs font-bold tracking-wide text-muted-foreground">
                 ADIM {i + 1}
               </div>
               <h3 className="mt-1 font-display text-lg font-semibold">{s.t}</h3>
@@ -222,7 +223,7 @@ export default function LandingPage() {
       {/* Özellikler — otomatik kayan şerit */}
       <section className="py-12 sm:py-16">
         <div className="container mb-12 text-center">
-          <span className="text-xs font-semibold uppercase tracking-widest text-gold">
+          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Neler sunuyor
           </span>
           <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
@@ -236,9 +237,7 @@ export default function LandingPage() {
 
         <FeatureCarousel>
           {features.map((f) => (
-            <div key={f.title} className="shrink-0 snap-center">
-              <FeatureCard f={f} />
-            </div>
+            <FeatureCard key={f.title} f={f} />
           ))}
         </FeatureCarousel>
       </section>
@@ -246,7 +245,7 @@ export default function LandingPage() {
       {/* SSS (SEO + GEO) */}
       <section className="container py-12 sm:py-16">
         <div className="mb-10 text-center">
-          <span className="text-xs font-semibold uppercase tracking-widest text-gold">
+          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Sıkça sorulanlar
           </span>
           <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
@@ -261,7 +260,7 @@ export default function LandingPage() {
             >
               <summary className="flex cursor-pointer items-center justify-between gap-3 font-medium">
                 {f.q}
-                <span className="text-gold transition-transform group-open:rotate-45">
+                <span className="text-muted-foreground transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>

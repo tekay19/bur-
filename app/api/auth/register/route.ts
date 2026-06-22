@@ -9,18 +9,25 @@ import {
   hashPassword,
   signSession,
 } from "@/lib/auth";
-import { AID_COOKIE, getOrCreateAccount } from "@/lib/credits";
+import { AID_COOKIE, claimAccountCredits } from "@/lib/credits";
+import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const schema = z.object({
   email: z.string().email("Geçerli bir e-posta gir"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
+  password: z.string().min(6, "Şifre en az 6 karakter olmalı").max(200),
   name: z.string().max(60).optional().or(z.literal("")),
 });
 
 export async function POST(req: NextRequest) {
+  // Sahte hesap spam'ine karşı hız sınırı (IP başına). Her hesap ücretsiz
+  // kredi aldığı için bu, ücretsiz katman suistimalini de yavaşlatır.
+  const ip = getClientIp(req);
+  const rl = rateLimit(`register:ip:${ip}`, 6, 60 * 60_000); // 6 / saat
+  if (!rl.ok) return tooManyRequests(rl.retryAfter);
+
   let body: unknown;
   try {
     body = await req.json();
@@ -46,13 +53,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Misafir kredilerini hesaba taşı + hoş geldin hediyesi
+    // Misafir kredilerini hesaba TAŞI (kopyalama değil) + hoş geldin hediyesi.
+    // claimAccountCredits misafir hesabını atomik olarak 0'a çeker; böylece
+    // aynı krediler hem üyede hem misafirde sayılmaz (çift harcama önlenir).
     let guestCredits = 0;
     const aid = req.cookies.get(AID_COOKIE)?.value;
     if (aid) {
       try {
-        const acc = await getOrCreateAccount(aid);
-        guestCredits = acc.credits;
+        guestCredits = await claimAccountCredits(aid);
       } catch {
         /* yoksay */
       }
@@ -67,6 +75,9 @@ export async function POST(req: NextRequest) {
 
     const res = NextResponse.json({ user });
     res.cookies.set(SID_COOKIE, signSession(user.id), SID_COOKIE_OPTS);
+    // Krediler taşındı; eski misafir çerezini sıfırla ki yeniden kullanılmasın
+    // (logout sonrası eski hesaptan çift harcama vektörünü kapatır).
+    if (aid) res.cookies.set(AID_COOKIE, "", { path: "/", maxAge: 0 });
     return res;
   } catch (e) {
     console.error("Kayıt hatası:", e);

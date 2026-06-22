@@ -79,7 +79,7 @@ export default function BlogIndexPage() {
             className="rounded-full border border-border bg-secondary/30 px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
           >
             {c.emoji} {c.name}{" "}
-            <span className="text-xs text-muted-foreground/60">({c.count})</span>
+            <span className="text-xs text-muted-foreground">({c.count})</span>
           </Link>
         ))}
       </nav>

@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomBytes, randomUUID } from "crypto";
 import { hasDatabase, prisma } from "./db/prisma";
 import { CREDIT_PACKS } from "./creditPacks";
 
@@ -37,9 +37,10 @@ export function newAnonId(): string {
 }
 
 function newRecoveryCode(): string {
-  // Okunaklı, kısa kod (örn. ASTRO-3F9K2A)
-  const s = randomUUID().replace(/-/g, "").toUpperCase();
-  return `ASTRO-${s.slice(0, 6)}`;
+  // ~80 bit entropi (20 hex). Kurtarma kodu, krediyi taşıyan bir "bearer"
+  // sırrıdır: kısa/okunaklı tutmak enumerasyonla kredi çalınmasına yol açar.
+  // Kod makinede saklanıp kopyalandığı için uzunluk sorun değil.
+  return `ASTRO-${randomBytes(10).toString("hex").toUpperCase()}`;
 }
 
 export async function getOrCreateAccount(aid: string): Promise<Account> {
@@ -70,6 +71,29 @@ export async function getOrCreateAccount(aid: string): Promise<Account> {
   return acc;
 }
 
+// Misafir hesabının kredisini ATOMİK olarak al ve hesabı 0'a çek.
+// Üyeliğe geçişte krediyi "kopyala" değil "taşı": aynı kredi hem üyede hem
+// misafirde sayılmaz (logout sonrası çift harcama vektörünü kapatır).
+// Transaction sayesinde eşzamanlı çift-kopyalama penceresi de kapanır.
+export async function claimAccountCredits(aid: string): Promise<number> {
+  if (hasDatabase && prisma) {
+    return prisma.$transaction(async (tx) => {
+      const acc = await tx.creditAccount.findUnique({ where: { id: aid } });
+      if (!acc || acc.credits <= 0) return 0;
+      await tx.creditAccount.update({
+        where: { id: aid },
+        data: { credits: 0 },
+      });
+      return acc.credits;
+    });
+  }
+  const acc = mem.get(aid);
+  if (!acc || acc.credits <= 0) return 0;
+  const c = acc.credits;
+  acc.credits = 0;
+  return c;
+}
+
 // 1 kredi harca (yeterli değilse false)
 export async function spendOne(aid: string): Promise<boolean> {
   if (hasDatabase && prisma) {
@@ -84,6 +108,19 @@ export async function spendOne(aid: string): Promise<boolean> {
   if (!acc || acc.credits <= 0) return false;
   acc.credits -= 1;
   return true;
+}
+
+// Analiz başarısız olursa harcanan krediyi geri ver (totalSpent de geri alınır).
+export async function refundOne(aid: string): Promise<void> {
+  if (hasDatabase && prisma) {
+    await prisma.creditAccount.updateMany({
+      where: { id: aid },
+      data: { credits: { increment: 1 }, totalSpent: { decrement: 1 } },
+    });
+    return;
+  }
+  const acc = mem.get(aid);
+  if (acc) acc.credits += 1;
 }
 
 export async function addCredits(aid: string, n: number): Promise<number> {

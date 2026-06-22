@@ -146,7 +146,8 @@ const ALL_CITIES = [...TURKISH_PROVINCES, ...WORLD_CITIES];
 function normalize(s: string): string {
   return s
     .toLocaleLowerCase("tr-TR")
-    .replace(/i̇/g, "i")
+    .replace(/i̇/g, "i") // birleşik nokta (İ -> i + combining dot)
+    .replace(/ı/g, "i") // noktasız ı -> i (ASCII "Istanbul" girdisini eşle)
     .trim();
 }
 
@@ -250,11 +251,14 @@ async function findNominatimTR(query: string): Promise<GeoResult | null> {
       first.name ||
       name;
     const prov = a.province || a.state || a.city || "";
+    const la = Number(first.lat);
+    const lo = Number(first.lon);
+    if (!Number.isFinite(la) || !Number.isFinite(lo)) return null; // bozuk koordinat
     return {
       name: prov && prov !== place ? `${place}, ${prov}` : place,
       country: "Türkiye",
-      latitude: Number(first.lat),
-      longitude: Number(first.lon),
+      latitude: la,
+      longitude: lo,
       timezone: "Europe/Istanbul", // Türkiye tek zaman dilimi
       source: "external",
     };
@@ -332,11 +336,14 @@ async function findOpenCage(query: string): Promise<GeoResult | null> {
     const data = await res.json();
     const first = data?.results?.[0];
     if (!first) return null;
+    const la = Number(first.geometry?.lat);
+    const lo = Number(first.geometry?.lng);
+    if (!Number.isFinite(la) || !Number.isFinite(lo)) return null; // bozuk/eksik koordinat
     return {
       name: first.formatted ?? query,
       country: first.components?.country ?? "",
-      latitude: first.geometry?.lat,
-      longitude: first.geometry?.lng,
+      latitude: la,
+      longitude: lo,
       timezone: first.annotations?.timezone?.name ?? "Europe/Istanbul",
       source: "external",
     };
