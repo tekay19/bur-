@@ -71,6 +71,19 @@ model User {
   updatedAt      DateTime @updatedAt
 }
 
+// Şifre sıfırlama token'ı — e-posta linkindeki ham token'ın sha256 hash'i
+// saklanır (DB sızsa bile token kullanılamaz). Tek kullanımlık + süreli.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique // sha256(ham token)
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
 // Üyeliksiz kredi hesabı — anonim çerez (aid) ile eşleşir
 model CreditAccount {
   id             String   @id // anonim id (aid çerezi)

@@ -184,6 +184,27 @@ export async function createUser(
   return toPublic(u);
 }
 
+// Şifreyi güncelle (şifre sıfırlama akışı). updateMany: kullanıcı yoksa
+// fırlatmaz (spend/refund/addCredits ile tutarlı davranış).
+export async function setUserPassword(
+  id: string,
+  passwordHash: string,
+): Promise<boolean> {
+  if (hasDatabase && prisma) {
+    const res = await prisma.user.updateMany({
+      where: { id },
+      data: { passwordHash },
+    });
+    return res.count > 0;
+  }
+  for (const u of memUsers.values())
+    if (u.id === id) {
+      u.passwordHash = passwordHash;
+      return true;
+    }
+  return false;
+}
+
 export async function spendUserCredit(id: string): Promise<boolean> {
   if (hasDatabase && prisma) {
     const res = await prisma.user.updateMany({

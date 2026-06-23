@@ -10,6 +10,7 @@ import {
   signSession,
 } from "@/lib/auth";
 import { AID_COOKIE, claimAccountCredits } from "@/lib/credits";
+import { sendWelcomeEmail } from "@/lib/email";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -72,6 +73,13 @@ export async function POST(req: NextRequest) {
       name || null,
       guestCredits + WELCOME_BONUS,
     );
+
+    // Hoş geldin maili (best-effort; başarısız olsa da kayıt başarılı sayılır).
+    try {
+      await sendWelcomeEmail(user.email, user.name);
+    } catch (mailErr) {
+      console.error("Hoş geldin maili gönderilemedi:", mailErr);
+    }
 
     const res = NextResponse.json({ user });
     res.cookies.set(SID_COOKIE, signSession(user.id), SID_COOKIE_OPTS);
