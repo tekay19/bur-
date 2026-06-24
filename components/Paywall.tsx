@@ -28,6 +28,11 @@ export function Paywall({
         body: JSON.stringify({ action: "purchase", pack }),
       });
       const data = await res.json();
+      if (res.ok && data.checkout_url) {
+        // Creem hosted ödeme sayfasına yönlendir.
+        window.location.href = data.checkout_url;
+        return; // yönlendirme sırasında buton "yükleniyor" kalsın
+      }
       if (res.ok) onCredits(data.credits);
       else setMsg(data.error ?? "Bir hata oluştu.");
     } catch {
@@ -90,7 +95,7 @@ export function Paywall({
             )}
             <span className="font-display text-2xl font-bold">{p.label}</span>
             <span className="mt-1 text-2xl font-bold text-gold">
-              ₺{p.price}
+              ${p.price}
             </span>
             <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-foreground/80">
               {busy === p.id ? (
@@ -105,8 +110,8 @@ export function Paywall({
       </div>
 
       <p className="mt-3 text-center text-xs text-muted-foreground">
-        Şu an <strong>test modu</strong> — gerçek ödeme alınmaz. Iyzico
-        entegrasyonu yakında.
+        Güvenli ödeme <strong>Creem</strong> ile. Fiyatlar USD&apos;dir; bankan
+        otomatik TL&apos;ye çevirir.
       </p>
 
       {/* Kurtarma kodu */}

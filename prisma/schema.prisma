@@ -84,6 +84,16 @@ model PasswordResetToken {
   @@index([userId])
 }
 
+// İşlenmiş ödeme — order_id başına bir kez kredi yüklenir (idempotensi).
+// Webhook ve dönüş URL'i aynı ödemeyi iki kez bildirebilir; bu tablo çift
+// kredi yüklemeyi önler (id = Creem order_id, yoksa checkout_id).
+model ProcessedPayment {
+  id        String   @id // creem order_id / checkout_id
+  credits   Int
+  recipient String // "user:<uid>" | "guest:<aid>"
+  createdAt DateTime @default(now())
+}
+
 // Üyeliksiz kredi hesabı — anonim çerez (aid) ile eşleşir
 model CreditAccount {
   id             String   @id // anonim id (aid çerezi)

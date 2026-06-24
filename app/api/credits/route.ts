@@ -15,6 +15,7 @@ import {
   verifySession,
 } from "@/lib/auth";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
+import { createCheckout, isCreemConfigured } from "@/lib/creem";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -89,38 +90,59 @@ export async function POST(req: NextRequest) {
     return res;
   }
 
-  // --- Satın alma (ŞİMDİLİK TEST: gerçek ödeme yok) ---
-  // TODO: Iyzico checkout + webhook ile değiştir; kredi yalnızca ödeme
-  // onayından sonra eklenmeli. Şu an doğrudan ekliyor (yalnızca geliştirme).
+  // --- Satın alma → Creem hosted checkout'a yönlendir ---
   if (body.action === "purchase") {
-    // ÜRETİMDE test satın alma KAPALI (bedava kredi suistimalini önler).
-    // Gerçek ödeme Iyzico ile gelene kadar canlıda kredi eklenmez.
-    // Lokal/test ortamında veya CREDITS_TEST_MODE=1 ise açık.
+    const pack = CREDIT_PACKS.find((p) => p.id === body.pack);
+    if (!pack)
+      return NextResponse.json({ error: "Paket bulunamadı." }, { status: 400 });
+
+    const uid = verifySession(req.cookies.get(SID_COOKIE)?.value);
+
+    // Creem yapılandırılmışsa: ödeme sayfası oluştur, URL döndür.
+    if (isCreemConfigured()) {
+      let recipient: { type: "user" | "guest"; id: string };
+      let aid = req.cookies.get(AID_COOKIE)?.value;
+      let setCookie = false;
+      if (uid) {
+        recipient = { type: "user", id: uid };
+      } else {
+        if (!aid) {
+          aid = newAnonId();
+          setCookie = true;
+        }
+        await getOrCreateAccount(aid);
+        recipient = { type: "guest", id: aid };
+      }
+      const checkout = await createCheckout(pack.id, recipient);
+      if (!checkout) {
+        return NextResponse.json(
+          { error: "Ödeme başlatılamadı. Lütfen tekrar deneyin." },
+          { status: 502 },
+        );
+      }
+      const res = NextResponse.json({ checkout_url: checkout.checkoutUrl });
+      // Misafir çerezini şimdi sabitle ki dönüşte aynı hesap bulunur.
+      if (setCookie && aid) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
+      return res;
+    }
+
+    // Creem yok: lokal/test ortamında doğrudan kredi ekle; üretimde kapalı.
     const testAllowed =
       process.env.NODE_ENV !== "production" ||
       process.env.CREDITS_TEST_MODE === "1";
     if (!testAllowed) {
       return NextResponse.json(
         {
-          error:
-            "Ödeme sistemi yakında aktif olacak (Iyzico). Şu an kredi satın alınamıyor.",
+          error: "Ödeme sistemi şu an hazır değil. Lütfen daha sonra dene.",
           code: "PAYMENT_NOT_READY",
         },
         { status: 503 },
       );
     }
-    const pack = CREDIT_PACKS.find((p) => p.id === body.pack);
-    if (!pack)
-      return NextResponse.json({ error: "Paket bulunamadı." }, { status: 400 });
-
-    // Üye ise hesabına ekle
-    const uid = verifySession(req.cookies.get(SID_COOKIE)?.value);
     if (uid) {
       const credits = await addUserCredits(uid, pack.credits);
       return NextResponse.json({ credits, test: true });
     }
-
-    // Misafir
     let aid = req.cookies.get(AID_COOKIE)?.value;
     let setCookie = false;
     if (!aid) {
