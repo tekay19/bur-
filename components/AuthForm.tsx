@@ -43,8 +43,8 @@ export function AuthForm({ initialMode = "login" }: { initialMode?: Mode }) {
         setBusy(false);
         return;
       }
-      // Başarılı: oturum çerezi set edildi → ana sayfaya dön ve tazele.
-      router.push("/");
+      // Başarılı: oturum çerezi set edildi → doğrudan hesap paneline (az tıklama).
+      router.push("/hesap");
       router.refresh();
     } catch {
       setErr("Sunucuya ulaşılamadı.");
@@ -114,7 +114,7 @@ export function AuthForm({ initialMode = "login" }: { initialMode?: Mode }) {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Şifre (en az 6 karakter)"
+              placeholder="Şifre (en az 8 karakter)"
               autoComplete={
                 mode === "register" ? "new-password" : "current-password"
               }

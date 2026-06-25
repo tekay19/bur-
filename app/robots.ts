@@ -8,8 +8,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Kişisel analiz sayfaları indekslenmesin (gizlilik)
-        disallow: "/analiz/",
+        // Kişisel analiz sayfaları (gizlilik), yönetim paneli ve API uçları
+        // arama motorlarında indekslenmesin.
+        disallow: ["/analiz/", "/yonetim/", "/api/"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

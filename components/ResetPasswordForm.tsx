@@ -41,8 +41,8 @@ export function ResetPasswordForm({ token }: { token?: string }) {
     e.preventDefault();
     setErr(null);
 
-    if (password.length < 6) {
-      setErr("Şifre en az 6 karakter olmalı.");
+    if (password.length < 8) {
+      setErr("Şifre en az 8 karakter olmalı.");
       return;
     }
     if (password !== confirm) {
@@ -85,7 +85,7 @@ export function ResetPasswordForm({ token }: { token?: string }) {
             type={show ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="En az 6 karakter"
+            placeholder="En az 8 karakter"
             autoComplete="new-password"
             required
             className="pr-11"

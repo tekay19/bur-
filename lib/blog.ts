@@ -1444,3 +1444,45 @@ export function getCategoriesWithCounts(): (Category & { count: number })[] {
     count: ARTICLES.filter((a) => a.category === c.slug).length,
   }));
 }
+
+// Türkçe karakterleri normalize ederek URL/anchor-güvenli slug üretir.
+// İçindekiler (TOC) bağlantıları ve bölüm id'leri için kullanılır.
+export function slugifyTr(text: string): string {
+  const map: Record<string, string> = {
+    ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u",
+    Ç: "c", Ğ: "g", İ: "i", Ö: "o", Ş: "s", Ü: "u",
+  };
+  return text
+    .replace(/[çğıöşüÇĞİÖŞÜ]/g, (m) => map[m] ?? m)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+// SEO: tüm makale anahtar kelimelerini birleştir (tekilleştirilmiş).
+// Blog index meta keywords + entity zenginliği için.
+export function getAllKeywords(): string[] {
+  const seen = new Set<string>();
+  for (const a of ARTICLES) {
+    for (const k of a.keywords) {
+      const key = k.toLowerCase().trim();
+      if (!seen.has(key)) seen.add(key);
+    }
+  }
+  return [...seen];
+}
+
+// GEO: makaleler arası SSS'leri topla (her makaleden ilk soru) — üretken
+// arama motorları (AI) için doğrudan alıntılanabilir Soru/Cevap havuzu.
+// İlgili makale slug'ı ile birlikte döner (iç linkleme için).
+export function getAggregatedFaqs(
+  limit = 8,
+): { q: string; a: string; slug: string }[] {
+  const out: { q: string; a: string; slug: string }[] = [];
+  for (const article of getAllArticles()) {
+    const first = article.faq[0];
+    if (first) out.push({ q: first.q, a: first.a, slug: article.slug });
+    if (out.length >= limit) break;
+  }
+  return out;
+}

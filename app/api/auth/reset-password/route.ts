@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 const schema = z.object({
   token: z.string().min(1, "Bağlantı geçersiz."),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı").max(200),
+  password: z.string().min(8, "Şifre en az 8 karakter olmalı").max(200),
 });
 
 export async function POST(req: NextRequest) {

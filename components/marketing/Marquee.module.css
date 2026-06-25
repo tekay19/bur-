@@ -1,0 +1,62 @@
+/* Sürekli kayan şerit — SAF CSS (compositor'da çalışır, main-thread'i meşgul
+   etmez → kasmaz). İçerik iki kez render edilir; -50% kaydırma kesintisiz
+   döngü kurar. Hareket azaltma tercihinde statik + kaydırılabilir. */
+
+.viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  animation: marquee var(--dur, 40s) linear infinite;
+  will-change: transform;
+}
+.reverse {
+  animation-direction: reverse;
+}
+
+/* Üzerine gelince duraklat (isteğe bağlı, hoş bir detay) */
+.viewport:hover .track {
+  animation-play-state: paused;
+}
+
+.group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1rem;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    overflow-x: auto;
+  }
+  .track {
+    animation: none;
+    width: auto;
+  }
+}

@@ -1,0 +1,210 @@
+/* ============================================================
+   3B Gezegen Sistemi (Orrery) — saf CSS, GPU-hızlandırmalı.
+   - Geometri TAMAMEN yüzde tabanlı (çerçeveye göre) → vw/cqmin yok,
+     her ekranda güvenli ve responsive.
+   - Yalnızca transform + opacity animasyonu → compositor'da çalışır (kasmaz).
+   - Sade ve premium: az sayıda iyi yerleştirilmiş öğe, göz yormaz.
+   ============================================================ */
+
+.frame {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1;
+  margin-inline: auto;
+  isolation: isolate;
+  --tilt: 64deg;
+  --gold: hsl(43 92% 62%);
+  --violet: hsl(266 72% 64%);
+  --rose: hsl(338 74% 66%);
+  --blue: hsl(206 80% 64%);
+}
+
+/* Yumuşak arka parıltı — derinlik + premium his */
+.glow {
+  position: absolute;
+  inset: 6%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 48%,
+    hsl(268 70% 48% / 0.28),
+    hsl(268 70% 40% / 0.1) 45%,
+    transparent 70%
+  );
+  filter: blur(8px);
+  animation: breathe 10s ease-in-out infinite;
+}
+
+/* 3B sahne */
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  perspective: 900px;
+  perspective-origin: 50% 44%;
+}
+.stage {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/* Yörünge yolu çemberleri (eğik, ince, statik) */
+.ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--d);
+  height: var(--d);
+  transform: translate(-50%, -50%) rotateX(var(--tilt));
+  border-radius: 50%;
+  border: 1px solid hsl(255 50% 72% / 0.14);
+}
+.ringOuter {
+  border-style: dashed;
+  border-color: hsl(43 60% 70% / 0.16);
+}
+
+/* Güneş çekirdeği */
+.core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 15%;
+  height: 15%;
+  transform: translate(-50%, -50%) translateZ(0.1px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 32%,
+    #fff,
+    hsl(45 96% 66%) 36%,
+    hsl(30 90% 52%) 80%
+  );
+  box-shadow:
+    0 0 16px hsl(43 95% 60% / 0.6),
+    0 0 42px hsl(35 90% 54% / 0.35);
+}
+.corePulse {
+  position: absolute;
+  inset: -28%;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsl(43 95% 62% / 0.4), transparent 66%);
+  animation: pulse 4s ease-out infinite;
+}
+
+/* Yörünge taşıyıcı (dönen, tam çerçeve boyutunda) */
+.orbit {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt)) rotateZ(0);
+  animation: orbit var(--dur) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform;
+}
+
+/* Gezegen küresi — yörüngenin tepesine yerleşir, dönerek döner */
+.planet {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - var(--r));
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(calc(-1 * var(--tilt)));
+  background: radial-gradient(
+    circle at 33% 28%,
+    #ffffffdd,
+    var(--color) 48%,
+    color-mix(in srgb, var(--color) 52%, #000) 100%
+  );
+  box-shadow:
+    0 0 calc(var(--size) * 0.8) color-mix(in srgb, var(--color) 60%, transparent),
+    inset -1px -2px 4px #00000066;
+}
+
+/* Satürn benzeri halka — premium odak aksanı */
+.ringed::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 240%;
+  height: 240%;
+  transform: translate(-50%, -50%) rotateX(76deg);
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--color) 55%, transparent);
+}
+
+/* İnce yıldız parıltıları (önde, 2B, az sayıda) */
+.stars {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 5px #fff;
+  animation: twinkle var(--tdur, 3s) ease-in-out infinite;
+  animation-delay: var(--tdelay, 0s);
+}
+
+/* ---- Keyframes (yalnızca transform/opacity) ---- */
+@keyframes orbit {
+  from {
+    transform: rotateX(var(--tilt)) rotateZ(0);
+  }
+  to {
+    transform: rotateX(var(--tilt)) rotateZ(360deg);
+  }
+}
+@keyframes pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit,
+  .corePulse,
+  .glow,
+  .star {
+    animation: none !important;
+  }
+}

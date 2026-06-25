@@ -35,6 +35,9 @@ export const SID_COOKIE = "sid";
 export const SID_COOKIE_OPTS = {
   httpOnly: true,
   sameSite: "lax" as const,
+  // Üretimde yalnızca HTTPS üzerinden gönder (MITM'e karşı). Dev'de (http://
+  // localhost) secure=false olmalı, yoksa tarayıcı çerezi göndermez.
+  secure: process.env.NODE_ENV === "production",
   path: "/",
   maxAge: 60 * 60 * 24 * 30, // 30 gün
 };

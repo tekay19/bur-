@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 
 const schema = z.object({
   email: z.string().email("Geçerli bir e-posta gir"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı").max(200),
+  password: z.string().min(8, "Şifre en az 8 karakter olmalı").max(200),
   name: z.string().max(60).optional().or(z.literal("")),
 });
 

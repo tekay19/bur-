@@ -18,6 +18,8 @@ export const AID_COOKIE = "aid";
 export const AID_COOKIE_OPTS = {
   httpOnly: true,
   sameSite: "lax" as const,
+  // Üretimde yalnızca HTTPS (MITM'e karşı). Dev'de http://localhost için false.
+  secure: process.env.NODE_ENV === "production",
   path: "/",
   maxAge: 60 * 60 * 24 * 365, // 1 yıl
 };
