@@ -43,6 +43,7 @@ export default function HoroscopesHubPage() {
     .filter((x): x is NonNullable<typeof x> => x !== null);
   const dateLabel = readings[0]?.dateLabel ?? "";
   const moonSign = readings[0]?.moonSign ?? "";
+  const alerts = getTransitAlerts(today);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -78,9 +79,9 @@ export default function HoroscopesHubPage() {
           </p>
         </header>
 
-        {getTransitAlerts().length > 0 && (
+        {alerts.length > 0 && (
           <div className="mt-6">
-            <TransitBanner alerts={getTransitAlerts()} />
+            <TransitBanner alerts={alerts} />
           </div>
         )}
 

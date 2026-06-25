@@ -57,14 +57,15 @@ function Stars({ n }: { n: number }) {
 export default function SignHoroscopePage({ params }: { params: { sign: string } }) {
   const sign = getSign(params.sign);
   if (!sign) notFound();
-  const h = getDailyHoroscope(sign.slug);
+  const today = new Date();
+  const h = getDailyHoroscope(sign.slug, today);
   if (!h) notFound();
 
   const isMember = Boolean(verifySession(cookies().get(SID_COOKIE)?.value));
   const others = getAllSigns().filter((s) => s.slug !== sign.slug);
-  const alerts = getTransitAlerts();
-  const weekly = isMember ? getWeeklyHoroscope(sign.slug) : null;
-  const monthly = isMember ? getMonthlyHoroscope(sign.slug) : null;
+  const alerts = getTransitAlerts(today);
+  const weekly = isMember ? getWeeklyHoroscope(sign.slug, today) : null;
+  const monthly = isMember ? getMonthlyHoroscope(sign.slug, today) : null;
 
   const jsonLd = {
     "@context": "https://schema.org",

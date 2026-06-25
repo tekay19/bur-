@@ -42,7 +42,15 @@ export interface SkyState {
   positions: Record<string, { sign: number; retro: boolean }>;
 }
 
+// Aynı an için gökyüzü tekrar tekrar hesaplanmasın (hub 12 burç aynı günü
+// paylaşır). Saat kovasıyla memoize; Ay ~0.5°/saat hareket eder, burç için
+// ihmal edilebilir. Saf fonksiyon, risksiz.
+const skyCache = new Map<number, SkyState>();
 export function skyForDate(date: Date): SkyState {
+  const bucket = Math.floor(date.getTime() / 3_600_000);
+  const cached = skyCache.get(bucket);
+  if (cached) return cached;
+
   const planets = computePlanets(julianDay(date));
   const byName = new Map(planets.map((p) => [p.name, p]));
   const positions: SkyState["positions"] = {};
@@ -52,7 +60,7 @@ export function skyForDate(date: Date): SkyState {
   const retro = PERSONAL_RETRO.filter((n) => byName.get(n)?.retrograde);
   const moonLon = byName.get("Ay")?.lon ?? 0;
   const sunLon = byName.get("Güneş")?.lon ?? 0;
-  return {
+  const state: SkyState = {
     moonSign: Math.floor(moonLon / 30) % 12,
     sunSign: Math.floor(sunLon / 30) % 12,
     moonLon,
@@ -60,6 +68,9 @@ export function skyForDate(date: Date): SkyState {
     retro: [...retro],
     positions,
   };
+  if (skyCache.size > 240) skyCache.clear();
+  skyCache.set(bucket, state);
+  return state;
 }
 
 // Ay evresi (gerçek Güneş-Ay açısından)
@@ -80,9 +91,12 @@ function moonPhase(moonLon: number, sunLon: number): { name: string; meaning: st
   return PHASES[idx];
 }
 
+// Türkiye takvim günü (UTC+3, DST yok) — gün sınırı TR'ye göre belirlenir;
+// böylece gece yarısı–03:00 arası "bugünün yorumu" doğru güne denk gelir.
 export function dateKey(date: Date): string {
-  return date.toISOString().slice(0, 10);
+  return new Date(date.getTime() + 3 * 3_600_000).toISOString().slice(0, 10);
 }
+const TR_TZ = "Europe/Istanbul";
 
 // --- İçerik havuzları (r = Ay'ın senin burcuna göre ev teması, 0-11) ---
 const GENEL = [
@@ -284,6 +298,7 @@ export function getDailyHoroscope(signSlug: string, date = new Date()): DailyHor
       month: "long",
       year: "numeric",
       weekday: "long",
+      timeZone: TR_TZ,
     }),
     moonSign: SIGN_NAMES[sky.moonSign],
     retro: sky.retro,
@@ -328,7 +343,7 @@ export function getWeeklyHoroscope(signSlug: string, date = new Date()): PeriodH
   const end = new Date(date.getTime() + 6 * 86_400_000);
   return {
     title: "Bu Hafta",
-    range: `${date.toLocaleDateString("tr-TR", { day: "numeric", month: "long" })} – ${end.toLocaleDateString("tr-TR", { day: "numeric", month: "long" })}`,
+    range: `${date.toLocaleDateString("tr-TR", { day: "numeric", month: "long", timeZone: TR_TZ })} – ${end.toLocaleDateString("tr-TR", { day: "numeric", month: "long", timeZone: TR_TZ })}`,
     paragraphs: [
       `Bu hafta Ay senin için özellikle ${top.map((r) => HOUSE_LABEL[r]).join(" ve ")} alanlarını harekete geçiriyor.`,
       ...top.map((r) => GENEL[r].split(".")[0] + "."),
@@ -347,7 +362,7 @@ export function getMonthlyHoroscope(signSlug: string, date = new Date()): Period
   if (sky.retro.length) paras.push(RETRO_NOTE[sky.retro[0]]);
   return {
     title: "Bu Ay",
-    range: date.toLocaleDateString("tr-TR", { month: "long", year: "numeric" }),
+    range: date.toLocaleDateString("tr-TR", { month: "long", year: "numeric", timeZone: TR_TZ }),
     paragraphs: paras,
   };
 }

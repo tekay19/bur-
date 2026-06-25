@@ -5,6 +5,16 @@ import { getDailyHoroscope } from "@/lib/horoscope";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Çok sayıda e-posta için süreyi uzat (plan sınırına göre Vercel kırpar).
+export const maxDuration = 60;
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai").replace(/\/$/, "");
 
@@ -31,21 +41,26 @@ export async function GET(req: NextRequest) {
     take: 1000,
   });
 
-  const results = await Promise.allSettled(
-    users.map(async (u) => {
-      const h = getDailyHoroscope(u.sign as string);
-      if (!h) return;
-      await sendMail({
-        to: u.email,
-        subject: `${h.glyph} ${h.signName} burcu günlük yorumun hazır`,
-        html: dailyEmailHtml(u.name, h.signName, h.genel, h.ask, h.kariyer, h.para, h.signSlug),
-      });
-    }),
-  );
+  // SMTP rate-limit ve fonksiyon timeout'unu önlemek için 20'lik gruplar.
+  const BATCH = 20;
+  let sent = 0;
+  for (let i = 0; i < users.length; i += BATCH) {
+    const chunk = users.slice(i, i + BATCH);
+    const results = await Promise.allSettled(
+      chunk.map(async (u) => {
+        const h = getDailyHoroscope(u.sign as string);
+        if (!h) return;
+        await sendMail({
+          to: u.email,
+          subject: `${h.glyph} ${h.signName} burcu günlük yorumun hazır`,
+          html: dailyEmailHtml(u.name, h.signName, h.genel, h.ask, h.kariyer, h.para, h.signSlug),
+        });
+      }),
+    );
+    sent += results.filter((r) => r.status === "fulfilled").length;
+  }
 
-  const sent = results.filter((r) => r.status === "fulfilled").length;
-  const failed = results.length - sent;
-  return NextResponse.json({ ok: true, total: users.length, sent, failed });
+  return NextResponse.json({ ok: true, total: users.length, sent, failed: users.length - sent });
 }
 
 function dailyEmailHtml(
@@ -57,7 +72,7 @@ function dailyEmailHtml(
   para: string,
   slug: string,
 ): string {
-  const hi = name ? `Merhaba ${name},` : "Merhaba,";
+  const hi = name ? `Merhaba ${escapeHtml(name)},` : "Merhaba,";
   return `
   <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#0e0a1a;color:#e9e3f2;border-radius:16px;padding:28px">
     <p style="margin:0 0 8px;color:#c9a84a;font-weight:bold;letter-spacing:1px">ASTROTEK AI · GÜNLÜK YORUM</p>
