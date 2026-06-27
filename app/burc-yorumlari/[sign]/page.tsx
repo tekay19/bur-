@@ -40,7 +40,19 @@ export function generateMetadata({ params }: { params: { sign: string } }): Meta
       "günlük burç yorumu",
     ],
     alternates: { canonical: `/burc-yorumlari/${s.slug}` },
-    openGraph: { title, description, type: "article", url: `${SITE_URL}/burc-yorumlari/${s.slug}`, locale: "tr_TR" },
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url: `${SITE_URL}/burc-yorumlari/${s.slug}`,
+      locale: "tr_TR",
+      images: [{ url: `${SITE_URL}/api/og/burc-yorumlari?sign=${s.slug}`, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      images: [`${SITE_URL}/api/og/burc-yorumlari?sign=${s.slug}`],
+    },
   };
 }
 

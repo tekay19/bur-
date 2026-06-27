@@ -4,34 +4,53 @@ import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
 import { AstroProfile } from "@/components/astroprofile/AstroProfile";
 import { TestsSection } from "@/components/marketing/TestsSection";
-import { getAllSigns } from "@/lib/zodiac";
+import { getAllSigns, getSign } from "@/lib/zodiac";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
 
-export const metadata: Metadata = {
-  title: "AstroProfil™ — Astrolojik Kişilik Analizi (Ücretsiz Test)",
-  description:
-    "AstroProfil™: burcunu ve kişilik tercihlerini birleştiren dinamik astrolojik kişilik analizi. 12 özellik, 10 soru ile karar verme tarzın, ilişki stilin, kariyer eğilimin ve daha fazlası. Aynı burçtan herkes farklı sonuç alır — tamamen sana özel.",
-  keywords: [
-    "astrolojik kişilik analizi",
-    "burç kişilik testi",
-    "kişilik analizi testi",
-    "astroprofil",
-    "karakter analizi",
-    "burç karakter testi",
-    "kişilik testi ücretsiz",
-    "astroloji kişilik",
-  ],
-  alternates: { canonical: "/astroprofil" },
-  openGraph: {
-    title: "AstroProfil™ — Astrolojik Kişilik Analizi",
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { b?: string; c?: string };
+}): Metadata {
+  const base: Metadata = {
+    title: "AstroProfil™ — Astrolojik Kişilik Analizi (Ücretsiz Test)",
     description:
-      "Burcun + kişiliğin = sana özel astrolojik profil. 10 soruda keşfet ve paylaş.",
-    type: "website",
-    url: `${SITE_URL}/astroprofil`,
-    locale: "tr_TR",
-  },
-};
+      "AstroProfil™: burcunu ve kişilik tercihlerini birleştiren dinamik astrolojik kişilik analizi. 12 özellik, 10 soru ile karar verme tarzın, ilişki stilin, kariyer eğilimin ve daha fazlası. Aynı burçtan herkes farklı sonuç alır — tamamen sana özel.",
+    keywords: [
+      "astrolojik kişilik analizi",
+      "burç kişilik testi",
+      "kişilik analizi testi",
+      "astroprofil",
+      "karakter analizi",
+      "burç karakter testi",
+      "kişilik testi ücretsiz",
+      "astroloji kişilik",
+    ],
+    alternates: { canonical: "/astroprofil" },
+    openGraph: {
+      title: "AstroProfil™ — Astrolojik Kişilik Analizi",
+      description:
+        "Burcun + kişiliğin = sana özel astrolojik profil. 10 soruda keşfet ve paylaş.",
+      type: "website",
+      url: `${SITE_URL}/astroprofil`,
+      locale: "tr_TR",
+    },
+  };
+
+  const { b, c } = searchParams;
+  if (b && c && getSign(b) && /^[0-3]{10}$/.test(c)) {
+    const title = `AstroProfilim: ${getSign(b)!.name} — kişiliğimin tam haritası`;
+    const img = `${SITE_URL}/api/og/astroprofil?b=${b}&c=${c}`;
+    return {
+      ...base,
+      title,
+      openGraph: { ...base.openGraph, title, images: [{ url: img, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", title, images: [img] },
+    };
+  }
+  return base;
+}
 
 const FAQ = [
   {

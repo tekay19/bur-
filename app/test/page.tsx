@@ -5,34 +5,53 @@ import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
 import { ZodiacQuiz } from "@/components/quiz/ZodiacQuiz";
 import { TestsSection } from "@/components/marketing/TestsSection";
-import { getAllSigns } from "@/lib/zodiac";
+import { getAllSigns, getSign } from "@/lib/zodiac";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
 
-export const metadata: Metadata = {
-  title: "Burç Kişilik Testi — Ruh Burcun Hangisi? (Ücretsiz Test)",
-  description:
-    "Eğlenceli burç kişilik testi: 8 kısa soruyla ruh burcunu keşfet. Hangi burca benziyorsun? Element ve karakter analizine dayalı ücretsiz burç testi — sonucunu paylaş!",
-  keywords: [
-    "burç testi",
-    "burç kişilik testi",
-    "hangi burçsun testi",
-    "ruh burcun",
-    "kişilik testi",
-    "burç bulma testi",
-    "astroloji testi",
-    "eğlenceli test",
-  ],
-  alternates: { canonical: "/test" },
-  openGraph: {
-    title: "Burç Kişilik Testi — Ruh Burcun Hangisi?",
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { sonuc?: string };
+}): Metadata {
+  const base: Metadata = {
+    title: "Burç Kişilik Testi — Ruh Burcun Hangisi? (Ücretsiz Test)",
     description:
-      "8 kısa soruyla ruh burcunu keşfet ve sonucunu arkadaşlarınla paylaş!",
-    type: "website",
-    url: `${SITE_URL}/test`,
-    locale: "tr_TR",
-  },
-};
+      "Eğlenceli burç kişilik testi: 8 kısa soruyla ruh burcunu keşfet. Hangi burca benziyorsun? Element ve karakter analizine dayalı ücretsiz burç testi — sonucunu paylaş!",
+    keywords: [
+      "burç testi",
+      "burç kişilik testi",
+      "hangi burçsun testi",
+      "ruh burcun",
+      "kişilik testi",
+      "burç bulma testi",
+      "astroloji testi",
+      "eğlenceli test",
+    ],
+    alternates: { canonical: "/test" },
+    openGraph: {
+      title: "Burç Kişilik Testi — Ruh Burcun Hangisi?",
+      description:
+        "8 kısa soruyla ruh burcunu keşfet ve sonucunu arkadaşlarınla paylaş!",
+      type: "website",
+      url: `${SITE_URL}/test`,
+      locale: "tr_TR",
+    },
+  };
+
+  const s = searchParams.sonuc ? getSign(searchParams.sonuc) : undefined;
+  if (s) {
+    const title = `Ruh burcum ${s.name} çıktı! Sen de keşfet`;
+    const img = `${SITE_URL}/api/og/test?sonuc=${s.slug}`;
+    return {
+      ...base,
+      title,
+      openGraph: { ...base.openGraph, title, images: [{ url: img, width: 1200, height: 630 }] },
+      twitter: { card: "summary_large_image", title, images: [img] },
+    };
+  }
+  return base;
+}
 
 const FAQ = [
   {
