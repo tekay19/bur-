@@ -18,6 +18,7 @@ const COLS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Burçlar", href: "/burclar" },
       { label: "Burç Uyumu", href: "/uyumluluk" },
       { label: "Burç Testi", href: "/test" },
+      { label: "Çin Burcu", href: "/cin-burcu" },
       { label: "Blog", href: "/blog" },
     ],
   },

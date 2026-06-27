@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Brain, Heart, Sparkles } from "lucide-react";
+import { ArrowRight, Brain, Heart, Rabbit, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeading } from "./Section";
 import { Reveal, RevealGroup } from "./Reveal";
@@ -35,6 +35,16 @@ const TESTS = [
     featured: false,
     minutes: "~1 dk",
   },
+  {
+    href: "/cin-burcu",
+    badge: "Çin Astrolojisi",
+    icon: Rabbit,
+    title: "Çin Burcun Ne?",
+    desc: "Doğum yılını gir, 12 Çin burcundan (Ejderha, Kaplan, Tavşan…) hangisi olduğunu, özelliklerini ve uyumlu hayvanları anında öğren.",
+    cta: "Yılını Gir",
+    featured: false,
+    minutes: "~15 sn",
+  },
 ];
 
 export function TestsSection({ compact = false }: { compact?: boolean }) {
@@ -48,7 +58,7 @@ export function TestsSection({ compact = false }: { compact?: boolean }) {
         />
       </Reveal>
 
-      <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {TESTS.map((t) => {
           const Icon = t.icon;
           return (
