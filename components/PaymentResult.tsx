@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 type State =
   | { kind: "loading" }
   | { kind: "success"; credits: number }
+  | { kind: "premium" }
   | { kind: "pending" }
   | { kind: "error"; message: string };
 
@@ -30,7 +31,9 @@ export function PaymentResult() {
     })
       .then(async (r) => {
         const d = await r.json().catch(() => ({}));
-        if (r.ok && d.ok) setState({ kind: "success", credits: d.credits ?? 0 });
+        if (r.ok && d.ok && d.premium) setState({ kind: "premium" });
+        else if (r.ok && d.ok)
+          setState({ kind: "success", credits: d.credits ?? 0 });
         else if (r.ok && d.ok === false) setState({ kind: "pending" });
         else
           setState({
@@ -68,10 +71,31 @@ export function PaymentResult() {
             <strong className="text-gold">{state.credits} analiz kredisi</strong>{" "}
             var.
           </p>
-          <Link href="/" className="mt-6 inline-block">
+          <Link href="/harita-olustur" className="mt-6 inline-block">
             <Button size="lg" className="gap-2">
               <Sparkles className="h-4 w-4" />
               Haritamı oluştur
+            </Button>
+          </Link>
+        </>
+      )}
+
+      {state.kind === "premium" && (
+        <>
+          <div className="mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/15 text-gold">
+            <Sparkles className="h-8 w-8" />
+          </div>
+          <h1 className="font-display text-2xl font-bold">
+            Premium üyeliğin aktif 🎉
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Artık sınırsız günlük yorum, haftalık & aylık burcun ve transit
+            içeriklerin açık.
+          </p>
+          <Link href="/hesap" className="mt-6 inline-block">
+            <Button size="lg" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              Panele git
             </Button>
           </Link>
         </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   AlertCircle,
@@ -23,7 +23,7 @@ import { Disclaimer } from "@/components/Disclaimer";
 import { LoadingState } from "@/components/LoadingState";
 import { Paywall } from "@/components/Paywall";
 import { TR_ILLER, ilceler } from "@/lib/utils/tr-il-ilce";
-import { birthFormSchema } from "@/lib/validation";
+import { birthFormSchema, chartRequestSchema } from "@/lib/validation";
 
 const MONTHS = [
   "Ocak",
@@ -56,6 +56,14 @@ const FOCUS_OPTIONS = [
   { value: "spiritual", label: "Ruhsal Dönem", icon: Sun },
 ] as const;
 
+// Funnel odak alanı (FOCI) → BirthForm odak değeri eşlemesi.
+const FOCUS_MAP: Record<string, string> = {
+  ask: "relationship",
+  kariyer: "career",
+  para: "money",
+  genel: "general",
+};
+
 const ACCURACY = [
   { v: "exact", l: "Kesin" },
   { v: "approx", l: "Yaklaşık" },
@@ -83,9 +91,10 @@ export function BirthForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
-  const [paywall, setPaywall] = useState<{ recoveryCode?: string } | null>(
-    null,
-  );
+  const [paywall, setPaywall] = useState<{
+    recoveryCode?: string;
+    loggedIn?: boolean;
+  } | null>(null);
 
   const up = (k: keyof typeof f, v: string) => {
     setF((s) => {
@@ -101,6 +110,85 @@ export function BirthForm() {
     });
     setErrors((e) => ({ ...e, [k]: "", birthDate: "", birthTime: "" }));
   };
+
+  // Funnel'dan (/kesfet) gelen veriyle çalış:
+  // - Tam veri (ad + tarih + yer) varsa → haritayı OTOMATİK üret (tek tık yok),
+  //   başarıda sonuç sayfasına düşer; veri tüketilir (tekrar üretmez).
+  // - Eksikse → formu ön-doldur.
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (autoRan.current) return;
+    let raw: string | null = null;
+    try {
+      raw = localStorage.getItem("astro_onboarding");
+    } catch {
+      return;
+    }
+    if (!raw) return;
+    let d: {
+      name?: string;
+      birthDate?: string;
+      birthPlace?: string;
+      birthTime?: string;
+      birthTimeAccuracy?: string;
+      focus?: string;
+    };
+    try {
+      d = JSON.parse(raw);
+    } catch {
+      return;
+    }
+
+    const nm = (d.name ?? "").trim();
+    const place = (d.birthPlace ?? "").trim();
+    const validDate = !!d.birthDate && /^\d{4}-\d{2}-\d{2}$/.test(d.birthDate);
+
+    // Tam veri → otomatik üret
+    if (nm.length >= 2 && validDate && place.length >= 2) {
+      const acc =
+        d.birthTimeAccuracy === "exact" ||
+        d.birthTimeAccuracy === "approx" ||
+        d.birthTimeAccuracy === "unknown"
+          ? d.birthTimeAccuracy
+          : d.birthTime
+            ? "exact"
+            : "unknown";
+      const payload = {
+        name: nm,
+        gender: "" as const,
+        birthDate: d.birthDate,
+        birthTime:
+          d.birthTime && /^([01]?\d|2[0-3]):[0-5]\d$/.test(d.birthTime)
+            ? d.birthTime
+            : "",
+        birthPlace: place,
+        birthTimeAccuracy: acc,
+        focusArea: (FOCUS_MAP[d.focus ?? ""] ?? "general") as string,
+      };
+      const parsed = chartRequestSchema.safeParse(payload);
+      if (parsed.success) {
+        autoRan.current = true; // bu mount'ta tekrar tetikleme yok
+        void generateChart(parsed.data); // veri yalnızca BAŞARIDA silinir
+        return;
+      }
+    }
+
+    // Eksik veri → sadece ön-doldur
+    autoRan.current = true;
+    setF((s) => {
+      const next = { ...s };
+      if (nm && !s.name) next.name = nm;
+      if (d.focus && FOCUS_MAP[d.focus]) next.focus = FOCUS_MAP[d.focus];
+      if (validDate && !s.year) {
+        const [y, mo, dd] = d.birthDate!.split("-");
+        next.year = y;
+        next.month = String(Number(mo));
+        next.day = String(Number(dd));
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const unknownTime = f.accuracy === "unknown";
 
@@ -159,17 +247,27 @@ export function BirthForm() {
       return;
     }
 
+    await generateChart(parsed.data);
+  }
+
+  // /api/chart'a gönder → krediye göre 402/Paywall, başarıda /analiz'e git.
+  // Hem manuel form hem funnel'dan otomatik üretim bunu kullanır.
+  async function generateChart(payload: unknown) {
     setSubmitting(true);
+    setServerError(null);
     try {
       const res = await fetch("/api/chart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) {
         if (res.status === 402 || data.code === "NO_CREDITS") {
-          setPaywall({ recoveryCode: data.recoveryCode });
+          setPaywall({
+            recoveryCode: data.recoveryCode,
+            loggedIn: Boolean(data.loggedIn),
+          });
           setSubmitting(false);
           return;
         }
@@ -186,6 +284,8 @@ export function BirthForm() {
           `analysis:${data.id}`,
           JSON.stringify(data.result),
         );
+        // Funnel verisi tüketildi → tekrar otomatik üretim olmasın.
+        localStorage.removeItem("astro_onboarding");
       } catch {
         /* yoksay */
       }
@@ -208,6 +308,7 @@ export function BirthForm() {
     return (
       <Paywall
         recoveryCode={paywall.recoveryCode}
+        loggedIn={paywall.loggedIn}
         onCredits={(c) => {
           if (c > 0) setPaywall(null); // kredi geldi → forma dön
         }}

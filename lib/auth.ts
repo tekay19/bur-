@@ -50,6 +50,7 @@ export interface PublicUser {
   name: string | null;
   credits: number;
   plan: string;
+  createdAt: number; // ms epoch (0 = bilinmiyor) — deneme süresi sunucu doğruluğu
 }
 
 // --- Şifre ---
@@ -118,6 +119,7 @@ interface MemUser {
   name: string | null;
   credits: number;
   plan: string;
+  createdAt: number;
 }
 const memUsers = new Map<string, MemUser>(); // key: email
 
@@ -127,12 +129,19 @@ const toPublic = (u: {
   name: string | null;
   credits: number;
   plan: string;
+  createdAt?: Date | number | null;
 }): PublicUser => ({
   id: u.id,
   email: u.email,
   name: u.name,
   credits: u.credits,
   plan: u.plan,
+  createdAt:
+    u.createdAt == null
+      ? 0
+      : typeof u.createdAt === "number"
+        ? u.createdAt
+        : new Date(u.createdAt).getTime(),
 });
 
 export async function findUserByEmail(email: string): Promise<MemUser | null> {
@@ -147,6 +156,7 @@ export async function findUserByEmail(email: string): Promise<MemUser | null> {
           name: u.name,
           credits: u.credits,
           plan: u.plan,
+          createdAt: new Date(u.createdAt).getTime(),
         }
       : null;
   }
@@ -182,6 +192,7 @@ export async function createUser(
     name,
     credits: startingCredits,
     plan: "free",
+    createdAt: Date.now(),
   };
   memUsers.set(e, u);
   return toPublic(u);
@@ -189,6 +200,26 @@ export async function createUser(
 
 // Şifreyi güncelle (şifre sıfırlama akışı). updateMany: kullanıcı yoksa
 // fırlatmaz (spend/refund/addCredits ile tutarlı davranış).
+// Üyelik planını ayarla ("premium" | "free"). Abonelik webhook/onayında çağrılır.
+export async function setUserPlan(
+  id: string,
+  plan: "premium" | "free",
+): Promise<boolean> {
+  if (hasDatabase && prisma) {
+    const res = await prisma.user.updateMany({
+      where: { id },
+      data: { plan },
+    });
+    return res.count > 0;
+  }
+  for (const u of memUsers.values())
+    if (u.id === id) {
+      u.plan = plan;
+      return true;
+    }
+  return false;
+}
+
 export async function setUserPassword(
   id: string,
   passwordHash: string,

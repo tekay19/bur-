@@ -8,6 +8,10 @@ import {
   signSession,
   verifyPassword,
 } from "@/lib/auth";
+import {
+  DAILY_TRIAL_COOKIE,
+  DAILY_TRIAL_COOKIE_OPTS,
+} from "@/lib/dailyTrial";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -59,6 +63,14 @@ export async function POST(req: NextRequest) {
     const user = await getUserById(u.id);
     const res = NextResponse.json({ user });
     res.cookies.set(SID_COOKIE, signSession(u.id), SID_COOKIE_OPTS);
+    // Günlük yorum denemesi çerezi yoksa başlat (eski/çerez temizlemiş üyeler).
+    if (!req.cookies.get(DAILY_TRIAL_COOKIE)?.value) {
+      res.cookies.set(
+        DAILY_TRIAL_COOKIE,
+        String(Date.now()),
+        DAILY_TRIAL_COOKIE_OPTS,
+      );
+    }
     return res;
   } catch (e) {
     console.error("Giriş hatası:", e);

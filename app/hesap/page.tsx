@@ -1,44 +1,31 @@
-import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { Clock, KeyRound, Moon, Sparkles, Wallet } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
-import { BuyCredits } from "@/components/account/BuyCredits";
-import { LogoutButton } from "@/components/account/LogoutButton";
-import { SignPreference } from "@/components/account/SignPreference";
+import { DashboardTabs } from "@/components/account/DashboardTabs";
 import { SID_COOKIE, getUserById, verifySession } from "@/lib/auth";
+import { DAILY_TRIAL_COOKIE, trialDaysLeft } from "@/lib/dailyTrial";
 import { getUserPrefs } from "@/lib/account";
 import { getDailyHoroscope } from "@/lib/horoscope";
+import { getDailyHoroscopeAI } from "@/lib/ai/generateDailyHoroscope";
+import { getAnalysis } from "@/lib/db/storage";
+import { SIGN_GLYPH, signFromLongitude } from "@/lib/astrology/constants";
 import { hasDatabase, prisma } from "@/lib/db/prisma";
 
 export const metadata = {
-  title: "Hesabım — Astrotek AI",
+  title: "Panelim — Astrotek AI",
   robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";
 
-const FOCUS: Record<string, string> = {
-  general: "Genel",
-  career: "Kariyer",
-  exam: "Sınav",
-  relationship: "İlişki",
-  money: "Para",
-  education: "Eğitim",
-  relocation: "Taşınma",
-  spiritual: "Ruhsal",
-};
-
 export default async function AccountPage() {
-  // Korumalı: giriş yoksa giriş sayfasına yönlendir.
   const uid = verifySession(cookies().get(SID_COOKIE)?.value);
   if (!uid) redirect("/giris");
   const user = await getUserById(uid).catch(() => null);
   if (!user) redirect("/giris");
 
-  // Kullanıcının analiz geçmişi (kendi kayıtları — ownerKey = uid).
   const charts =
     hasDatabase && prisma
       ? await prisma.userChart.findMany({
@@ -56,149 +43,121 @@ export default async function AccountPage() {
       : [];
 
   const prefs = await getUserPrefs(uid);
-  const todayReading = prefs.sign ? getDailyHoroscope(prefs.sign) : null;
 
+  const firstName = user.name?.split(" ")[0] || user.email.split("@")[0];
   const initials = (user.name || user.email)[0]?.toUpperCase() ?? "?";
+  const isPremium = user.plan === "premium";
+
+  // Günlük yorum erişimi: premium süresiz, ücretsiz üye 15 gün (cihaz + hesap bazlı).
+  const trialRaw = trialDaysLeft(
+    cookies().get(DAILY_TRIAL_COOKIE)?.value,
+    user.createdAt,
+    isPremium,
+  );
+  const dailyOpen = trialRaw > 0;
+  const trialLeft = Number.isFinite(trialRaw) ? trialRaw : 0;
+
+  // Üye + erişim varsa AI günlük yorum (burç+gün cache'li), yoksa kural tabanlı.
+  const todayReading = prefs.sign
+    ? dailyOpen
+      ? await getDailyHoroscopeAI(prefs.sign)
+      : getDailyHoroscope(prefs.sign)
+    : null;
+
+  // En son haritadan burç + yükselen + evler (ana panelde gösterilir).
+  let myChart: {
+    sun: { sign: string; glyph: string } | null;
+    ascendant: { sign: string; glyph: string } | null;
+    hasHouses: boolean;
+    houses: {
+      house: number;
+      lifeArea: string;
+      score: number;
+      polarity: string;
+    }[];
+  } | null = null;
+
+  if (charts[0]) {
+    const full = await getAnalysis(charts[0].id, [uid]).catch(() => null);
+    if (full) {
+      const sun = full.natal.planets.find((p) => p.name === "Güneş");
+      // Yükselen, planets dizisinde olmayabilir → ascendant derecesinden türet.
+      const ascSign =
+        full.natal.ascendant !== null && full.natal.ascendant !== undefined
+          ? signFromLongitude(full.natal.ascendant).sign
+          : null;
+      myChart = {
+        sun: sun ? { sign: sun.sign, glyph: SIGN_GLYPH[sun.sign] } : null,
+        ascendant: ascSign
+          ? { sign: ascSign, glyph: SIGN_GLYPH[ascSign] }
+          : null,
+        hasHouses: full.natal.meta.hasHouses,
+        houses: full.houseAnalysis.map((h) => ({
+          house: h.house,
+          lifeArea: h.lifeArea,
+          score: h.score,
+          polarity: h.polarity,
+        })),
+      };
+    }
+  }
 
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
-        {/* Üst — hesap özeti */}
-        <header className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
+        {/* Karşılama */}
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-xl font-bold text-white">
+            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-xl font-bold text-white shadow-lg shadow-primary/20">
               {initials}
             </div>
             <div>
-              <h1 className="font-display text-2xl font-bold tracking-tight">
-                Merhaba, {user.name || user.email.split("@")[0]}
+              <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                Merhaba, {firstName} 👋
               </h1>
               <p className="text-sm text-muted-foreground">{user.email}</p>
             </div>
           </div>
           <span
             className={
-              user.plan === "premium"
-                ? "self-start rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-medium text-gold"
-                : "self-start rounded-full border border-border bg-secondary px-3 py-1 text-xs text-muted-foreground"
+              isPremium
+                ? "inline-flex items-center gap-1.5 self-start rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-medium text-gold"
+                : "inline-flex items-center gap-1.5 self-start rounded-full border border-border bg-secondary px-3 py-1 text-xs text-muted-foreground"
             }
           >
-            {user.plan === "premium" ? "Premium üye" : "Ücretsiz üye"}
+            <Star className="h-3 w-3" />
+            {isPremium ? "Premium üye" : "Ücretsiz üye"}
           </span>
         </header>
 
-        {/* Kredi bakiyesi */}
-        <section className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-3xl border border-primary/20 bg-card/60 p-6 backdrop-blur-md sm:col-span-1">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Wallet className="h-4 w-4" />
-              <span className="text-xs">Kredi bakiyen</span>
-            </div>
-            <p className="mt-2 font-display text-4xl font-bold">{user.credits}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Her analiz 1 kredi harcar
-            </p>
-            <Link href="/harita-olustur" className="mt-4 inline-block">
-              <Button variant="outline" size="sm" className="w-full">
-                <Sparkles className="h-4 w-4" /> Yeni analiz
-              </Button>
-            </Link>
-          </div>
-
-          {/* Kredi satın al — ÖDEME burada */}
-          <div className="rounded-3xl border border-primary/20 bg-card/60 p-6 backdrop-blur-md sm:col-span-2">
-            <h2 className="mb-4 font-display text-lg font-semibold">
-              Kredi Satın Al
-            </h2>
-            <BuyCredits />
-          </div>
-        </section>
-
-        {/* Günlük burç yorumu — burcunu kaydet */}
-        <section className="mt-8 rounded-3xl border border-primary/20 bg-card/60 p-6 backdrop-blur-md">
-          <h2 className="mb-1 flex items-center gap-2 font-display text-lg font-semibold">
-            <Moon className="h-5 w-5 text-gold" /> Günlük Burç Yorumun
-          </h2>
-
-          {todayReading && (
-            <div className="mb-5 mt-3 rounded-2xl border border-primary/15 bg-secondary/30 p-5">
-              <div className="mb-2 flex items-center gap-2">
-                <span className="text-2xl text-primary" aria-hidden>{todayReading.glyph}</span>
-                <div>
-                  <p className="text-sm font-semibold">{todayReading.signName} · Bugün</p>
-                  <p className="text-xs capitalize text-muted-foreground">{todayReading.dateLabel}</p>
-                </div>
-              </div>
-              <p className="text-sm leading-relaxed text-foreground/85">{todayReading.genel}</p>
-              <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                <p className="text-xs text-muted-foreground"><strong className="text-accent">Aşk:</strong> {todayReading.ask}</p>
-                <p className="text-xs text-muted-foreground"><strong className="text-gold">Kariyer:</strong> {todayReading.kariyer}</p>
-                <p className="text-xs text-muted-foreground"><strong className="text-success">Para:</strong> {todayReading.para}</p>
-              </div>
-              <Link
-                href={`/burc-yorumlari/${todayReading.signSlug}`}
-                className="mt-3 inline-block text-xs font-medium text-primary hover:underline"
-              >
-                Tam günlük yorum, haftalık & aylık →
-              </Link>
-            </div>
-          )}
-
-          <SignPreference initialSign={prefs.sign} initialDailyEmail={prefs.dailyEmail} />
-        </section>
-
-        {/* Analiz geçmişi */}
-        <section className="mt-8">
-          <h2 className="mb-4 font-display text-lg font-semibold">
-            Analizlerim ({charts.length})
-          </h2>
-          {charts.length === 0 ? (
-            <div className="rounded-2xl border border-border bg-secondary/30 p-6 text-center text-sm text-muted-foreground">
-              Henüz analizin yok.{" "}
-              <Link href="/harita-olustur" className="font-medium text-primary hover:underline">
-                İlk analizini oluştur →
-              </Link>
-            </div>
-          ) : (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {charts.map((c) => (
-                <Link
-                  key={c.id}
-                  href={`/analiz/${c.id}`}
-                  className="group flex items-center justify-between gap-3 rounded-2xl border border-primary/15 bg-card/60 p-4 backdrop-blur-md transition-colors hover:border-primary/40"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate font-medium">{c.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {FOCUS[c.focusArea] ?? c.focusArea} · {c.birthPlace}
-                    </p>
-                  </div>
-                  <span className="flex flex-shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
-                    <Clock className="h-3.5 w-3.5" />
-                    {new Date(c.createdAt).toLocaleDateString("tr-TR", {
-                      day: "2-digit",
-                      month: "short",
-                    })}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Ayarlar */}
-        <section className="mt-8">
-          <h2 className="mb-4 font-display text-lg font-semibold">Ayarlar</h2>
-          <div className="flex flex-wrap items-center gap-3">
-            <Link href="/sifremi-unuttum">
-              <Button variant="outline" size="sm">
-                <KeyRound className="h-4 w-4" /> Şifre değiştir
-              </Button>
-            </Link>
-            <LogoutButton />
-          </div>
-        </section>
+        <DashboardTabs
+          credits={user.credits}
+          isPremium={isPremium}
+          dailyOpen={dailyOpen}
+          trialLeft={trialLeft}
+          prefsSign={prefs.sign}
+          prefsDailyEmail={prefs.dailyEmail}
+          todayReading={
+            todayReading
+              ? {
+                  signSlug: todayReading.signSlug,
+                  signName: todayReading.signName,
+                  glyph: todayReading.glyph,
+                  dateLabel: todayReading.dateLabel,
+                  genel: todayReading.genel,
+                }
+              : null
+          }
+          charts={charts.map((c) => ({
+            id: c.id,
+            name: c.name,
+            birthPlace: c.birthPlace,
+            focusArea: c.focusArea,
+            createdAt: new Date(c.createdAt).getTime(),
+          }))}
+          myChart={myChart}
+        />
       </main>
       <SiteFooter />
     </>

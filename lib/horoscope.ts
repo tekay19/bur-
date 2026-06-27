@@ -226,7 +226,18 @@ const TONES = [
   "Beklenmedik küçük bir sürpriz moralini yükseltebilir.",
   "Kendine küçük bir mola vermeyi unutma; enerjini koru.",
   "Niyetini net tutarsan istediğine bir adım daha yaklaşırsın.",
+  "Günün temposu değişken; esnek kalırsan her şeyi lehine çevirirsin.",
+  "İçgüdülerin bugün keskin; ilk hissin çoğu zaman doğru olacak.",
+  "Küçük bir cesaret, gününü beklenmedik bir yere taşıyabilir.",
 ];
+
+// Burcun elementine göre günün enerji tonu (ücretsiz genel yorumu zenginleştirir)
+const ELEMENT_NOTE: Record<string, string> = {
+  Ateş: "Ateş enerjin bugün canlı; cesaretini ve girişkenliğini konuştur, ama sabırsızlığa teslim olma.",
+  Toprak: "Toprak yanın bugün sağlam; somut, pratik adımlar sana güven ve huzur verecek.",
+  Hava: "Hava enerjin zihnini hızlandırıyor; fikirler, sohbetler ve bağlantılar günü taşıyacak.",
+  Su: "Su yanın derin ve sezgisel; duygularına kulak ver, içgüdülerin bugün yol gösterici.",
+};
 
 const RETRO_NOTE: Record<string, string> = {
   Merkür: "Merkür retrosu sürüyor: iletişim, sözleşme ve teknolojide acele etme, detayları iki kez kontrol et.",
@@ -256,6 +267,8 @@ export interface DailyHoroscope {
   retro: string[];
   // Ücretsiz (herkese açık)
   genel: string;
+  genelEnerji: number; // 1-5 günün genel enerjisi
+  tema: string; // günün öne çıkan teması
   ayEvresi: { name: string; meaning: string };
   gununTavsiyesi: string;
   uyumluBurc: string;
@@ -278,8 +291,19 @@ export function getDailyHoroscope(signSlug: string, date = new Date()): DailyHor
   const r = (sky.moonSign - sunIdx + 12) % 12;
   const rnd = rng(hashStr(key + ":" + signSlug));
 
-  let genel = `${GENEL[r]} ${GENEL2[r]} ${pick(TONES, rnd)}`;
+  let genel = `${GENEL[r]} ${GENEL2[r]} ${ELEMENT_NOTE[sign.element]} ${pick(TONES, rnd)}`;
   if (sky.retro.length) genel += ` ${RETRO_NOTE[sky.retro[0]]}`;
+
+  // Kategori enerjileri (üyeye özel kartlarda da kullanılır)
+  const enAsk = star(LOVE_FAV, r, rnd);
+  const enKariyer = star(CAREER_FAV, r, rnd);
+  const enPara = star(MONEY_FAV, r, rnd);
+  const enSaglik = star([0, 3, 5, 11], r, rnd);
+  // Günün genel enerjisi: dört alanın ortalaması (ücretsiz gösterilir)
+  const genelEnerji = Math.max(
+    1,
+    Math.min(5, Math.round((enAsk + enKariyer + enPara + enSaglik) / 4)),
+  );
 
   // Bugün uyumlu burç: Ay'ın elementini paylaşan burçlar (kendisi hariç)
   const moonElement = SIGNS[sky.moonSign].element;
@@ -303,6 +327,8 @@ export function getDailyHoroscope(signSlug: string, date = new Date()): DailyHor
     moonSign: SIGN_NAMES[sky.moonSign],
     retro: sky.retro,
     genel,
+    genelEnerji,
+    tema: HOUSE_LABEL[r],
     ayEvresi: moonPhase(sky.moonLon, sky.sunLon),
     gununTavsiyesi: TAVSIYE[r],
     uyumluBurc,
@@ -311,10 +337,10 @@ export function getDailyHoroscope(signSlug: string, date = new Date()): DailyHor
     para: `${PARA[r]} ${pick(PARA_EK, rnd)}`,
     saglik: pick(SAGLIK, rnd),
     enerji: {
-      ask: star(LOVE_FAV, r, rnd),
-      kariyer: star(CAREER_FAV, r, rnd),
-      para: star(MONEY_FAV, r, rnd),
-      saglik: star([0, 3, 5, 11], r, rnd),
+      ask: enAsk,
+      kariyer: enKariyer,
+      para: enPara,
+      saglik: enSaglik,
     },
     sansliRenk: pick(COLORS, rnd),
     sansliSayi: 1 + Math.floor(rnd() * 49),

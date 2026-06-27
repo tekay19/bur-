@@ -11,9 +11,11 @@ export const metadata = {
 export default function AuthPage({
   searchParams,
 }: {
-  searchParams: { mode?: string };
+  searchParams: { mode?: string; pack?: string; next?: string };
 }) {
   const initialMode = searchParams.mode === "register" ? "register" : "login";
+  const pack = searchParams.pack;
+  const next = searchParams.next;
 
   return (
     <main className="mx-auto w-full max-w-md px-4 py-6 sm:px-6 sm:py-10">
@@ -37,7 +39,7 @@ export default function AuthPage({
         </p>
       </div>
 
-      <AuthForm initialMode={initialMode} />
+      <AuthForm initialMode={initialMode} pack={pack} next={next} />
     </main>
   );
 }

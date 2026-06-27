@@ -15,7 +15,11 @@ import {
   verifySession,
 } from "@/lib/auth";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
-import { createCheckout, isCreemConfigured } from "@/lib/creem";
+import {
+  createCheckout,
+  isCreemConfigured,
+  isPremiumConfigured,
+} from "@/lib/creem";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -154,6 +158,34 @@ export async function POST(req: NextRequest) {
     const res = NextResponse.json({ credits, test: true });
     if (setCookie) res.cookies.set(AID_COOKIE, aid, AID_COOKIE_OPTS);
     return res;
+  }
+
+  // --- Premium aboneliği başlat (yalnızca üye) → Creem subscription checkout ---
+  if (body.action === "subscribe") {
+    const uid = verifySession(req.cookies.get(SID_COOKIE)?.value);
+    if (!uid) {
+      return NextResponse.json(
+        { error: "Önce giriş yap.", code: "AUTH_REQUIRED" },
+        { status: 401 },
+      );
+    }
+    if (!isPremiumConfigured()) {
+      return NextResponse.json(
+        {
+          error: "Premium üyelik şu an hazır değil. Lütfen daha sonra dene.",
+          code: "PREMIUM_NOT_READY",
+        },
+        { status: 503 },
+      );
+    }
+    const checkout = await createCheckout("premium", { type: "user", id: uid });
+    if (!checkout) {
+      return NextResponse.json(
+        { error: "Abonelik başlatılamadı. Lütfen tekrar deneyin." },
+        { status: 502 },
+      );
+    }
+    return NextResponse.json({ checkout_url: checkout.checkoutUrl });
   }
 
   return NextResponse.json({ error: "Bilinmeyen işlem." }, { status: 400 });

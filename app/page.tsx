@@ -1,3 +1,6 @@
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { SID_COOKIE, verifySession } from "@/lib/auth";
 import { FAQS } from "@/lib/marketing";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { Hero } from "@/components/marketing/Hero";
@@ -12,6 +15,7 @@ import { Testimonials } from "@/components/marketing/Testimonials";
 import { Faq } from "@/components/marketing/Faq";
 import { CtaSection } from "@/components/marketing/CtaSection";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
+import { FirstVisitGate } from "@/components/funnel/FirstVisitGate";
 
 // FAQ yapılandırılmış verisi (SEO/GEO için korunur).
 const faqJsonLd = {
@@ -24,13 +28,19 @@ const faqJsonLd = {
   })),
 };
 
+export const dynamic = "force-dynamic";
+
 export default function LandingPage() {
+  // Giriş yapmış kullanıcı landing'i görmesin → doğrudan panele.
+  if (verifySession(cookies().get(SID_COOKIE)?.value)) redirect("/hesap");
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <FirstVisitGate />
       <SiteHeader />
       <main className="relative overflow-hidden">
         <Hero />

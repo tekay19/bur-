@@ -154,7 +154,7 @@ export default function BurclarPage() {
             Yükselen burcun, ay burcun ve gezegenlerinle birlikte kişiye özel
             doğum haritanı ücretsiz çıkar.
           </p>
-          <Link href="/harita-olustur" className="mt-7 inline-block">
+          <Link href="/kesfet" className="mt-7 inline-block">
             <Button variant="gold" size="lg" className="group">
               Ücretsiz Haritamı Oluştur
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

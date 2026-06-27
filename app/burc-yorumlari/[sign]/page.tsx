@@ -2,13 +2,16 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Activity, Briefcase, Heart, Lightbulb, Lock, Moon, Star, Wallet } from "lucide-react";
+import { Activity, Briefcase, Heart, Lightbulb, Moon, Star, Wallet, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
 import { TestsSection } from "@/components/marketing/TestsSection";
 import { TransitBanner } from "@/components/horoscope/TransitBanner";
-import { SID_COOKIE, verifySession } from "@/lib/auth";
+import { PremiumLock } from "@/components/horoscope/PremiumLock";
+import { SID_COOKIE, getUserById, verifySession } from "@/lib/auth";
+import { DAILY_TRIAL_COOKIE, trialDaysLeft } from "@/lib/dailyTrial";
+import { getDailyHoroscopeAI } from "@/lib/ai/generateDailyHoroscope";
 import { getAllSigns, getSign } from "@/lib/zodiac";
 import {
   getDailyHoroscope,
@@ -54,18 +57,41 @@ function Stars({ n }: { n: number }) {
   );
 }
 
-export default function SignHoroscopePage({ params }: { params: { sign: string } }) {
+export default async function SignHoroscopePage({
+  params,
+}: {
+  params: { sign: string };
+}) {
   const sign = getSign(params.sign);
   if (!sign) notFound();
   const today = new Date();
-  const h = getDailyHoroscope(sign.slug, today);
+  let h = getDailyHoroscope(sign.slug, today);
   if (!h) notFound();
 
-  const isMember = Boolean(verifySession(cookies().get(SID_COOKIE)?.value));
+  // Erişim: günlük detaylı yorum üyelik planına dahildir.
+  // - Premium üye: süresiz.
+  // - Ücretsiz üye: cihaz başına 15 günlük deneme.
+  // - Misafir: kilitli (üyeliğe yönlendirilir).
+  const uid = verifySession(cookies().get(SID_COOKIE)?.value);
+  const user = uid ? await getUserById(uid).catch(() => null) : null;
+  const isMember = Boolean(user);
+  const isPremium = user?.plan === "premium";
+  const trialLeft = trialDaysLeft(
+    cookies().get(DAILY_TRIAL_COOKIE)?.value,
+    user?.createdAt ?? 0,
+    isPremium,
+  );
+  const showDeep = isMember && trialLeft > 0;
+
+  // Üye + erişim varsa günlük yorum AI ile yazılır (burç+gün başına cache'li).
+  if (showDeep) {
+    h = (await getDailyHoroscopeAI(sign.slug, today)) ?? h;
+  }
+
   const others = getAllSigns().filter((s) => s.slug !== sign.slug);
   const alerts = getTransitAlerts(today);
-  const weekly = isMember ? getWeeklyHoroscope(sign.slug, today) : null;
-  const monthly = isMember ? getMonthlyHoroscope(sign.slug, today) : null;
+  const weekly = showDeep ? getWeeklyHoroscope(sign.slug, today) : null;
+  const monthly = showDeep ? getMonthlyHoroscope(sign.slug, today) : null;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -119,7 +145,18 @@ export default function SignHoroscopePage({ params }: { params: { sign: string }
 
         {/* Genel — ÜCRETSİZ (herkese açık, SEO) */}
         <section className="mt-6 rounded-3xl border border-primary/20 bg-card/60 p-6 backdrop-blur-md sm:p-8">
-          <h2 className="mb-3 font-display text-xl font-semibold">Bugün Genel</h2>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-display text-xl font-semibold">Bugün Genel</h2>
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium capitalize text-primary">
+                {h.tema}
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Zap className="h-3.5 w-3.5 text-gold" /> Enerji
+                <Stars n={h.genelEnerji} />
+              </span>
+            </div>
+          </div>
           <p className="text-[15px] leading-relaxed text-foreground/90">{h.genel}</p>
         </section>
 
@@ -141,9 +178,23 @@ export default function SignHoroscopePage({ params }: { params: { sign: string }
           </div>
         </div>
 
-        {/* Aşk / Kariyer / Para — ÜYEYE ÖZEL */}
-        {isMember ? (
+        {/* Aşk / Kariyer / Para — üyelik planı (premium veya 15 gün deneme) */}
+        {showDeep ? (
           <div className="mt-6 space-y-4">
+            {!isPremium && trialLeft > 0 && (
+              <div className="flex items-center justify-between gap-3 rounded-2xl border border-gold/25 bg-gold/5 px-4 py-2.5 text-sm">
+                <span className="text-foreground/85">
+                  ✨ Ücretsiz günlük yorum denemen:{" "}
+                  <strong className="text-gold">{trialLeft} gün</strong> kaldı
+                </span>
+                <Link
+                  href="/hesap"
+                  className="flex-shrink-0 text-xs font-medium text-gold hover:underline"
+                >
+                  Premium&apos;a geç →
+                </Link>
+              </div>
+            )}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <DeepCard icon={<Heart className="h-4 w-4 text-accent" />} title="Aşk" stars={h.enerji.ask} text={h.ask} />
               <DeepCard icon={<Briefcase className="h-4 w-4 text-gold" />} title="Kariyer" stars={h.enerji.kariyer} text={h.kariyer} />
@@ -178,34 +229,19 @@ export default function SignHoroscopePage({ params }: { params: { sign: string }
             </div>
           </div>
         ) : (
-          <div className="relative mt-6 overflow-hidden rounded-3xl border border-primary/20 bg-card/50 p-6 backdrop-blur-md sm:p-8">
-            <div className="pointer-events-none flex gap-4 opacity-30 blur-[3px]" aria-hidden>
-              <LockedPreview title="Aşk" />
-              <LockedPreview title="Kariyer" />
-              <LockedPreview title="Para" />
-            </div>
-            <div className="mt-2 text-center">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-                <Lock className="h-5 w-5" />
-              </span>
-              <h2 className="mt-3 font-display text-lg font-semibold">
-                Aşk · Kariyer · Para yorumun üyelere özel
-              </h2>
-              <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                Ücretsiz üye ol; her gün <strong className="text-foreground/90">aşk, kariyer ve para</strong>{" "}
-                detaylı yorumun, <strong className="text-foreground/90">haftalık & aylık</strong> yorumun,
-                şanslı renk-sayın ve e-posta hatırlatman hazır olsun.
-              </p>
-              <div className="mt-5 flex flex-col items-center justify-center gap-2 sm:flex-row">
-                <Link href="/giris?mode=register">
-                  <Button variant="gold" size="lg">Ücretsiz üye ol</Button>
-                </Link>
-                <Link href="/giris">
-                  <Button variant="outline" size="lg">Giriş yap</Button>
-                </Link>
-              </div>
-            </div>
-          </div>
+          <PremiumLock
+            teasers={[
+              { key: "ask", title: "Aşk", text: h.ask, stars: h.enerji.ask },
+              {
+                key: "kariyer",
+                title: "Kariyer",
+                text: h.kariyer,
+                stars: h.enerji.kariyer,
+              },
+              { key: "para", title: "Para", text: h.para, stars: h.enerji.para },
+            ]}
+            expired={isMember}
+          />
         )}
 
         {/* Diğer burçlar */}
@@ -253,15 +289,3 @@ function DeepCard({ icon, title, stars, text }: { icon: React.ReactNode; title: 
   );
 }
 
-function LockedPreview({ title }: { title: string }) {
-  return (
-    <div className="flex-1 rounded-2xl border border-primary/15 bg-card/60 p-5">
-      <p className="text-sm font-semibold">{title}</p>
-      <div className="mt-3 space-y-1.5">
-        <div className="h-2 w-full rounded bg-secondary" />
-        <div className="h-2 w-5/6 rounded bg-secondary" />
-        <div className="h-2 w-4/6 rounded bg-secondary" />
-      </div>
-    </div>
-  );
-}

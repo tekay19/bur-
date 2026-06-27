@@ -156,13 +156,13 @@ export function AnalysisDashboard({ id }: { id: string }) {
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <Link
-            href="/"
-            aria-label="Ana sayfaya dön"
+            href="/hesap"
+            aria-label="Panele dön"
             className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
           >
             <Moon className="h-5 w-5 text-gold" />
             <span className="hidden text-sm font-medium sm:inline">
-              Ana sayfa
+              Panelim
             </span>
           </Link>
           <div>

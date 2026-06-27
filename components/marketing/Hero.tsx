@@ -34,7 +34,7 @@ export function Hero() {
 
           <Reveal delay={0.15}>
             <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row lg:items-start">
-              <Link href="/harita-olustur" className="w-full sm:w-auto">
+              <Link href="/kesfet" className="w-full sm:w-auto">
                 <Button variant="gold" size="lg" className="group w-full sm:w-auto">
                   Ücretsiz Haritamı Oluştur
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

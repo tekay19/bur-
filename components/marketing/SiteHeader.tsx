@@ -18,12 +18,21 @@ const NAV = [
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Oturum durumuna göre birincil CTA: üye → panel/harita, misafir → funnel.
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => setLoggedIn(Boolean(d.user)))
+      .catch(() => setLoggedIn(false));
   }, []);
 
   // Mobil menü açıkken arkayı kaydırmayı kilitle.
@@ -60,11 +69,14 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-3 md:flex">
           <AuthWidget />
-          <Link href="/harita-olustur">
-            <Button variant="gold" size="sm">
-              Ücretsiz başla
-            </Button>
-          </Link>
+          {/* Misafir CTA — giriş yapmış kullanıcı görmez (panele profilden ulaşır) */}
+          {loggedIn === false && (
+            <Link href="/kesfet">
+              <Button variant="gold" size="sm">
+                Ücretsiz başla
+              </Button>
+            </Link>
+          )}
         </div>
 
         <button
@@ -92,11 +104,17 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
-            <Link href="/harita-olustur" onClick={() => setOpen(false)} className="mt-2">
-              <Button variant="gold" className="w-full">
-                Ücretsiz başla
-              </Button>
-            </Link>
+            {loggedIn === false && (
+              <Link
+                href="/kesfet"
+                onClick={() => setOpen(false)}
+                className="mt-2"
+              >
+                <Button variant="gold" className="w-full">
+                  Ücretsiz başla
+                </Button>
+              </Link>
+            )}
           </nav>
         </div>
       )}

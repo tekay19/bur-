@@ -152,7 +152,7 @@ export default function CategoryPage({
         </div>
 
         <div className="mt-14 text-center">
-          <Link href="/harita-olustur">
+          <Link href="/kesfet">
             <Button variant="gold" size="lg" className="group">
               Ücretsiz Haritamı Oluştur
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

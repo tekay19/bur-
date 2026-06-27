@@ -130,7 +130,7 @@ export function ZodiacQuiz() {
             Bu test güneş burcuna dair eğlenceli bir tahmindir. Gerçek burcunu ve
             tüm haritanı öğrenmek ister misin?
           </p>
-          <Link href="/harita-olustur" className="mt-3 inline-block">
+          <Link href="/kesfet" className="mt-3 inline-block">
             <Button variant="default" size="sm">
               Ücretsiz doğum haritamı oluştur
             </Button>

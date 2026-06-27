@@ -3,6 +3,7 @@ import { AID_COOKIE, AID_COOKIE_OPTS } from "@/lib/credits";
 import {
   fetchCheckout,
   grantCheckoutCredits,
+  grantPremium,
   verifyRedirectSignature,
 } from "@/lib/creem";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
@@ -72,6 +73,12 @@ export async function POST(req: NextRequest) {
       { error: "Sipariş bilgisi eksik." },
       { status: 422 },
     );
+  }
+
+  // Premium abonelik → plan'ı premium yap (kredi yükleme yok).
+  if (pack === "premium") {
+    if (recipientType === "user") await grantPremium(recipientId);
+    return NextResponse.json({ ok: true, premium: true });
   }
 
   const result = await grantCheckoutCredits({

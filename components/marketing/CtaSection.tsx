@@ -32,7 +32,7 @@ export function CtaSection() {
             Birkaç bilgiyle başla; haritan, transitlerin ve AI yorumun
             saniyeler içinde hazır.
           </p>
-          <Link href="/harita-olustur" className="mt-8 inline-block">
+          <Link href="/kesfet" className="mt-8 inline-block">
             <Button variant="gold" size="lg" className="group">
               Ücretsiz Haritamı Oluştur
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -5,6 +5,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import {
   PLANET_GLYPH,
   SIGN_GLYPH,
+  signFromLongitude,
 } from "@/lib/astrology/constants";
 import type { ChartScores, NatalChart } from "@/lib/astrology/types";
 
@@ -17,14 +18,11 @@ export function ChartSummary({
 }) {
   const sun = natal.planets.find((p) => p.name === "Güneş");
   const moon = natal.planets.find((p) => p.name === "Ay");
+  // Yükselen/MC planets dizisinde olmayabilir → açı (longitude) değerinden türet.
   const asc =
-    natal.ascendant !== null
-      ? natal.planets.find((p) => p.name === "Yükselen")
-      : null;
+    natal.ascendant != null ? signFromLongitude(natal.ascendant) : null;
   const mc =
-    natal.midheaven !== null
-      ? natal.planets.find((p) => p.name === "MC")
-      : null;
+    natal.midheaven != null ? signFromLongitude(natal.midheaven) : null;
 
   const highlights = [
     { label: "Güneş", planet: sun, glyph: "☉" },

@@ -1,17 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CREDIT_PACKS } from "@/lib/creditPacks";
 
 type Mode = "login" | "register";
 
+// Kayıt/giriş sonrası izin verilen site-içi hedefler (açık yönlendirme yok).
+// Yalnızca bu sabit liste; başka her şey yok sayılıp /hesap'a düşer.
+const SAFE_NEXT = new Set(["harita-olustur", "hesap"]);
+
 // Giriş + Kayıt tek sayfada, sekmeli. (Eski modal'ın sayfa hali.)
-export function AuthForm({ initialMode = "login" }: { initialMode?: Mode }) {
+// `pack` verilirse (funnel'dan gelen plan seçimi), başarılı kayıt/giriş
+// sonrası doğrudan o paketin ödemesi başlatılır.
+export function AuthForm({
+  initialMode = "login",
+  pack,
+  next,
+}: {
+  initialMode?: Mode;
+  pack?: string;
+  next?: string;
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState("");
@@ -20,6 +35,41 @@ export function AuthForm({ initialMode = "login" }: { initialMode?: Mode }) {
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  // Funnel'da girilen adı kayıt formuna ön-doldur (kolaylık).
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("astro_onboarding");
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (typeof data?.name === "string" && data.name.trim())
+          setName(data.name);
+      }
+    } catch {
+      /* yoksay */
+    }
+  }, []);
+
+  // Seçilen paket için Creem ödemesini başlat → ödeme sayfasına yönlendir.
+  // Başarısızsa hesap paneline düş (orada tekrar deneyebilir).
+  async function startCheckout(packId: string) {
+    try {
+      const res = await fetch("/api/credits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "purchase", pack: packId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.checkout_url) {
+        window.location.href = data.checkout_url;
+        return;
+      }
+    } catch {
+      /* sessizce hesaba düş */
+    }
+    router.push("/hesap");
+    router.refresh();
+  }
 
   function switchMode(next: Mode) {
     if (next === mode) return;
@@ -43,7 +93,20 @@ export function AuthForm({ initialMode = "login" }: { initialMode?: Mode }) {
         setBusy(false);
         return;
       }
-      // Başarılı: oturum çerezi set edildi → doğrudan hesap paneline (az tıklama).
+      // Başarılı: oturum çerezi set edildi.
+      // Funnel'dan GEÇERLİ bir paket seçildiyse → doğrudan ödemeyi başlat.
+      // Paket id'si bilinen listeye doğrulanır (tahrif edilmiş ?pack= reddedilir).
+      if (pack && CREDIT_PACKS.some((p) => p.id === pack)) {
+        await startCheckout(pack);
+        return;
+      }
+      // `next` yalnızca güvenli allowlist'teyse oraya devam et (açık yönlendirme yok).
+      if (next && SAFE_NEXT.has(next)) {
+        router.push(`/${next}`);
+        router.refresh();
+        return;
+      }
+      // Aksi halde doğrudan hesap paneline (az tıklama).
       router.push("/hesap");
       router.refresh();
     } catch {

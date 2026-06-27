@@ -11,6 +11,7 @@ const PERKS = [
   "Gezegen, ev ve açı skorları",
   "Kariyer, aşk, para, sınav, sağlık",
   "12 aylık zaman çizelgesi",
+  "Günlük burç yorumu (ücretsiz üyelikte 15 gün)",
 ];
 
 export function Pricing() {
@@ -38,7 +39,7 @@ export function Pricing() {
               </li>
             ))}
           </ul>
-          <Link href="/harita-olustur" className="mt-6">
+          <Link href="/kesfet" className="mt-6">
             <Button variant="outline" className="w-full">
               Ücretsiz başla
             </Button>
@@ -76,10 +77,14 @@ export function Pricing() {
                 </li>
               ))}
             </ul>
-            <Link href="/harita-olustur" className="mt-6">
-              <Button variant={pack.popular ? "gold" : "default"} className="w-full">
+            {/* Plan seç → önce üyelik → kayıttan sonra gerçek ödeme otomatik başlar */}
+            <Link href={`/giris?mode=register&pack=${pack.id}`} className="mt-6">
+              <Button
+                variant={pack.popular ? "gold" : "default"}
+                className="w-full"
+              >
                 {pack.popular && <Sparkles className="h-4 w-4" />}
-                {pack.label} al
+                Satın Al
               </Button>
             </Link>
           </Reveal>

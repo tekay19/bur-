@@ -155,7 +155,7 @@ export function ProfileResultView({
           burcun, ay burcun ve gezegenlerinle <strong className="text-foreground/90">
           gerçek doğum haritanı</strong> da çıkarmak ister misin?
         </p>
-        <Link href="/harita-olustur" className="mt-4 inline-block">
+        <Link href="/kesfet" className="mt-4 inline-block">
           <Button variant="default" size="lg">
             Ücretsiz doğum haritamı oluştur
             <ArrowRight className="h-4 w-4" />

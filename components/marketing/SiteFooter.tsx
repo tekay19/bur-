@@ -5,7 +5,7 @@ const COLS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Ürün",
     links: [
-      { label: "Harita oluştur", href: "/harita-olustur" },
+      { label: "Harita oluştur", href: "/kesfet" },
       { label: "Özellikler", href: "/#ozellikler" },
       { label: "Fiyatlar", href: "/#fiyatlar" },
     ],

@@ -10,6 +10,10 @@ import {
   signSession,
 } from "@/lib/auth";
 import { AID_COOKIE, claimAccountCredits } from "@/lib/credits";
+import {
+  DAILY_TRIAL_COOKIE,
+  DAILY_TRIAL_COOKIE_OPTS,
+} from "@/lib/dailyTrial";
 import { sendWelcomeEmail } from "@/lib/email";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
@@ -21,6 +25,17 @@ const schema = z.object({
   password: z.string().min(8, "Şifre en az 8 karakter olmalı").max(200),
   name: z.string().max(60).optional().or(z.literal("")),
 });
+
+// Cihaz başına ücretsiz "ilk analiz" hakkı çerezi. İlk hesap hoş geldin
+// kredisini alır; aynı cihazdan açılan diğer hesaplara ücretsiz analiz verilmez.
+const FREEBIE_COOKIE = "atk_fb";
+const FREEBIE_COOKIE_OPTS = {
+  httpOnly: true as const,
+  sameSite: "lax" as const,
+  secure: process.env.NODE_ENV === "production",
+  path: "/",
+  maxAge: 60 * 60 * 24 * 365, // 1 yıl
+};
 
 export async function POST(req: NextRequest) {
   // Sahte hesap spam'ine karşı hız sınırı (IP başına). Her hesap ücretsiz
@@ -54,12 +69,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Misafir kredilerini hesaba TAŞI (kopyalama değil) + hoş geldin hediyesi.
-    // claimAccountCredits misafir hesabını atomik olarak 0'a çeker; böylece
-    // aynı krediler hem üyede hem misafirde sayılmaz (çift harcama önlenir).
+    // Cihazın ücretsiz "ilk analiz" hakkı daha önce kullanıldı mı?
+    // İlk hesap: misafir kredisi taşınır + hoş geldin kredisi verilir.
+    // Aynı cihazdan sonraki hesaplar: 0 kredi (ücretsiz analiz yok, satın alır).
+    const firstOnDevice = !req.cookies.get(FREEBIE_COOKIE)?.value;
+
     let guestCredits = 0;
     const aid = req.cookies.get(AID_COOKIE)?.value;
-    if (aid) {
+    if (firstOnDevice && aid) {
+      // claimAccountCredits misafir hesabını atomik olarak 0'a çeker; böylece
+      // aynı krediler hem üyede hem misafirde sayılmaz (çift harcama önlenir).
       try {
         guestCredits = await claimAccountCredits(aid);
       } catch {
@@ -67,11 +86,13 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const initialCredits = firstOnDevice ? guestCredits + WELCOME_BONUS : 0;
+
     const user = await createUser(
       email,
       hashPassword(password),
       name || null,
-      guestCredits + WELCOME_BONUS,
+      initialCredits,
     );
 
     // Hoş geldin maili (best-effort; başarısız olsa da kayıt başarılı sayılır).
@@ -86,6 +107,17 @@ export async function POST(req: NextRequest) {
     // Krediler taşındı; eski misafir çerezini sıfırla ki yeniden kullanılmasın
     // (logout sonrası eski hesaptan çift harcama vektörünü kapatır).
     if (aid) res.cookies.set(AID_COOKIE, "", { path: "/", maxAge: 0 });
+    // Cihazın ücretsiz hakkını işaretle → sonraki hesaplar bonus alamaz.
+    res.cookies.set(FREEBIE_COOKIE, "1", FREEBIE_COOKIE_OPTS);
+    // Günlük yorum 15 günlük denemesini cihaz bazında başlat (yoksa).
+    // Aynı cihazdan yeni hesaplar denemeyi sıfırlayamaz.
+    if (!req.cookies.get(DAILY_TRIAL_COOKIE)?.value) {
+      res.cookies.set(
+        DAILY_TRIAL_COOKIE,
+        String(Date.now()),
+        DAILY_TRIAL_COOKIE_OPTS,
+      );
+    }
     return res;
   } catch (e) {
     console.error("Kayıt hatası:", e);

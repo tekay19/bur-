@@ -1,24 +1,35 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Check, KeyRound, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CREDIT_PACKS } from "@/lib/creditPacks";
 
-// Kredi bitince gösterilen ödeme/yükleme ekranı (üyeliksiz, test ödeme).
+// Kredi bitince gösterilen ödeme/yükleme ekranı.
+// Akış: plan seç → (misafirse) önce üyelik → sonra gerçek ödeme.
+// Üye ise doğrudan ödemeye gider (üyelik zaten var).
 export function Paywall({
   recoveryCode,
   onCredits,
+  loggedIn = false,
 }: {
   recoveryCode?: string;
   onCredits: (credits: number) => void;
+  loggedIn?: boolean;
 }) {
+  const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
 
   async function buy(pack: string) {
+    // Misafir → önce üye ol; kayıttan sonra ödeme otomatik başlar.
+    if (!loggedIn) {
+      router.push(`/giris?mode=register&pack=${pack}`);
+      return;
+    }
     setBusy(pack);
     setMsg(null);
     try {
@@ -70,8 +81,9 @@ export function Paywall({
           Ücretsiz hakkın doldu
         </h3>
         <p className="mt-2 text-sm text-muted-foreground">
-          Yeni analizler için kredi yükle. Üyelik gerekmez — kredin bu cihaza
-          tanımlanır.
+          {loggedIn
+            ? "Yeni analizler için bir paket seç, güvenli ödemeyle kredini yükle."
+            : "Bir paket seç; saniyeler içinde üye ol, ardından güvenli ödemeyle kredini yükle."}
         </p>
       </div>
 

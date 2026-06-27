@@ -1,7 +1,7 @@
 import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { CREDIT_PACKS } from "./creditPacks";
 import { hasDatabase, prisma } from "./db/prisma";
-import { addUserCredits } from "./auth";
+import { addUserCredits, setUserPlan } from "./auth";
 import { addCredits, getOrCreateAccount } from "./credits";
 
 // ============================================================
@@ -28,12 +28,18 @@ export function isCreemConfigured(): boolean {
 }
 
 // pack id -> Creem product_id (env ile override edilebilir; varsayılan test ürünleri).
+// "premium" tekrarlayan (subscription) bir Creem ürünüdür.
 function productIdFor(pack: string): string | null {
   if (pack === "pack3")
     return process.env.CREEM_PRODUCT_PACK3 ?? "prod_3fdwc7zcj7NrNnydPgz1n6";
   if (pack === "pack10")
     return process.env.CREEM_PRODUCT_PACK10 ?? "prod_32ER2p2Ghq3dPdLUa9ZCAF";
+  if (pack === "premium") return process.env.CREEM_PRODUCT_PREMIUM ?? null;
   return null;
+}
+
+export function isPremiumConfigured(): boolean {
+  return isCreemConfigured() && Boolean(process.env.CREEM_PRODUCT_PREMIUM);
 }
 
 function siteUrl(): string {
@@ -148,6 +154,17 @@ function safeEqualHex(a: string, b: string): boolean {
   } catch {
     return false;
   }
+}
+
+// --- Premium üyelik (abonelik) ---
+// Plan ayarı doğası gereği idempotent (aynı değeri yazmak güvenli).
+export async function grantPremium(recipientId: string): Promise<boolean> {
+  if (!recipientId) return false;
+  return setUserPlan(recipientId, "premium");
+}
+export async function revokePremium(recipientId: string): Promise<boolean> {
+  if (!recipientId) return false;
+  return setUserPlan(recipientId, "free");
 }
 
 // --- İdempotent kredi yükleme (order_id başına bir kez) ---

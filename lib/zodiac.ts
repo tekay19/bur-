@@ -688,6 +688,44 @@ export function getSign(slug: string): Sign | undefined {
   return SIGNS.find((s) => s.slug === slug);
 }
 
+// Doğum tarihinden (tropikal) Güneş burcu. "YYYY-MM-DD" veya Date kabul eder.
+export function getSignByDate(input: string | Date): Sign {
+  let m: number, d: number;
+  if (typeof input === "string") {
+    const [, mo, da] = input.split("-").map(Number);
+    m = mo;
+    d = da;
+  } else {
+    m = input.getMonth() + 1;
+    d = input.getDate();
+  }
+  const slug =
+    (m === 3 && d >= 21) || (m === 4 && d <= 19)
+      ? "koc"
+      : (m === 4 && d >= 20) || (m === 5 && d <= 20)
+        ? "boga"
+        : (m === 5 && d >= 21) || (m === 6 && d <= 20)
+          ? "ikizler"
+          : (m === 6 && d >= 21) || (m === 7 && d <= 22)
+            ? "yengec"
+            : (m === 7 && d >= 23) || (m === 8 && d <= 22)
+              ? "aslan"
+              : (m === 8 && d >= 23) || (m === 9 && d <= 22)
+                ? "basak"
+                : (m === 9 && d >= 23) || (m === 10 && d <= 22)
+                  ? "terazi"
+                  : (m === 10 && d >= 23) || (m === 11 && d <= 21)
+                    ? "akrep"
+                    : (m === 11 && d >= 22) || (m === 12 && d <= 21)
+                      ? "yay"
+                      : (m === 12 && d >= 22) || (m === 1 && d <= 19)
+                        ? "oglak"
+                        : (m === 1 && d >= 20) || (m === 2 && d <= 18)
+                          ? "kova"
+                          : "balik";
+  return getSign(slug) ?? SIGNS[0];
+}
+
 // SEO: tüm burç anahtar kelimelerini birleştir (tekilleştirilmiş).
 export function getAllSignKeywords(): string[] {
   const seen = new Set<string>();
