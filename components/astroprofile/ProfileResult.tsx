@@ -1,8 +1,34 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, RotateCcw, Share2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowRight,
+  Briefcase,
+  Flame,
+  Heart,
+  Moon,
+  RotateCcw,
+  Share2,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { ProfileResult, TraitScore } from "@/lib/astroprofile/engine";
+import type {
+  ProfileCategory,
+  ProfileResult,
+  ProfileSection,
+  TraitScore,
+} from "@/lib/astroprofile/engine";
 import { Radar } from "./Radar";
+
+const CATEGORIES: { key: ProfileCategory; label: string; icon: typeof Sparkles }[] = [
+  { key: "portre", label: "Portren", icon: Sparkles },
+  { key: "guc", label: "Güç & Gölge", icon: Flame },
+  { key: "ask", label: "Aşk & Uyum", icon: Heart },
+  { key: "kariyer", label: "Kariyer & Zihin", icon: Briefcase },
+  { key: "kehanet", label: "Yıldızların Sözü", icon: Moon },
+];
 
 function TraitBar({ t, tone }: { t: TraitScore; tone: "high" | "low" }) {
   return (
@@ -25,6 +51,39 @@ function TraitBar({ t, tone }: { t: TraitScore; tone: "high" | "low" }) {
   );
 }
 
+function SectionCard({ sec, wide }: { sec: ProfileSection; wide?: boolean }) {
+  return (
+    <section
+      className={`rounded-3xl border border-primary/15 bg-card/50 p-6 backdrop-blur-md ${
+        wide ? "lg:col-span-2" : ""
+      }`}
+    >
+      <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">
+        {sec.title}
+      </h3>
+      <div className="mt-3 space-y-2.5">
+        {sec.paragraphs.map((p, j) => (
+          <p key={j} className="text-[15px] leading-relaxed text-foreground/85">
+            {p}
+          </p>
+        ))}
+      </div>
+      {sec.tags && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {sec.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function ProfileResultView({
   result,
   onRestart,
@@ -36,10 +95,14 @@ export function ProfileResultView({
   onShare: () => void;
   copied: boolean;
 }) {
+  const [active, setActive] = useState<ProfileCategory>("portre");
+  const sectionsFor = (cat: ProfileCategory) =>
+    result.sections.filter((s) => s.category === cat);
+
   return (
     <div className="space-y-6">
       {/* Başlık */}
-      <div className="overflow-hidden rounded-3xl border border-primary/25 bg-card/60 p-6 text-center backdrop-blur-md sm:p-8">
+      <div className="overflow-hidden rounded-3xl border border-primary/25 bg-gradient-to-br from-primary/10 via-card/60 to-gold/5 p-6 text-center backdrop-blur-md sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary/80">
           AstroProfil™ hazır
         </p>
@@ -49,81 +112,92 @@ export function ProfileResultView({
         <h2 className="mt-4 font-display text-2xl font-bold tracking-tight sm:text-3xl">
           {result.signName} · Kişisel Profilin
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          Burcun ile verdiğin {10} yanıt birleştirildi. Bu profil tamamen sana
-          özel — aynı burçtan biri farklı cevap verseydi, farklı çıkardı.
+        <p className="mx-auto mt-2 max-w-md text-sm italic text-muted-foreground">
+          “{result.headline}.”
         </p>
       </div>
 
-      {/* Radar + öne çıkanlar */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-primary/15 bg-card/50 p-6 backdrop-blur-md">
-          <h3 className="mb-2 text-sm font-semibold text-muted-foreground">
-            Kişilik haritan
-          </h3>
-          <Radar scores={result.scores} />
-        </div>
-        <div className="space-y-5 rounded-3xl border border-primary/15 bg-card/50 p-6 backdrop-blur-md">
-          <div>
-            <h3 className="mb-3 text-sm font-semibold text-success">
-              En güçlü yönlerin
-            </h3>
-            <div className="space-y-3">
-              {result.top.map((t) => (
-                <TraitBar key={t.key} t={t} tone="high" />
-              ))}
-            </div>
-          </div>
-          <div>
-            <h3 className="mb-3 text-sm font-semibold text-warning">
-              Gelişime açık yönlerin
-            </h3>
-            <div className="space-y-3">
-              {result.low.map((t) => (
-                <TraitBar key={t.key} t={t} tone="low" />
-              ))}
-            </div>
-          </div>
-        </div>
+      {/* Kategori sekmeleri (enine) */}
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {CATEGORIES.map((c) => {
+          const Icon = c.icon;
+          const on = active === c.key;
+          return (
+            <button
+              key={c.key}
+              type="button"
+              onClick={() => setActive(c.key)}
+              className={`inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                on
+                  ? "border-gold/50 bg-gold/15 text-gold"
+                  : "border-primary/15 bg-card/50 text-muted-foreground hover:border-primary/35 hover:text-foreground"
+              }`}
+            >
+              <Icon className="h-4 w-4" />
+              {c.label}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Dinamik bölümler */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {result.sections.map((sec, i) => (
-          <section
-            key={sec.id}
-            className={`rounded-3xl border border-primary/15 bg-card/50 p-6 backdrop-blur-md ${
-              i === 0 ? "sm:col-span-2" : ""
-            }`}
-          >
-            <h3 className="flex items-center gap-2 font-display text-lg font-semibold">
-              <span className="text-xs font-bold text-primary/70">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              {sec.title}
-            </h3>
-            <div className="mt-3 space-y-2.5">
-              {sec.paragraphs.map((p, j) => (
-                <p key={j} className="text-sm leading-relaxed text-foreground/85">
-                  {p}
-                </p>
+      {/* Aktif kategori içeriği */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={active}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {active === "portre" ? (
+            <div className="grid gap-4">
+              {sectionsFor("portre").map((sec) => (
+                <SectionCard key={sec.id} sec={sec} />
+              ))}
+              <div className="grid gap-4 lg:grid-cols-2">
+                <div className="rounded-3xl border border-primary/15 bg-card/50 p-6 backdrop-blur-md">
+                  <h3 className="mb-2 text-sm font-semibold text-muted-foreground">
+                    Kişilik haritan
+                  </h3>
+                  <Radar scores={result.scores} />
+                </div>
+                <div className="space-y-5 rounded-3xl border border-primary/15 bg-card/50 p-6 backdrop-blur-md">
+                  <div>
+                    <h3 className="mb-3 text-sm font-semibold text-success">
+                      En güçlü 4 yönün
+                    </h3>
+                    <div className="space-y-3">
+                      {result.top.map((t) => (
+                        <TraitBar key={t.key} t={t} tone="high" />
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="mb-3 text-sm font-semibold text-warning">
+                      Gelişime açık 3 yönün
+                    </h3>
+                    <div className="space-y-3">
+                      {result.low.map((t) => (
+                        <TraitBar key={t.key} t={t} tone="low" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-4 lg:grid-cols-2">
+              {sectionsFor(active).map((sec) => (
+                <SectionCard
+                  key={sec.id}
+                  sec={sec}
+                  wide={sec.id === "genel" || sec.id === "kapanis" || !!sec.tags}
+                />
               ))}
             </div>
-            {sec.tags && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {sec.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </section>
-        ))}
-      </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
 
       {/* Eylemler */}
       <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
@@ -152,8 +226,9 @@ export function ProfileResultView({
       <div className="rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/15 via-card/40 to-gold/10 p-6 text-center backdrop-blur-md sm:p-8">
         <p className="mx-auto max-w-lg text-sm text-muted-foreground">
           Bu profil güneş burcun ve kişilik tercihlerine dayanıyor. Yükselen
-          burcun, ay burcun ve gezegenlerinle <strong className="text-foreground/90">
-          gerçek doğum haritanı</strong> da çıkarmak ister misin?
+          burcun, ay burcun ve gezegenlerinle{" "}
+          <strong className="text-foreground/90">gerçek doğum haritanı</strong> da
+          çıkarmak ister misin?
         </p>
         <Link href="/kesfet" className="mt-4 inline-block">
           <Button variant="default" size="lg">
