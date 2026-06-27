@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Brain, Sparkles } from "lucide-react";
+import { ArrowRight, Brain, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeading } from "./Section";
 import { Reveal, RevealGroup } from "./Reveal";
@@ -10,10 +10,20 @@ const TESTS = [
     badge: "AstroProfil™",
     icon: Brain,
     title: "Dinamik Kişilik Analizi",
-    desc: "Burcun ile kişilik tercihlerini birleştiren derin analiz. 12 özellik, 10 soru; karar verme tarzın, ilişki stilin, kariyer eğilimin ve daha fazlası. Aynı burçtan herkes farklı sonuç alır.",
+    desc: "Burcun ile kişilik tercihlerini birleştiren derin analiz. 12 özellik, 10 soru; karar verme tarzın, ilişki stilin, kariyer eğilimin ve daha fazlası.",
     cta: "Analize Başla",
     featured: true,
     minutes: "~2 dk",
+  },
+  {
+    href: "/uyumluluk",
+    badge: "Aşk Testi",
+    icon: Heart,
+    title: "Burç Uyumu Testi",
+    desc: "Senin burcun ve sevdiğinin burcunu seç; aşk, iletişim, güven ve tutku uyumunuzu yüzdeyle anında öğren ve paylaş.",
+    cta: "Uyuma Bak",
+    featured: false,
+    minutes: "~30 sn",
   },
   {
     href: "/test",
@@ -34,11 +44,11 @@ export function TestsSection({ compact = false }: { compact?: boolean }) {
         <SectionHeading
           eyebrow="Ücretsiz Testler"
           title="Kendini keşfet"
-          description="İki ücretsiz testle astrolojik profilini çıkar. Kayıt gerekmez, sonucunu paylaş."
+          description="Ücretsiz testlerle astrolojik profilini ve uyumunu keşfet. Kayıt gerekmez, sonucunu paylaş."
         />
       </Reveal>
 
-      <RevealGroup className="mt-12 grid gap-5 md:grid-cols-2">
+      <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {TESTS.map((t) => {
           const Icon = t.icon;
           return (

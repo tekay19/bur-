@@ -16,6 +16,7 @@ const COLS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Günlük Burç Yorumu", href: "/burc-yorumlari" },
       { label: "AstroProfil™", href: "/astroprofil" },
       { label: "Burçlar", href: "/burclar" },
+      { label: "Burç Uyumu", href: "/uyumluluk" },
       { label: "Burç Testi", href: "/test" },
       { label: "Blog", href: "/blog" },
     ],
