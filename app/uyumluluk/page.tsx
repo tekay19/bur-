@@ -5,31 +5,60 @@ import { SiteFooter } from "@/components/marketing/SiteFooter";
 import { TestsSection } from "@/components/marketing/TestsSection";
 import { CompatibilityTest } from "@/components/compatibility/CompatibilityTest";
 import { getAllSigns } from "@/lib/zodiac";
+import { getCompatibility } from "@/lib/compatibility";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
 
-export const metadata: Metadata = {
-  title: "Burç Uyumu Testi — İki Burç Ne Kadar Uyumlu? (Ücretsiz)",
-  description:
-    "Burç uyumu testi: senin burcun ve sevdiğinin burcunu seç, aşk, iletişim, güven ve tutku uyumunuzu yüzdeyle öğren. 12 burcun aşk uyumu — ücretsiz, anında, paylaşılabilir.",
-  keywords: [
-    "burç uyumu",
-    "burç uyumu testi",
-    "aşk uyumu",
-    "burç uyumu hesaplama",
-    "hangi burç hangi burçla uyumlu",
-    "sevgili burç uyumu",
-    "ilişki uyumu testi",
-  ],
-  alternates: { canonical: "/uyumluluk" },
-  openGraph: {
-    title: "Burç Uyumu Testi — Astrotek AI",
-    description: "İki burcu seç, aşk uyumunuzu yüzdeyle öğren ve paylaş.",
-    type: "website",
-    url: `${SITE_URL}/uyumluluk`,
-    locale: "tr_TR",
-  },
-};
+// Paylaşılan link (?s1=koc&s2=boga) için sonuç-özel başlık + OG görseli.
+// Böylece WhatsApp/Instagram/X'te "%X Koç & Boğa" görseli çıkar (viral).
+export function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { s1?: string; s2?: string };
+}): Metadata {
+  const base: Metadata = {
+    title: "Burç Uyumu Testi — İki Burç Ne Kadar Uyumlu? (Ücretsiz)",
+    description:
+      "Burç uyumu testi: senin burcun ve sevdiğinin burcunu seç, aşk, iletişim, güven ve tutku uyumunuzu yüzdeyle öğren. 12 burcun aşk uyumu — ücretsiz, anında, paylaşılabilir.",
+    keywords: [
+      "burç uyumu",
+      "burç uyumu testi",
+      "aşk uyumu",
+      "burç uyumu hesaplama",
+      "hangi burç hangi burçla uyumlu",
+      "sevgili burç uyumu",
+      "ilişki uyumu testi",
+    ],
+    alternates: { canonical: "/uyumluluk" },
+    openGraph: {
+      title: "Burç Uyumu Testi — Astrotek AI",
+      description: "İki burcu seç, aşk uyumunuzu yüzdeyle öğren ve paylaş.",
+      type: "website",
+      url: `${SITE_URL}/uyumluluk`,
+      locale: "tr_TR",
+    },
+  };
+
+  const { s1, s2 } = searchParams;
+  if (s1 && s2) {
+    const r = getCompatibility(s1, s2);
+    if (r) {
+      const title = `${r.a.name} & ${r.b.name} Uyumu — %${r.score} (${r.label})`;
+      const img = `${SITE_URL}/api/og/uyumluluk?s1=${s1}&s2=${s2}`;
+      return {
+        ...base,
+        title,
+        openGraph: {
+          ...base.openGraph,
+          title,
+          images: [{ url: img, width: 1200, height: 630 }],
+        },
+        twitter: { card: "summary_large_image", title, images: [img] },
+      };
+    }
+  }
+  return base;
+}
 
 const FAQ = [
   {
