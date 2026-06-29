@@ -7,7 +7,7 @@ import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
 import { CATEGORIES, getArticlesByCategory, getCategory } from "@/lib/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }));

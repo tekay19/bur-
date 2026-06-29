@@ -12,7 +12,7 @@ import {
   getCategoriesWithCounts,
 } from "@/lib/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
 // --- SEO: anahtar kelime yoğun, GEO uyumlu meta ---
 export const metadata: Metadata = {

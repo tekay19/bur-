@@ -43,7 +43,7 @@ export function isPremiumConfigured(): boolean {
 }
 
 function siteUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai").replace(
+  return (process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com").replace(
     /\/$/,
     "",
   );

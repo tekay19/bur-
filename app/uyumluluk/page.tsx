@@ -7,7 +7,7 @@ import { CompatibilityTest } from "@/components/compatibility/CompatibilityTest"
 import { getAllSigns } from "@/lib/zodiac";
 import { getCompatibility } from "@/lib/compatibility";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
 // Paylaşılan link (?s1=koc&s2=boga) için sonuç-özel başlık + OG görseli.
 // Böylece WhatsApp/Instagram/X'te "%X Koç & Boğa" görseli çıkar (viral).

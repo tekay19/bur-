@@ -8,11 +8,11 @@ import nodemailer, { type Transporter } from "nodemailer";
 // - Genişletilebilir: yeni bildirimler için generic sendMail() kullan.
 // ============================================================
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 const FROM =
   process.env.SMTP_FROM ||
   process.env.SMTP_USER ||
-  "Astrotek AI <no-reply@astrotek.ai>";
+  "Astrotek AI <no-reply@astrotekai.com>";
 
 export const isEmailConfigured = Boolean(process.env.SMTP_HOST);
 

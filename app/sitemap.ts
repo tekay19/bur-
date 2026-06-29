@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { CATEGORIES, getAllArticles } from "@/lib/blog";
 import { getAllSigns } from "@/lib/zodiac";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Günlük burç yorumu sayfaları — her gün güncellenir (tazelik sinyali).

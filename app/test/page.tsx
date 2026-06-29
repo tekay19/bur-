@@ -7,7 +7,7 @@ import { ZodiacQuiz } from "@/components/quiz/ZodiacQuiz";
 import { TestsSection } from "@/components/marketing/TestsSection";
 import { getAllSigns, getSign } from "@/lib/zodiac";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
 export function generateMetadata({
   searchParams,

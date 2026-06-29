@@ -16,7 +16,7 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 const SITE_NAME = "Astrotek AI";
 const DESCRIPTION =
   "Astrotek AI ile ücretsiz doğum haritanı hesapla. Natal harita, yükselen burç, evler, açılar ve güncel transitlerin hayatındaki etkilerini yapay zeka ile sade Türkçe yorumla. Kariyer, sınav, ilişki ve para için kişisel astroloji analizi.";

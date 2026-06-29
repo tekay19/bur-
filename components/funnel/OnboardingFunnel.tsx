@@ -236,7 +236,7 @@ export function OnboardingFunnel() {
               <ArrowRight className="h-4 w-4" />
             </Button>
             <p className="mt-4 text-xs text-muted-foreground">
-              Üyelik gerektirmez · 30 saniye
+              İlk haritan ücretsiz · kart gerekmez
             </p>
           </motion.div>
         )}

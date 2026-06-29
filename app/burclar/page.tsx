@@ -9,7 +9,7 @@ import { SignFaqList } from "@/components/zodiac/parts";
 import { TestsSection } from "@/components/marketing/TestsSection";
 import { getAllSignKeywords, getAllSigns } from "@/lib/zodiac";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
 export const metadata: Metadata = {
   title: "Burçlar — 12 Burcun Kadın ve Erkek Özellikleri (Tam Rehber)",

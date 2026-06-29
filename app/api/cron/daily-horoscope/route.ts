@@ -16,7 +16,7 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai").replace(/\/$/, "");
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com").replace(/\/$/, "");
 
 // GET /api/cron/daily-horoscope — günlük yorum e-postalarını gönderir.
 // Zamanlama: Vercel Cron (her sabah). Güvenlik: CRON_SECRET.

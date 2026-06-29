@@ -6,7 +6,7 @@ import { TestsSection } from "@/components/marketing/TestsSection";
 import { ChineseZodiac } from "@/components/chinese/ChineseZodiac";
 import { CHINESE, animalForYear } from "@/lib/chinese";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
 export function generateMetadata({
   searchParams,

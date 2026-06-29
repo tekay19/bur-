@@ -8,7 +8,7 @@ import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotek.ai";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
 const schema = z.object({
   email: z.string().email("Geçerli bir e-posta gir"),
