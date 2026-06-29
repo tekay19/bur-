@@ -1,4 +1,5 @@
 import nodemailer, { type Transporter } from "nodemailer";
+import { LEGAL } from "./legal";
 
 // ============================================================
 // SMTP e-posta modülü (sağlayıcı bağımsız).
@@ -13,6 +14,8 @@ const FROM =
   process.env.SMTP_FROM ||
   process.env.SMTP_USER ||
   "Astrotek AI <no-reply@astrotekai.com>";
+// Gönderim no-reply'dan olsa da cevaplar gerçek kutuya (Proton) düşsün.
+const REPLY_TO = process.env.SMTP_REPLY_TO || LEGAL.contactEmail;
 
 export const isEmailConfigured = Boolean(process.env.SMTP_HOST);
 
@@ -55,6 +58,7 @@ export async function sendMail({ to, subject, html, text }: MailInput): Promise<
   await transport.sendMail({
     from: FROM,
     to,
+    replyTo: REPLY_TO,
     subject,
     html,
     text: text ?? stripHtml(html),
