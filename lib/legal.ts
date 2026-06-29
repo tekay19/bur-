@@ -13,7 +13,7 @@
 export const LEGAL = {
   platformName: "Astrotek AI",
   // KVKK veri sorumlusu (gerçek kişi ad-soyad veya işletme/marka adı)
-  controller: "Astrotek AI",
+  controller: "Semih Tekay",
   domain: "astrotekai.com",
   contactEmail: "astrotekai@protonmail.com",
   kvkkEmail: "astrotekai@protonmail.com",
