@@ -149,6 +149,38 @@ export default function CompatibilityPage() {
           </div>
         </section>
 
+        {/* Tüm burç uyumu sayfaları — programatik SEO hub (iç linkleme) */}
+        <section className="mt-12" aria-labelledby="tum-uyumlar">
+          <h2 id="tum-uyumlar" className="font-display text-lg font-semibold">
+            Tüm burç uyumları
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Her ikili için ayrıntılı uyum sayfası — aşk, iletişim, güven ve tutku
+            yüzdeleriyle.
+          </p>
+          <div className="mt-4 space-y-4">
+            {signs.map((a) => (
+              <div key={a.slug}>
+                <p className="mb-1.5 text-sm font-semibold text-foreground/85">
+                  <span className="mr-1 text-primary" aria-hidden>{a.glyph}</span>
+                  {a.name} uyumu
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {signs.map((b) => (
+                    <Link
+                      key={b.slug}
+                      href={`/uyumluluk/${a.slug}-${b.slug}`}
+                      className="rounded-full border border-primary/10 bg-card/50 px-2.5 py-1 text-xs text-foreground/75 transition-colors hover:border-primary/35 hover:text-foreground"
+                    >
+                      {a.name} & {b.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section className="mt-12">
           <h2 className="font-display text-lg font-semibold">12 burcun özelliklerini keşfet</h2>
           <ul className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">

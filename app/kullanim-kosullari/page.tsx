@@ -3,7 +3,7 @@ import { LegalShell } from "@/components/legal/LegalShell";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
-  title: "Üyelik Sözleşmesi & Kullanım Koşulları — Astrotek AI",
+  title: "Üyelik Sözleşmesi & Kullanım Koşulları",
   description:
     "Astrotek AI üyelik sözleşmesi ve kullanım koşulları: hizmet kapsamı, üyelik, ücretlendirme, sorumluluk sınırları ve uygulanacak hukuk.",
   alternates: { canonical: "/kullanim-kosullari" },

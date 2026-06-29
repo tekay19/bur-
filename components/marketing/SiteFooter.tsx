@@ -20,6 +20,7 @@ const COLS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Burç Testi", href: "/test" },
       { label: "Çin Burcu", href: "/cin-burcu" },
       { label: "Blog", href: "/blog" },
+      { label: "Hakkımızda", href: "/hakkimizda" },
     ],
   },
   {

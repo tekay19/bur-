@@ -35,6 +35,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  // Programatik burç uyumu sayfaları — 12×12 = 144 (long-tail SEO).
+  const compatPairs = getAllSigns().flatMap((a) =>
+    getAllSigns().map((b) => ({
+      url: `${SITE_URL}/uyumluluk/${a.slug}-${b.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  );
+
   return [
     {
       url: SITE_URL,
@@ -91,6 +101,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    {
+      url: `${SITE_URL}/hakkimizda`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.5,
+    },
     ...LEGAL_PAGES.map((p) => ({
       url: `${SITE_URL}${p.href}`,
       lastModified: new Date(),
@@ -98,6 +114,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     })),
     ...signs,
+    ...compatPairs,
     ...categories,
     ...articles,
   ];

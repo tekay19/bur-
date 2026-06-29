@@ -3,7 +3,7 @@ import { LegalShell } from "@/components/legal/LegalShell";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
-  title: "Gizlilik Politikası — Astrotek AI",
+  title: "Gizlilik Politikası",
   description:
     "Astrotek AI olarak hangi verileri topladığımızı, neden işlediğimizi ve nasıl koruduğumuzu açıklayan gizlilik politikası.",
   alternates: { canonical: "/gizlilik" },

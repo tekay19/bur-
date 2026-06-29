@@ -3,7 +3,7 @@ import { LegalShell } from "@/components/legal/LegalShell";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
-  title: "KVKK Aydınlatma Metni — Astrotek AI",
+  title: "KVKK Aydınlatma Metni",
   description:
     "6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında kişisel verilerinizin işlenmesine ilişkin aydınlatma metni.",
   alternates: { canonical: "/kvkk" },

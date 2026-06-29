@@ -3,7 +3,7 @@ import { LegalShell } from "@/components/legal/LegalShell";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
-  title: "Çerez Politikası — Astrotek AI",
+  title: "Çerez Politikası",
   description:
     "Astrotek AI’ın kullandığı çerezler: oturum, güvenlik ve kredi takibi için işlevsel çerezler. Reklam/izleme çerezi kullanılmaz.",
   alternates: { canonical: "/cerez-politikasi" },
