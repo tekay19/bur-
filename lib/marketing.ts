@@ -121,26 +121,38 @@ export interface Faq {
 export const FAQS: Faq[] = [
   {
     q: "Astrotek AI nasıl çalışır?",
-    a: "Doğum tarihin, saatin ve yerinle gerçek astronomik konumları hesaplar; natal haritanı, güncel transitleri ve skorları çıkarır, ardından yapay zeka ile sade Türkçe bir yoruma dönüştürür.",
+    a: "Doğduğun tarih, saat ve yerle gökyüzünün o anki gerçek konumunu hesaplıyoruz. Güneş, Ay, yükselen burcun ve gezegenlerinin yerlerini çıkarıp güncel transitlerle birleştiriyor, sonra hepsini yapay zekâyla anlaşılır, sade bir Türkçe yoruma dönüştürüyoruz. Yani elinde hem gerçek bir doğum haritası hem de onu sana anlatan kişisel bir yorum oluyor — astroloji bilmene hiç gerek yok.",
   },
   {
-    q: "İlk analiz ücretsiz mi?",
-    a: "Evet. Yeni ziyaretçiler bir analizi ücretsiz oluşturur. Sonraki analizler için kredi paketi satın alabilir veya üye olarak kredilerini saklayabilirsin.",
+    q: "Doğum haritası nedir?",
+    a: "Doğum haritası (natal harita), doğduğun an gökyüzünün bir fotoğrafı gibidir; Güneş, Ay ve gezegenlerin hangi burçta ve evde olduğunu gösterir. Güneş burcun karakterinin özünü, Ay burcun duygularını, yükselen burcun ise dışarıya yansıyan yüzünü anlatır. Astrotek AI bu haritayı senin için saniyeler içinde, üstelik ilk seferinde ücretsiz çıkarır.",
   },
   {
-    q: "Doğum saatimi bilmiyorsam olur mu?",
-    a: "Gezegen burçların ve genel açılar yine hesaplanır. Ancak yükselen burç ve ev yorumları doğum saatine bağlı olduğundan, saat olmadan bu bölümler sınırlı gösterilir.",
+    q: "İlk analiz gerçekten ücretsiz mi?",
+    a: "Evet, ilk doğum haritası analizin tamamen bizden — hem de kart bilgisi istemeden. Beğenirsen sonraki analizler için uygun kredi paketleri var; 1 analiz $2.50'dan başlıyor, dilersen üye olup kredilerini saklıyorsun. Gizli ücret ya da otomatik yenilenen abonelik yok.",
   },
   {
-    q: "Krediler nasıl satın alınır?",
-    a: "Güvenli ödeme Creem üzerinden yapılır. Paket seçip ödeme sayfasına yönlendirilirsin; ödeme onaylanınca kredilerin anında hesabına eklenir.",
+    q: "Doğum saatimi bilmiyorsam ne olur?",
+    a: "Sorun değil, yine de işine yarayan bir analiz çıkar. Güneş ve gezegen burçların ile genel açıların doğum saatinden bağımsız hesaplanır; sadece yükselen burç ve ev yorumları saate bağlı olduğu için saat olmadan bu iki bölüm biraz sınırlı kalır. Saatini sonradan öğrenirsen haritanı tekrar oluşturup tam haline kavuşturabilirsin.",
   },
   {
-    q: "Üye olmam şart mı?",
-    a: "Hayır. Misafir olarak da analiz oluşturabilirsin. Üyelik, analizlerini kaydetmen ve kredilerini cihazdan bağımsız saklaman için avantaj sağlar.",
+    q: "Hangi konularda yorum alıyorum?",
+    a: "Haritan; aşk ve ilişkiler, kariyer ve başarı, para ve bolluk, ayrıca sağlık ve genel farkındalık başlıklarında ayrı ayrı yorumlanır. Üstüne 12 aylık bir zaman çizelgesiyle önündeki dönemde hangi alanların öne çıkacağını görürsün. Her gün güncellenen günlük burç yorumunu da ücretsiz takip edebilirsin.",
   },
   {
-    q: "Yorumlar ne kadar güvenilir?",
-    a: "Yorumlar gerçek gök konumlarına dayanır ve sembolik eğilimleri açıklar. Astroloji bilimsel bir kesinlik değildir; içerik kişisel farkındalık amaçlıdır, kesin gelecek tahmini değildir.",
+    q: "Üye olmak ücretli mi?",
+    a: "Hayır, üyelik tamamen ücretsiz ve yaklaşık 30 saniye sürer — kredi kartı istemeden. Üye olunca ilk analizin bizden; analizlerin kaydedilir, kredilerin cihazdan bağımsız hesabında durur ve günlük yorum, hatırlatma gibi üyelere özel özellikleri kullanırsın. İstediğin an çıkabilirsin.",
+  },
+  {
+    q: "Kredi nasıl alınır, ödeme güvenli mi?",
+    a: "Ödemeler güvenli altyapı Creem üzerinden alınır ve kart bilgilerin bize hiç ulaşmaz. Paketini seçip ödeme sayfasında işlemi tamamlıyorsun; onaylandığı anda kredilerin otomatik olarak hesabına ekleniyor ve hemen yeni analiz oluşturmaya başlıyorsun.",
+  },
+  {
+    q: "Doğum bilgilerim ve kişisel verilerim güvende mi?",
+    a: "Evet, verilerin KVKK'ya uygun işlenir. Şifren asla düz metin olarak saklanmaz, bağlantın şifrelidir ve doğum bilgilerin yalnızca senin analizini hazırlamak için kullanılır; verilerini kimseye satmayız. Ayrıntıları Gizlilik Politikası ve KVKK Aydınlatma Metni'nde bulabilirsin.",
+  },
+  {
+    q: "Yorumlar ne kadar güvenilir, astroloji bilimsel mi?",
+    a: "Yorumlar uydurma değil; gerçek gök konumlarına ve klasik astroloji kurallarına dayanır. Yine de astroloji kesin bir bilim değil, sembolik bir dildir — amacımız geleceği 'kesin' söylemek değil, kendini daha iyi tanıman için bir ayna tutmak. En doğru sonucu, içgörüyü kendi sezgin ve kararlarınla birleştirdiğinde alırsın.",
   },
 ];
