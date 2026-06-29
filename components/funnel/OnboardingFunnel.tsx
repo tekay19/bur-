@@ -684,7 +684,7 @@ export function OnboardingFunnel() {
                     </p>
                   </div>
                   <span className="flex items-center gap-2 font-display text-2xl font-bold">
-                    ${pack.price}
+                    ${pack.price.toFixed(2)}
                     <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
                   </span>
                 </button>

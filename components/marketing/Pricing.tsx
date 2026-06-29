@@ -25,7 +25,7 @@ export function Pricing() {
         />
       </Reveal>
 
-      <div className="mx-auto mt-12 grid max-w-4xl gap-5 sm:grid-cols-3">
+      <div className="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* Ücretsiz */}
         <Reveal className="flex flex-col rounded-3xl border border-primary/15 bg-card/60 p-6 backdrop-blur-md">
           <p className="text-sm font-semibold text-muted-foreground">Ücretsiz</p>
@@ -64,11 +64,16 @@ export function Pricing() {
             )}
             <p className="text-sm font-semibold text-muted-foreground">{pack.label}</p>
             <p className="mt-2 font-display text-3xl font-bold">
-              ${pack.price}
+              ${pack.price.toFixed(2)}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               {pack.credits} analiz · ${(pack.price / pack.credits).toFixed(2)}/analiz
             </p>
+            {pack.perUnit && (
+              <span className="mt-2 inline-flex w-fit items-center rounded-full bg-success/10 px-2.5 py-0.5 text-[11px] font-semibold text-success">
+                {pack.perUnit}
+              </span>
+            )}
             <ul className="mt-5 flex-1 space-y-2.5 text-sm">
               {PERKS.map((p) => (
                 <li key={p} className="flex items-start gap-2 text-muted-foreground">

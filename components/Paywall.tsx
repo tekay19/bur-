@@ -107,7 +107,7 @@ export function Paywall({
             )}
             <span className="font-display text-2xl font-bold">{p.label}</span>
             <span className="mt-1 text-2xl font-bold text-gold">
-              ${p.price}
+              ${p.price.toFixed(2)}
             </span>
             <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-foreground/80">
               {busy === p.id ? (

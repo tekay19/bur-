@@ -27,13 +27,15 @@ export function isCreemConfigured(): boolean {
   return Boolean(API_KEY);
 }
 
-// pack id -> Creem product_id (env ile override edilebilir; varsayılan test ürünleri).
+// pack id -> Creem product_id (env'den okunur).
+// Fiyatlar değişti → Creem'de yeni ürünler ($2.50 / $9.99 / $17.99) oluşturulup
+// id'leri env'e yazılmalı. Eşleşen ürün yoksa null döner; checkout
+// "yapılandırılmamış" davranır (yanlış fiyatla tahsilat olmaz).
 // "premium" tekrarlayan (subscription) bir Creem ürünüdür.
 function productIdFor(pack: string): string | null {
-  if (pack === "pack3")
-    return process.env.CREEM_PRODUCT_PACK3 ?? "prod_3fdwc7zcj7NrNnydPgz1n6";
-  if (pack === "pack10")
-    return process.env.CREEM_PRODUCT_PACK10 ?? "prod_32ER2p2Ghq3dPdLUa9ZCAF";
+  if (pack === "pack1") return process.env.CREEM_PRODUCT_PACK1 ?? null;
+  if (pack === "pack5") return process.env.CREEM_PRODUCT_PACK5 ?? null;
+  if (pack === "pack10") return process.env.CREEM_PRODUCT_PACK10 ?? null;
   if (pack === "premium") return process.env.CREEM_PRODUCT_PREMIUM ?? null;
   return null;
 }
