@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { LegalShell } from "@/components/legal/LegalShell";
-import { CookiePrefsButton } from "@/components/legal/CookiePrefsButton";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
@@ -84,16 +83,9 @@ export default function CerezPage() {
 
       <h2>5. Çerezleri yönetme</h2>
       <p>
-        Çerez tercihlerini (ör. analiz çerezlerine onayını) istediğin zaman
-        aşağıdaki butondan değiştirebilirsin:
-      </p>
-      <p>
-        <CookiePrefsButton />
-      </p>
-      <p>
-        Ayrıca çerezleri tarayıcı ayarlarından da silebilir veya
-        engelleyebilirsin. Ancak oturum ve güvenlik çerezleri engellendiğinde
-        giriş yapma gibi temel işlevler çalışmayabilir.
+        Çerezleri tarayıcı ayarlarından silebilir veya engelleyebilirsin. Ancak
+        oturum ve güvenlik çerezleri engellendiğinde giriş yapma gibi temel
+        işlevler çalışmayabilir.
       </p>
 
       <h2>6. İletişim</h2>
