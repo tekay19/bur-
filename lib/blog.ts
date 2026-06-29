@@ -1419,6 +1419,336 @@ export const ARTICLES: Article[] = [
       { q: "Balık burcu neden hayalperest sayılır?", a: "Neptün etkisindeki bir Su burcu olduğu için sezgisel, duygusal ve hayal gücü yüksektir." },
     ],
   },
+  {
+    slug: "ay-burcu-nedir-nasil-hesaplanir",
+    category: "burclar",
+    title: "Ay Burcu Nedir, Nasıl Hesaplanır? Duygularının Gizli Haritası",
+    excerpt:
+      "Ay burcu nedir, neden çoğu zaman güneş burcundan daha çok “gerçek sen”i anlatır ve doğum saatinle nasıl hesaplanır? 12 ay burcunun duygusal dünyasını sade bir dille açıklıyoruz.",
+    keywords: [
+      "ay burcu",
+      "ay burcu nedir",
+      "ay burcu hesaplama",
+      "ay burcu nasıl bulunur",
+      "ay burcu özellikleri",
+      "duygusal burç",
+      "moon sign",
+    ],
+    date: "2026-06-28",
+    readMinutes: 8,
+    emoji: "☽",
+    sections: [
+      {
+        h: "Ay burcu nedir?",
+        body: [
+          "Ay burcu, sen doğduğun anda Ay’ın bulunduğu burçtur. Güneş burcun dünyaya gösterdiğin kimliği temsil ederken, ay burcun kapıları kapatıp yalnız kaldığında hissettiğin “içerideki sen”i anlatır: duygusal doğanı, güvende hissetme biçimini ve içsel ihtiyaçlarını.",
+          "Pek çok kişi kendini güneş burcunda bulamaz; çünkü asıl duygusal dünyayı yöneten Ay’dır. Ay burcun, tepkilerinin, alışkanlıklarının ve neye “ev” dediğinin haritasıdır.",
+        ],
+      },
+      {
+        h: "Ay burcu neden bu kadar önemli?",
+        body: [
+          "Ay; bilinçaltını, otomatik tepkilerini ve duygusal güvenlik ihtiyacını yönetir. Bir ilişkide nasıl bağlandığın, stres altında neye sığındığın ve seni neyin gerçekten beslediği büyük ölçüde ay burcunla ilgilidir.",
+        ],
+        list: [
+          "Duygusal ihtiyaçların ve güvenlik hissin",
+          "İçgüdüsel, anlık tepkilerin",
+          "Bağlanma ve şefkat biçimin",
+          "Alışkanlıkların ve rahat hissettiğin ortam",
+          "Bilinçaltı kalıpların ve geçmişle bağın",
+        ],
+      },
+      {
+        h: "Ay burcu nasıl hesaplanır?",
+        body: [
+          "Ay, gökyüzünde hızlı hareket eder ve yaklaşık her 2,5 günde bir burç değiştirir. Bu yüzden ay burcunu bulmak için yalnızca doğum tarihin yetmez; doğum saatin ve doğduğun yer de gerekir. Özellikle Ay’ın burç değiştirdiği gün doğduysan, saat olmadan ay burcun yanlış çıkabilir.",
+          "Elle hesaplaması zordur. Astrotek AI’a doğum bilgilerini girerek ay burcunu — ve güneş, yükselen ile tüm haritanı — saniyeler içinde, ücretsiz öğrenebilirsin.",
+        ],
+      },
+      {
+        h: "12 ay burcunun kısa duygusal profili",
+        body: ["Ay’ın hangi burçta olduğu, duygularını nasıl yaşadığını belirler:"],
+        list: [
+          "Ay Koç: hızlı, ateşli tepkiler; duygusunu hemen yaşar.",
+          "Ay Boğa: huzur ve istikrar arar; rutin onu güvende hisseder.",
+          "Ay İkizler: duygularını konuşarak işler; zihinsel uyaran ister.",
+          "Ay Yengeç: derin, korumacı, evine ve sevdiklerine bağlı.",
+          "Ay Aslan: sevilmeye ve fark edilmeye ihtiyaç duyar.",
+          "Ay Başak: faydalı olarak, düzen kurarak sevgi gösterir.",
+          "Ay Terazi: uyum ve birliktelik içinde rahatlar.",
+          "Ay Akrep: yoğun, derin, tutkulu; yüzeysel bağ kuramaz.",
+          "Ay Yay: özgürlük ve anlam arayışıyla beslenir.",
+          "Ay Oğlak: duygularını kontrol eder; sorumlulukla güven bulur.",
+          "Ay Kova: duygusal alana ve bağımsızlığa ihtiyaç duyar.",
+          "Ay Balık: empatik, sezgisel, sünger gibi her şeyi hisseder.",
+        ],
+      },
+      {
+        h: "Ay burcu ile güneş burcu uyuşmazsa ne olur?",
+        body: [
+          "Güneş ve ay burcunun farklı olması bir çelişki değil, derinliktir. Örneğin Güneş Koç (atılgan, dışa dönük) ama Ay Balık (hassas, içe dönük) biri, dışarıdan cesur görünüp içeride çok yumuşak olabilir. İkisini birden tanımak, kendinle barışmanın anahtarıdır.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Ay burcu mu güneş burcu mu daha önemli?", a: "İkisi de önemlidir; güneş burcu dışa vurduğun kimliği, ay burcu içsel duygusal dünyanı anlatır. Kendini güneş burcunda bulamıyorsan, ay burcuna bakman gerekir." },
+      { q: "Ay burcu için doğum saati şart mı?", a: "Ay yaklaşık 2,5 günde burç değiştirdiği için, özellikle geçiş günlerinde doğduysan saat olmadan ay burcun yanlış çıkabilir. Doğru sonuç için saat önerilir." },
+      { q: "Ay burcumu nasıl öğrenirim?", a: "Doğum tarihin, saatin ve yerinle Astrotek AI’dan ay burcunu ücretsiz hesaplayabilirsin." },
+    ],
+  },
+  {
+    slug: "lilith-kara-ay-nedir",
+    category: "gezegenler",
+    title: "Lilith (Kara Ay) Nedir? Doğum Haritasında Anlamı ve Etkisi",
+    excerpt:
+      "Lilith (Kara Ay) nedir, neden astrolojinin en gizemli noktası sayılır ve doğum haritandaki yeri sana ne anlatır? Bastırılmış arzuların, gücün ve tabuların haritasını keşfet.",
+    keywords: [
+      "lilith",
+      "kara ay",
+      "lilith nedir",
+      "lilith burcu",
+      "kara ay lilith",
+      "lilith astroloji",
+      "lilith doğum haritası",
+    ],
+    date: "2026-06-27",
+    readMinutes: 7,
+    emoji: "🌑",
+    sections: [
+      {
+        h: "Lilith (Kara Ay) nedir?",
+        body: [
+          "Lilith ya da Kara Ay, gerçek bir gök cismi değil; Ay’ın Dünya çevresindeki yörüngesinin en uzak noktasını (apogee) temsil eden matematiksel bir noktadır. Astrolojide haritanın en ham, en bastırılmış ve “evcilleştirilmemiş” yanını simgeler.",
+          "Lilith, toplumun ya da kendi içsel sansürünün bastırmaya çalıştığı arzularını, öfkeni ve gücünü gösterir. Onunla yüzleşmek rahatsız edici olabilir ama en derin özgürleşme de oradan gelir.",
+        ],
+      },
+      {
+        h: "Lilith mitolojisi: boyun eğmeyi reddeden kadın",
+        body: [
+          "Efsaneye göre Lilith, Adem’in Havva’dan önceki ilk eşidir ve eşitliği reddedildiği için cennetten ayrılmayı seçmiştir. Bu yüzden Lilith; başkaldırı, özgürlük, ham cinsellik ve teslim olmama enerjisini temsil eder. Astrolojide de bu sembolizmi taşır.",
+        ],
+      },
+      {
+        h: "Lilith doğum haritanda ne anlatır?",
+        body: ["Lilith’in burcu ve evi, kendi “gölge” gücünün nerede saklandığını gösterir:"],
+        list: [
+          "Bastırdığın ya da utandığın arzular",
+          "Öfken ve sınır koyma biçimin",
+          "Cinselliğin ve tutkunun ham hali",
+          "Toplumsal kurallara başkaldıran yanın",
+          "Gücünü geri aldığın, ‘hayır’ dediğin alan",
+        ],
+      },
+      {
+        h: "Lilith’in burcu ve evi nasıl yorumlanır?",
+        body: [
+          "Lilith’in burcu enerjinin tonunu, evi ise bu enerjinin hayatının hangi alanında ortaya çıktığını anlatır. Örneğin 7. evde Lilith ilişkilerde güç mücadelesi ve özgürlük ihtiyacına, 10. evde kariyerde otoriteye meydan okumaya işaret edebilir.",
+          "Lilith’i bastırmak genelde patlamalara yol açar; onu bilinçle sahiplenmek ise güçlü, özgün bir karakter kazandırır.",
+        ],
+      },
+      {
+        h: "Lilith’le barışmak",
+        body: [
+          "Lilith’le çalışmak, içindeki “kabul edilemez” bulduğun parçayı bir kusur değil bir güç olarak görmektir. Gölgeni sahiplendiğinde, başkalarının onayına ihtiyaç duymadan kendin olabilirsin. Astrotek AI doğum haritanda Lilith’in burcunu ve evini ücretsiz gösterir.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Lilith bir gezegen mi?", a: "Hayır. Lilith (Kara Ay), Ay’ın yörüngesinin en uzak noktasını temsil eden matematiksel bir noktadır; fiziksel bir gök cismi değildir." },
+      { q: "Lilith neyi temsil eder?", a: "Bastırılmış arzuları, ham gücü, cinselliği, öfkeyi ve toplumsal kurallara başkaldıran ‘gölge’ yanı temsil eder." },
+      { q: "Lilith burcumu nasıl öğrenirim?", a: "Doğum bilgilerinle Astrotek AI’dan haritanı çıkararak Lilith’in burcunu ve evini görebilirsin." },
+    ],
+  },
+  {
+    slug: "sinastri-nedir-iliski-uyumu",
+    category: "iliski-ask",
+    title: "Sinastri Nedir? İki Doğum Haritasıyla İlişki Uyumu Analizi",
+    excerpt:
+      "Sinastri nedir, burç uyumundan farkı ne ve iki kişinin doğum haritası karşılaştırılınca ilişki hakkında ne öğrenilir? Venüs-Mars, Ay ve açıların aşktaki rolünü açıklıyoruz.",
+    keywords: [
+      "sinastri",
+      "sinastri nedir",
+      "ilişki haritası",
+      "çift uyumu astroloji",
+      "sinastri analizi",
+      "aşk haritası karşılaştırma",
+      "venüs mars uyumu",
+    ],
+    date: "2026-06-26",
+    readMinutes: 8,
+    emoji: "💞",
+    sections: [
+      {
+        h: "Sinastri nedir?",
+        body: [
+          "Sinastri, iki kişinin doğum haritasının üst üste konularak gezegenleri arasındaki açıların incelenmesidir. Yani bir ilişkinin astrolojik “kimya” analizidir. Burç uyumu (sadece güneş burçlarına bakmak) yüzeysel bir fikir verirken, sinastri ilişkinin derin dinamiklerini ortaya koyar.",
+        ],
+      },
+      {
+        h: "Burç uyumundan farkı nedir?",
+        body: [
+          "Burç uyumu yalnızca iki güneş burcunu karşılaştırır — bu, koca bir resmin tek pikseli gibidir. Sinastri ise her iki haritadaki Güneş, Ay, Venüs, Mars, yükselen ve evleri birlikte değerlendirir. Bu yüzden “güneş burçları uyumsuz” görünen iki kişi, sinastride muhteşem bir uyum yakalayabilir.",
+        ],
+      },
+      {
+        h: "Sinastride en önemli bağlantılar",
+        body: ["Aşk astrolojisinde şu gezegen ilişkileri öne çıkar:"],
+        list: [
+          "Güneş–Ay: temel uyum ve “tamamlanma” hissi",
+          "Venüs–Mars: çekim, tutku ve cinsel kimya",
+          "Ay–Ay: duygusal anlayış ve ev hissi",
+          "Venüs–Venüs: sevgi dillerinin uyumu",
+          "Yükselen bağlantıları: ilk çekim ve ‘tıkırında’ hissi",
+          "Satürn açıları: bağlılık ama bazen ağırlık/ders",
+        ],
+      },
+      {
+        h: "Hangi açılar iyi, hangileri zorlayıcı?",
+        body: [
+          "Üçgen ve kavuşum açıları genelde akış ve kolaylık getirir; kare ve karşıt açılar gerilim yaratır ama çoğu zaman güçlü bir çekim de doğurur. İlginçtir, en tutkulu ilişkilerde zorlayıcı açılar sık görülür — mesele bu gerilimi yıkıcı değil, büyütücü kullanabilmektir.",
+        ],
+      },
+      {
+        h: "Sinastriye nasıl başlarsın?",
+        body: [
+          "Sinastri için iki kişinin de doğum tarihi, saati ve yeri gerekir. Hızlı bir fikir için Astrotek AI’ın ücretsiz burç uyumu testiyle başlayabilir, ardından kendi doğum haritanı çıkararak Venüs ve Mars’ının hangi burçta olduğunu öğrenebilirsin.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Sinastri ile burç uyumu aynı şey mi?", a: "Hayır. Burç uyumu sadece güneş burçlarını karşılaştırır; sinastri iki haritanın tüm gezegenlerini ve açılarını inceleyen çok daha derin bir analizdir." },
+      { q: "Sinastri için neye ihtiyaç var?", a: "Her iki kişinin de doğum tarihi, saati ve doğum yeri gerekir. Saat özellikle yükselen ve evler için önemlidir." },
+      { q: "Güneş burçları uyumsuzsa ilişki yürümez mi?", a: "Yürüyebilir. Venüs, Mars ve Ay bağlantıları güçlüyse, güneş burçları ‘uyumsuz’ görünen çiftler çok iyi anlaşabilir." },
+    ],
+  },
+  {
+    slug: "dolunay-yeniay-etkileri",
+    category: "transit-zamanlama",
+    title: "Dolunay ve Yeniay Ne Anlama Gelir? Etkileri ve Niyet Zamanlaması",
+    excerpt:
+      "Dolunay ve yeniay astrolojik olarak ne anlama gelir, ruh halini nasıl etkiler ve hangi burçta olduğu neden önemli? Yeni başlangıçlar ve bırakma için doğru zamanlamayı öğren.",
+    keywords: [
+      "dolunay",
+      "yeniay",
+      "dolunay etkileri",
+      "yeniay niyet",
+      "dolunay ne zaman",
+      "ay evreleri astroloji",
+      "yeniay dolunay anlamı",
+    ],
+    date: "2026-06-29",
+    readMinutes: 7,
+    emoji: "🌕",
+    sections: [
+      {
+        h: "Ay evreleri ve döngünün anlamı",
+        body: [
+          "Ay yaklaşık 29,5 günlük bir döngüde yeniaydan dolunaya, oradan tekrar yeniaya döner. Astrolojide bu döngü bir nefes gibidir: yeniay tohum ekme (başlangıç), dolunay ise hasat ve doruk (sonuç) anıdır. Aradaki evreler büyüme ve bırakma sürecini temsil eder.",
+        ],
+      },
+      {
+        h: "Yeniay ne anlama gelir?",
+        body: [
+          "Yeniayda Ay ile Güneş aynı burçta birleşir ve gökyüzü kararır. Bu, yeni bir başlangıç, niyet etme ve tohum ekme enerjisidir. Astrolojik olarak yeniay, hayatına ne çekmek istediğini netleştirmek için güçlü bir an sayılır.",
+        ],
+        list: [
+          "Yeni bir niyet ya da hedef belirlemek",
+          "Bir projeye veya alışkanlığa başlamak",
+          "Geleceğe yönelik plan yapmak",
+        ],
+      },
+      {
+        h: "Dolunay ne anlama gelir?",
+        body: [
+          "Dolunayda Ay ile Güneş karşı burçlarda, tam karşıt konumdadır; Ay tümüyle aydınlanır. Bu, bir şeyin doruğa ulaştığı, görünür hale geldiği ve genelde duyguların yoğunlaştığı andır. Dolunay; sonuç almak, fark etmek ve artık işe yaramayanı bırakmakla ilgilidir.",
+        ],
+        list: [
+          "Bir sürecin sonucunu görmek / hasat",
+          "Duygusal farkındalık ve netlik",
+          "Bırakmak, affetmek, yükten kurtulmak",
+        ],
+      },
+      {
+        h: "Hangi burçta olduğu neden önemli?",
+        body: [
+          "Bir dolunay ya da yeniay sadece genel bir enerji taşımaz; senin doğum haritandaki hangi eve denk geldiği, o ayın senin için hangi hayat alanını (aşk, kariyer, para, sağlık) öne çıkaracağını belirler. Bu yüzden aynı dolunay herkesi aynı şekilde etkilemez.",
+        ],
+      },
+      {
+        h: "Dolunay ve yeniay’da ne yapmalı?",
+        body: [
+          "Yeniayda niyet yaz, başla; dolunayda durup değerlendir, bırak. Bu bir kesin kehanet değil, doğanın ritmiyle uyumlanma pratiğidir — sembolik bir pusula. Astrotek AI’ın günlük yorumu, güncel ay evresinin senin burcun için ne söylediğini her gün gösterir.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Dolunay insanları nasıl etkiler?", a: "Dolunay duyguların yoğunlaştığı, bir şeylerin doruğa ulaştığı bir an sayılır; farkındalık, netlik ve bırakma enerjisi taşır. Etkisi, haritandaki evine göre kişiden kişiye değişir." },
+      { q: "Yeniayda niyet etmek ne demek?", a: "Yeniay yeni başlangıç enerjisi taşıdığı için, hayatına çekmek istediklerini netleştirip yazmak ‘niyet etmek’ olarak adlandırılır." },
+      { q: "Dolunay ve yeniay bilimsel mi?", a: "Astrolojik yorumlar semboliktir, kesin bilimsel sonuç değildir. Ay döngüsünü kişisel farkındalık ve zamanlama için bir pusula olarak kullanabilirsin." },
+    ],
+  },
+  {
+    slug: "astrolojide-elementler-nitelikler",
+    category: "temel-astroloji",
+    title: "Astrolojide Elementler ve Nitelikler: Ateş, Toprak, Hava, Su",
+    excerpt:
+      "12 burç dört element (ateş, toprak, hava, su) ve üç niteliğe (öncü, sabit, değişken) ayrılır. Bu temel yapı burçların karakterini ve uyumunu nasıl belirler? Sade bir rehber.",
+    keywords: [
+      "astroloji elementleri",
+      "ateş toprak hava su burçları",
+      "öncü sabit değişken burçlar",
+      "burç elementleri",
+      "element uyumu",
+      "nitelikler astroloji",
+    ],
+    date: "2026-06-25",
+    readMinutes: 6,
+    emoji: "🔥",
+    sections: [
+      {
+        h: "Elementler ve nitelikler neden önemli?",
+        body: [
+          "12 burcu tek tek ezberlemek yerine, onları iki temel sistemle anlamak çok daha kolaydır: dört element (ateş, toprak, hava, su) ve üç nitelik (öncü, sabit, değişken). Bir burcun elementi “nasıl bir enerjiye sahip olduğunu”, niteliği ise “bu enerjiyi nasıl kullandığını” anlatır.",
+        ],
+      },
+      {
+        h: "Dört element",
+        body: ["Her burç bir elemente aittir ve o elementin temel karakterini taşır:"],
+        list: [
+          "Ateş (Koç, Aslan, Yay): coşkulu, cesur, hareketli, ilham veren.",
+          "Toprak (Boğa, Başak, Oğlak): pratik, güvenilir, sabırlı, somut.",
+          "Hava (İkizler, Terazi, Kova): zihinsel, iletişimci, sosyal, fikir odaklı.",
+          "Su (Yengeç, Akrep, Balık): duygusal, sezgisel, derin, empatik.",
+        ],
+      },
+      {
+        h: "Üç nitelik (modalite)",
+        body: ["Nitelik, burcun enerjisini nasıl ifade ettiğini gösterir:"],
+        list: [
+          "Öncü (Koç, Yengeç, Terazi, Oğlak): başlatan, harekete geçiren, lider.",
+          "Sabit (Boğa, Aslan, Akrep, Kova): sürdüren, kararlı, bazen inatçı.",
+          "Değişken (İkizler, Başak, Yay, Balık): uyum sağlayan, esnek, çok yönlü.",
+        ],
+      },
+      {
+        h: "Element uyumu nasıl çalışır?",
+        body: [
+          "Genel kural: aynı element burçlar (örneğin iki ateş) doğal anlaşır; tamamlayıcı elementler de iyi gider — ateş ve hava birbirini körükler, toprak ve su birbirini besler. Ateş-su ve toprak-hava ise daha çok emek ister. Yine de bu sadece bir başlangıçtır; gerçek uyum tüm haritaya bakılarak anlaşılır.",
+        ],
+      },
+      {
+        h: "Kendi element dengeni keşfet",
+        body: [
+          "Sen sadece güneş burcunun elementinden ibaret değilsin; haritandaki tüm gezegenlerin elementleri bir denge oluşturur. Bir alanda baskın, bir alanda eksik element olabilir. Astrotek AI doğum haritanda element dağılımını çıkararak hangi enerjinin sende güçlü olduğunu gösterir.",
+        ],
+      },
+    ],
+    faq: [
+      { q: "Hangi burç hangi elementtir?", a: "Ateş: Koç, Aslan, Yay. Toprak: Boğa, Başak, Oğlak. Hava: İkizler, Terazi, Kova. Su: Yengeç, Akrep, Balık." },
+      { q: "Öncü, sabit, değişken ne demek?", a: "Öncü burçlar başlatır (Koç, Yengeç, Terazi, Oğlak), sabit burçlar sürdürür (Boğa, Aslan, Akrep, Kova), değişken burçlar uyum sağlar (İkizler, Başak, Yay, Balık)." },
+      { q: "Hangi elementler birbiriyle uyumlu?", a: "Aynı element burçlar ve tamamlayıcı çiftler (ateş-hava, toprak-su) genelde uyumludur; ama gerçek uyum için tüm doğum haritasına bakmak gerekir." },
+    ],
+  },
 ];
 
 export function getAllArticles(): Article[] {
