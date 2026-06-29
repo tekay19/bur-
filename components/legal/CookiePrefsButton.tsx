@@ -10,13 +10,20 @@ declare global {
       showSecondLayer?: () => void;
       showFirstLayer?: () => void;
     };
+    __ucCmp?: {
+      showSecondLayer?: () => void;
+      showFirstLayer?: () => void;
+    };
   }
 }
 
 export function CookiePrefsButton() {
   function open() {
     if (typeof window === "undefined") return;
-    if (window.UC_UI?.showSecondLayer) window.UC_UI.showSecondLayer();
+    // Yeni Web CMP (__ucCmp) ve eski Browser UI (UC_UI) — ikisini de dene.
+    if (window.__ucCmp?.showSecondLayer) window.__ucCmp.showSecondLayer();
+    else if (window.UC_UI?.showSecondLayer) window.UC_UI.showSecondLayer();
+    else if (window.__ucCmp?.showFirstLayer) window.__ucCmp.showFirstLayer();
     else if (window.UC_UI?.showFirstLayer) window.UC_UI.showFirstLayer();
   }
 

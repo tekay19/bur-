@@ -15,10 +15,10 @@ export function Analytics() {
   if (process.env.NODE_ENV !== "production" || !GA_ID) return null;
   return (
     <>
-      {/* Çerez onay yöneticisi (Usercentrics CMP) */}
+      {/* Çerez onay yöneticisi (Usercentrics CMP — yeni Web CMP loader) */}
       <Script
         id="usercentrics-cmp"
-        src="https://app.usercentrics.eu/browser-ui/latest/loader.js"
+        src="https://web.cmp.usercentrics.eu/ui/loader.js"
         data-settings-id={UC_SETTINGS_ID}
         strategy="afterInteractive"
       />
