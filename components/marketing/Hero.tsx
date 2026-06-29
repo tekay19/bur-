@@ -56,7 +56,7 @@ export function Hero() {
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <Users className="h-4 w-4 text-primary" />
-                Kayıt gerektirmez
+                Kart gerekmez
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles className="h-4 w-4 text-accent" />

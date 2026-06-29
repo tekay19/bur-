@@ -54,7 +54,7 @@ export function TestsSection({ compact = false }: { compact?: boolean }) {
         <SectionHeading
           eyebrow="Ücretsiz Testler"
           title="Kendini keşfet"
-          description="Ücretsiz testlerle astrolojik profilini ve uyumunu keşfet. Kayıt gerekmez, sonucunu paylaş."
+          description="Ücretsiz testlerle astrolojik profilini ve uyumunu keşfet. Anında sonuç al, arkadaşlarınla paylaş."
         />
       </Reveal>
 
