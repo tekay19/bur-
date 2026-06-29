@@ -15,6 +15,7 @@ import {
   DAILY_TRIAL_COOKIE_OPTS,
 } from "@/lib/dailyTrial";
 import { sendWelcomeEmail } from "@/lib/email";
+import { setUserPrefs } from "@/lib/account";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -24,6 +25,10 @@ const schema = z.object({
   email: z.string().email("Geçerli bir e-posta gir"),
   password: z.string().min(8, "Şifre en az 8 karakter olmalı").max(200),
   name: z.string().max(60).optional().or(z.literal("")),
+  // KVKK / Üyelik Sözleşmesi onayı — üyelik için zorunlu.
+  kvkkConsent: z.boolean().optional(),
+  // Ticari elektronik ileti (günlük yorum/pazarlama) onayı — opsiyonel.
+  marketing: z.boolean().optional(),
 });
 
 // Cihaz başına ücretsiz "ilk analiz" hakkı çerezi. İlk hesap hoş geldin
@@ -58,7 +63,18 @@ export async function POST(req: NextRequest) {
       { status: 422 },
     );
   }
-  const { email, password, name } = parsed.data;
+  const { email, password, name, kvkkConsent, marketing } = parsed.data;
+
+  // Sözleşme/KVKK onayı olmadan üyelik oluşturulamaz (sunucu tarafı zorunluluk).
+  if (kvkkConsent !== true) {
+    return NextResponse.json(
+      {
+        error:
+          "Üyelik için Üyelik Sözleşmesi ve KVKK Aydınlatma Metni onayı gereklidir.",
+      },
+      { status: 422 },
+    );
+  }
 
   try {
     const existing = await findUserByEmail(email);
@@ -94,6 +110,15 @@ export async function POST(req: NextRequest) {
       name || null,
       initialCredits,
     );
+
+    // Ticari ileti onayı verildiyse günlük e-posta tercihini aç (best-effort).
+    if (marketing) {
+      try {
+        await setUserPrefs(user.id, { dailyEmail: true });
+      } catch {
+        /* yoksay */
+      }
+    }
 
     // Hoş geldin maili (best-effort; başarısız olsa da kayıt başarılı sayılır).
     try {

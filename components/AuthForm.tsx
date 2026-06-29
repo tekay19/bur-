@@ -35,6 +35,9 @@ export function AuthForm({
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  // KVKK / sözleşme onayı (zorunlu) + ticari ileti onayı (opsiyonel, ayrı)
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [marketing, setMarketing] = useState(false);
 
   // Funnel'da girilen adı kayıt formuna ön-doldur (kolaylık).
   useEffect(() => {
@@ -79,13 +82,25 @@ export function AuthForm({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    // Üyelikte sözleşme/KVKK onayı zorunlu.
+    if (mode === "register" && !acceptedTerms) {
+      setErr(
+        "Devam etmek için Üyelik Sözleşmesi ve KVKK Aydınlatma Metni’ni onaylaman gerekiyor.",
+      );
+      return;
+    }
     setBusy(true);
     setErr(null);
     try {
       const res = await fetch(`/api/auth/${mode}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          ...(mode === "register" && { kvkkConsent: acceptedTerms, marketing }),
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -200,6 +215,58 @@ export function AuthForm({
           </div>
         </div>
 
+        {mode === "register" && (
+          <div className="space-y-2.5 pt-1">
+            <label className="flex cursor-pointer items-start gap-2.5 text-xs leading-relaxed text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-border accent-primary"
+              />
+              <span>
+                <Link
+                  href="/kullanim-kosullari"
+                  target="_blank"
+                  className="text-foreground/90 underline underline-offset-2 hover:text-primary"
+                >
+                  Üyelik Sözleşmesi
+                </Link>
+                ,{" "}
+                <Link
+                  href="/gizlilik"
+                  target="_blank"
+                  className="text-foreground/90 underline underline-offset-2 hover:text-primary"
+                >
+                  Gizlilik Politikası
+                </Link>{" "}
+                ve{" "}
+                <Link
+                  href="/kvkk"
+                  target="_blank"
+                  className="text-foreground/90 underline underline-offset-2 hover:text-primary"
+                >
+                  KVKK Aydınlatma Metni
+                </Link>
+                ’ni okudum, kabul ediyorum.
+              </span>
+            </label>
+
+            <label className="flex cursor-pointer items-start gap-2.5 text-xs leading-relaxed text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={marketing}
+                onChange={(e) => setMarketing(e.target.checked)}
+                className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-border accent-primary"
+              />
+              <span>
+                Günlük burç yorumu, kampanya ve yenilik e-postaları almak
+                istiyorum. <span className="opacity-70">(İsteğe bağlı — istediğin zaman vazgeçebilirsin.)</span>
+              </span>
+            </label>
+          </div>
+        )}
+
         {err && <p className="text-sm text-destructive">{err}</p>}
 
         <Button
@@ -207,7 +274,7 @@ export function AuthForm({
           variant="gold"
           size="lg"
           className="w-full"
-          disabled={busy}
+          disabled={busy || (mode === "register" && !acceptedTerms)}
         >
           {busy ? (
             <Loader2 className="h-4 w-4 animate-spin" />

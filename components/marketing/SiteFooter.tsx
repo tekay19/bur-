@@ -29,6 +29,15 @@ const COLS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Üye ol", href: "/giris?mode=register" },
     ],
   },
+  {
+    title: "Yasal",
+    links: [
+      { label: "Kullanım Koşulları", href: "/kullanim-kosullari" },
+      { label: "Gizlilik Politikası", href: "/gizlilik" },
+      { label: "KVKK Aydınlatma", href: "/kvkk" },
+      { label: "Çerez Politikası", href: "/cerez-politikasi" },
+    ],
+  },
 ];
 
 export function SiteFooter() {
@@ -36,8 +45,8 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border/60">
       <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="lg:col-span-1">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="sm:col-span-2 lg:col-span-1">
             <BrandLogo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
               AI destekli, sade Türkçe astroloji. Doğum haritan ve güncel

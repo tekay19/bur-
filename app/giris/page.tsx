@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Lock, ShieldCheck, Sparkles } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { AuthForm } from "@/components/AuthForm";
 
@@ -32,14 +32,52 @@ export default function AuthPage({
 
       <div className="mb-8 text-center">
         <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Hesabına <span className="gradient-text">giriş</span>
+          {initialMode === "register" ? (
+            <>
+              Hemen <span className="gradient-text">üye ol</span>
+            </>
+          ) : (
+            <>
+              Hesabına <span className="gradient-text">giriş</span>
+            </>
+          )}
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Giriş yap ya da saniyeler içinde üye ol.
+          {initialMode === "register"
+            ? "İlk haritan ücretsiz · kart gerekmez."
+            : "Hesabınla giriş yap, kaldığın yerden devam et."}
         </p>
       </div>
 
       <AuthForm initialMode={initialMode} pack={pack} next={next} />
+
+      {/* Güven şeridi */}
+      <ul className="mx-auto mt-6 flex max-w-md flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+        <li className="inline-flex items-center gap-1.5">
+          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> KVKK uyumlu
+        </li>
+        <li className="inline-flex items-center gap-1.5">
+          <Lock className="h-3.5 w-3.5 text-primary" /> Şifreli & güvenli
+        </li>
+        <li className="inline-flex items-center gap-1.5">
+          <Sparkles className="h-3.5 w-3.5 text-primary" /> Kartsız üyelik
+        </li>
+      </ul>
+
+      <p className="mx-auto mt-5 max-w-md text-center text-[11px] leading-relaxed text-muted-foreground/80">
+        Kişisel verilerin{" "}
+        <Link href="/kvkk" className="underline underline-offset-2 hover:text-foreground">
+          KVKK Aydınlatma Metni
+        </Link>{" "}
+        kapsamında korunur. Devam ederek{" "}
+        <Link
+          href="/kullanim-kosullari"
+          className="underline underline-offset-2 hover:text-foreground"
+        >
+          Kullanım Koşulları
+        </Link>
+        ’nı kabul etmiş olursun.
+      </p>
     </main>
   );
 }

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { CATEGORIES, getAllArticles } from "@/lib/blog";
 import { getAllSigns } from "@/lib/zodiac";
+import { LEGAL_PAGES } from "@/lib/legal";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://astrotekai.com";
 
@@ -90,6 +91,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    ...LEGAL_PAGES.map((p) => ({
+      url: `${SITE_URL}${p.href}`,
+      lastModified: new Date(),
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    })),
     ...signs,
     ...categories,
     ...articles,
