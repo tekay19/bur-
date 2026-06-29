@@ -15,7 +15,6 @@ import { Testimonials } from "@/components/marketing/Testimonials";
 import { Faq } from "@/components/marketing/Faq";
 import { CtaSection } from "@/components/marketing/CtaSection";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
-import { FirstVisitGate } from "@/components/funnel/FirstVisitGate";
 
 // FAQ yapılandırılmış verisi (SEO/GEO için korunur).
 const faqJsonLd = {
@@ -40,7 +39,6 @@ export default function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <FirstVisitGate />
       <SiteHeader />
       <main className="relative overflow-hidden">
         <Hero />
