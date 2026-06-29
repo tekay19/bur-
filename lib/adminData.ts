@@ -1,5 +1,6 @@
 import { hasDatabase, prisma } from "./db/prisma";
 import { CREDIT_PACKS } from "./creditPacks";
+import { hashPassword } from "./auth";
 
 // ============================================================
 // Admin veri katmanı — yalnızca DB (Postgres) modunda anlamlıdır.
@@ -313,19 +314,85 @@ export async function setMemberPlan(
   return res.count > 0;
 }
 
+// ADMIN_EMAILS listesi (admin hesaplarını silme/koruma için — env tek kaynak).
+const ADMIN_EMAILS_SET = new Set(
+  (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean),
+);
+const isProtectedAdmin = (email: string) =>
+  ADMIN_EMAILS_SET.has(email.toLowerCase().trim());
+
 // KVKK uyumlu tam silme: analizler (+sonuçlar cascade) + sıfırlama token'ları + üye.
-export async function deleteMember(id: string): Promise<boolean> {
-  if (!adminHasDb || !prisma) return false;
+// GÜVENLİK: admin hesabı veya işlemi yapan adminin KENDİSİ silinemez (kilitlenme).
+export async function deleteMember(
+  id: string,
+  actingId?: string,
+): Promise<{ ok: boolean; error?: string }> {
+  if (!adminHasDb || !prisma)
+    return { ok: false, error: "Veritabanı bağlı değil." };
+  if (actingId && id === actingId)
+    return { ok: false, error: "Kendi hesabını silemezsin." };
+  const u = await prisma.user.findUnique({
+    where: { id },
+    select: { email: true },
+  });
+  if (!u) return { ok: false, error: "Üye bulunamadı." };
+  if (isProtectedAdmin(u.email))
+    return {
+      ok: false,
+      error: "Admin hesabı silinemez — önce ADMIN_EMAILS'ten çıkar.",
+    };
   try {
     await prisma.$transaction([
       prisma.userChart.deleteMany({ where: { ownerKey: id } }),
       prisma.passwordResetToken.deleteMany({ where: { userId: id } }),
       prisma.user.delete({ where: { id } }),
     ]);
-    return true;
+    return { ok: true };
   } catch {
-    return false;
+    return { ok: false, error: "Silinemedi." };
   }
+}
+
+// Admin: üyeye yeni şifre belirle (hash'lenerek yazılır).
+export async function setMemberPassword(
+  id: string,
+  newPassword: string,
+): Promise<boolean> {
+  if (!adminHasDb || !prisma) return false;
+  const res = await prisma.user.updateMany({
+    where: { id },
+    data: { passwordHash: hashPassword(newPassword) },
+  });
+  return res.count > 0;
+}
+
+// Admin: panelden yeni üye oluştur.
+export async function createMember(input: {
+  email: string;
+  password: string;
+  name?: string | null;
+  plan?: "free" | "premium";
+  credits?: number;
+}): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  if (!adminHasDb || !prisma)
+    return { ok: false, error: "Veritabanı bağlı değil." };
+  const email = input.email.toLowerCase().trim();
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing) return { ok: false, error: "Bu e-posta zaten kayıtlı." };
+  const u = await prisma.user.create({
+    data: {
+      email,
+      passwordHash: hashPassword(input.password),
+      name: input.name?.trim() || null,
+      plan: input.plan === "premium" ? "premium" : "free",
+      credits: Math.max(0, Math.trunc(input.credits ?? 0)),
+    },
+    select: { id: true },
+  });
+  return { ok: true, id: u.id };
 }
 
 // --- Misafir hesaplar (CreditAccount) ---

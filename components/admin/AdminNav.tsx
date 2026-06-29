@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Activity,
   ArrowLeft,
   CreditCard,
   Ghost,
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/yonetim", label: "Genel Bakış", icon: LayoutDashboard, exact: true },
+  { href: "/yonetim/durum", label: "Sistem Durumu", icon: Activity },
   { href: "/yonetim/uyeler", label: "Üyeler", icon: Users },
   { href: "/yonetim/misafirler", label: "Misafirler", icon: Ghost },
   { href: "/yonetim/analizler", label: "Analizler", icon: Sparkles },

@@ -39,6 +39,23 @@ function getTransport(): Transporter | null {
   return cached;
 }
 
+// SMTP bağlantı + kimlik doğrulamasını canlı test eder (mail göndermeden).
+// Sistem Durumu paneli için.
+export async function verifyEmail(): Promise<{
+  configured: boolean;
+  ok: boolean;
+  error?: string;
+}> {
+  const transport = getTransport();
+  if (!transport) return { configured: false, ok: false };
+  try {
+    await transport.verify();
+    return { configured: true, ok: true };
+  } catch (e) {
+    return { configured: true, ok: false, error: (e as Error).message };
+  }
+}
+
 interface MailInput {
   to: string;
   subject: string;

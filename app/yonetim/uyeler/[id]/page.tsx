@@ -36,6 +36,7 @@ export default function MemberDetailPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [amount, setAmount] = useState("3");
+  const [newPw, setNewPw] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -74,6 +75,34 @@ export default function MemberDetailPage() {
       setD((p) => (p ? { ...p, user: { ...p.user, credits: data.credits } } : p));
       setMsg(`Kredi güncellendi: ${data.credits}`);
     } else setMsg(data.error ?? "İşlem başarısız.");
+    setBusy(false);
+  }
+
+  function genPw() {
+    const chars =
+      "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    const arr = new Uint32Array(14);
+    crypto.getRandomValues(arr);
+    let p = "";
+    for (const n of arr) p += chars[n % chars.length];
+    setNewPw(p + "#7");
+  }
+
+  async function savePassword() {
+    if (newPw.length < 8) {
+      setMsg("Şifre en az 8 karakter olmalı.");
+      return;
+    }
+    setBusy(true);
+    setMsg(null);
+    const res = await fetch(`/api/admin/users/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newPassword: newPw }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) setMsg(`Şifre güncellendi → ${newPw}  (üyeye ilet)`);
+    else setMsg(data.error ?? "İşlem başarısız.");
     setBusy(false);
   }
 
@@ -195,6 +224,30 @@ export default function MemberDetailPage() {
                 onClick={() => setPlan("premium")}
               >
                 Premium
+              </Button>
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-2 text-xs text-muted-foreground">Şifre belirle</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                type="text"
+                value={newPw}
+                onChange={(e) => setNewPw(e.target.value)}
+                placeholder="Yeni şifre (min 8)"
+                className="h-10 w-48 rounded-xl border border-input bg-secondary/40 px-3 text-sm focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+              <Button type="button" size="sm" variant="outline" onClick={genPw}>
+                Üret
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                disabled={busy}
+                onClick={savePassword}
+              >
+                Kaydet
               </Button>
             </div>
           </div>
