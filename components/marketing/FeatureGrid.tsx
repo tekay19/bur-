@@ -3,21 +3,16 @@ import { FEATURES } from "@/lib/marketing";
 import { Section, SectionHeading } from "./Section";
 import { Reveal, RevealGroup } from "./Reveal";
 import { ICONS } from "./iconMap";
-import { PanelPreview } from "./PanelPreview";
 
 export function FeatureGrid() {
   return (
     <Section id="ozellikler">
       <Reveal>
         <SectionHeading
-          eyebrow="Nasıl görünür"
-          title="İşte alacağın analiz paneli"
-          description="Doğum haritan, hayat alanı skorların ve kişisel yorumun tek panelde. Astroloji bilmesen de ilk bakışta neyin ne olduğunu anlarsın."
+          eyebrow="Neler var"
+          title="Tek panelde, eksiksiz"
+          description="Natal harita, hayat alanı skorları, güncel transitler ve kişisel yorum — hepsi bir arada, astroloji bilmesen de anlaşılır."
         />
-      </Reveal>
-
-      <Reveal className="mt-10">
-        <PanelPreview />
       </Reveal>
 
       <RevealGroup className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
