@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Activity,
   ArrowLeft,
+  BarChart3,
   CreditCard,
   Ghost,
   LayoutDashboard,
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/yonetim", label: "Genel Bakış", icon: LayoutDashboard, exact: true },
+  { href: "/yonetim/trafik", label: "Trafik (GA4)", icon: BarChart3 },
   { href: "/yonetim/durum", label: "Sistem Durumu", icon: Activity },
   { href: "/yonetim/uyeler", label: "Üyeler", icon: Users },
   { href: "/yonetim/misafirler", label: "Misafirler", icon: Ghost },
