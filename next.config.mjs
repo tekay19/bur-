@@ -7,13 +7,22 @@ const isDev = process.env.NODE_ENV !== "production";
 // 'unsafe-inline' gerekir; dev'de React Fast Refresh için 'unsafe-eval' eklenir.
 // Fontlar next/font ile kendi-host edildiği için font-src 'self' yeterli.
 // Uygulama yalnızca kendi /api uçlarını çağırır → connect-src 'self'.
+// GA4 (gtag) için yalnızca Google Analytics/Tag Manager alan adlarına izin
+// verilir; gerisi sıkı kalır. Bunlar olmadan CSP gtag.js'i ve veri gönderimini
+// engeller (analytics çalışmaz).
+const GA = {
+  script: "https://www.googletagmanager.com",
+  connect: "https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com",
+  img: "https://*.google-analytics.com https://*.googletagmanager.com",
+};
+
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' ${GA.script}${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `img-src 'self' data: blob: ${GA.img}`,
   "font-src 'self' data:",
-  "connect-src 'self'",
+  `connect-src 'self' ${GA.connect}`,
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

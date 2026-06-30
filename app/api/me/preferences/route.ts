@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { SID_COOKIE, verifySession } from "@/lib/auth";
 import { setUserPrefs } from "@/lib/account";
 import { getSign } from "@/lib/zodiac";
+import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,6 +13,8 @@ export async function PATCH(req: NextRequest) {
   const uid = verifySession(req.cookies.get(SID_COOKIE)?.value);
   if (!uid)
     return NextResponse.json({ error: "Giriş gerekli." }, { status: 401 });
+  const rl = rateLimit(`prefs:${uid}`, 30, 60_000);
+  if (!rl.ok) return tooManyRequests(rl.retryAfter);
 
   let body: { sign?: string | null; dailyEmail?: boolean };
   try {
