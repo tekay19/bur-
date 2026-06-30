@@ -16,6 +16,7 @@ import {
 } from "@/lib/dailyTrial";
 import { sendWelcomeEmail } from "@/lib/email";
 import { setUserPrefs } from "@/lib/account";
+import { notify } from "@/lib/telegram";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -110,6 +111,9 @@ export async function POST(req: NextRequest) {
       name || null,
       initialCredits,
     );
+
+    // Telegram: yeni üye bildirimi (best-effort).
+    notify(`🆕 Yeni üye\n${email}${name ? ` — ${name}` : ""}`);
 
     // Ticari ileti onayı verildiyse günlük e-posta tercihini aç (best-effort).
     if (marketing) {

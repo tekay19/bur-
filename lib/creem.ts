@@ -3,6 +3,7 @@ import { CREDIT_PACKS } from "./creditPacks";
 import { hasDatabase, prisma } from "./db/prisma";
 import { addUserCredits, setUserPlan } from "./auth";
 import { addCredits, getOrCreateAccount } from "./credits";
+import { notify } from "./telegram";
 
 // ============================================================
 // Creem.io ödeme entegrasyonu (merchant of record).
@@ -208,5 +209,11 @@ export async function grantCheckoutCredits(opts: {
     await getOrCreateAccount(opts.recipientId);
     credits = await addCredits(opts.recipientId, packDef.credits);
   }
+
+  // Telegram: yeni satış bildirimi (idempotent → satış başına tek kez).
+  notify(
+    `💰 Yeni satış\n${packDef.label} · $${packDef.price.toFixed(2)}\n(${opts.recipientType === "user" ? "üye" : "misafir"})`,
+  );
+
   return { granted: true, alreadyProcessed: false, credits };
 }
