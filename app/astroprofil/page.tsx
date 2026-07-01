@@ -115,15 +115,20 @@ export default function AstroProfilPage() {
         </nav>
 
         <header className="mb-8 max-w-2xl">
-          <h1 className="font-display text-3xl font-bold tracking-tight sm:text-5xl">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
+            ✨ 12 Özellik · 10 Soru · ~2 Dakika
+          </span>
+          <h1 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-5xl">
             AstroProfil™ — Astrolojik{" "}
             <span className="gradient-text">Kişilik Analizi</span>
           </h1>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Burcun seni nasıl etkiliyor? Kişilik tercihlerin bu enerjiyi nasıl
-            şekillendiriyor? AstroProfil, burcunu ve karakterini birleştirerek
-            karar verme tarzından ilişki stiline, kariyer eğiliminden stres
-            yönetimine kadar sana özel bir profil çıkarır.
+            Sadece burcuna bakmak yetmez — asıl mesele o enerjinin{" "}
+            <strong className="text-foreground/90">sende</strong> nasıl çalıştığı.
+            10 eğlenceli soruyla burcunu kişiliğinle harmanlıyoruz; karar verme
+            tarzından ilişki stiline, kariyer eğiliminden stres anındaki haline
+            kadar tamamen sana özel bir profil çıkıyor. Aynı burçtan iki kişi
+            bile birbirinden çok farklı sonuç alır.
           </p>
         </header>
 
