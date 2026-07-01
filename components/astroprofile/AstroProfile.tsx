@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SIGNS, getSign } from "@/lib/zodiac";
 import { QUESTIONS } from "@/lib/astroprofile/data";
@@ -13,9 +12,13 @@ import {
 } from "@/lib/astroprofile/engine";
 import { ProfileResultView } from "./ProfileResult";
 
-// Not: ayrı bir "hoş geldin" ekranı yok — sayfa başlığı zaten tanıtımı yapıyor,
-// bileşen doğrudan burç seçimiyle açılır (bir tıklama azalır, tekrar yok).
+// Tam ekran, tek-soru-tek-seferde ("Typeform") akışı: kutu/kart yok, dev
+// tipografi, harf rozetli seçenekler, otomatik ilerleme + klavye (1-4).
+// Burç seçimi + 10 soru TEK sürekli akış sayılır (11 adım, tek ilerleme çubuğu).
 type Phase = "sign" | "quiz" | "loading" | "result";
+
+const TOTAL_STEPS = QUESTIONS.length + 1; // burç seçimi + 10 soru
+const LETTERS = ["A", "B", "C", "D"];
 
 const LOADING_LINES = [
   "Burç enerjini okuyorum… ✨",
@@ -23,6 +26,27 @@ const LOADING_LINES = [
   "Aa, ilginç bir kombinasyon çıktı…",
   "Profilini son kez parlatıyorum…",
 ];
+
+function FlowProgress({ index }: { index: number }) {
+  const pct = Math.round((index / TOTAL_STEPS) * 100);
+  return (
+    <div className="mx-auto mb-8 max-w-xl">
+      <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
+        <span>
+          Adım {index} / {TOTAL_STEPS}
+        </span>
+        <span>%{pct}</span>
+      </div>
+      <div className="h-1 w-full overflow-hidden rounded-full bg-secondary">
+        <motion.div
+          className="h-full rounded-full bg-gradient-to-r from-primary via-accent to-gold"
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export function AstroProfile() {
   const [phase, setPhase] = useState<Phase>("sign");
@@ -57,8 +81,8 @@ export function AstroProfile() {
     setPhase("quiz");
   }
 
-  // Soru geçiş animasyonu (~0.28s exit + 0.28s enter) bitmeden ikinci bir
-  // tıklama gelirse step/answers senkronu bozulabilir (rage-click koruması).
+  // Soru geçiş animasyonu bitmeden ikinci bir tıklama/tuş gelirse step/answers
+  // senkronu bozulabilir (rage-click / çift tuş koruması).
   function choose(optIdx: number) {
     if (transitioning) return;
     const next = [...answers, optIdx];
@@ -66,7 +90,7 @@ export function AstroProfile() {
     if (step + 1 < QUESTIONS.length) {
       setTransitioning(true);
       setStep(step + 1);
-      timers.current.push(setTimeout(() => setTransitioning(false), 600));
+      timers.current.push(setTimeout(() => setTransitioning(false), 500));
     } else if (signSlug) {
       const res = generateProfile(signSlug, computeScores(signSlug, next));
       setResult(res);
@@ -87,6 +111,19 @@ export function AstroProfile() {
       );
     }
   }
+
+  // Typeform imzası: klavyeden 1-4 ile de cevaplanabilir.
+  useEffect(() => {
+    if (phase !== "quiz" || transitioning) return;
+    const q = QUESTIONS[step];
+    function onKey(e: KeyboardEvent) {
+      const n = Number(e.key);
+      if (n >= 1 && n <= q.options.length) choose(n - 1);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, step, transitioning]);
 
   function restart() {
     timers.current.forEach(clearTimeout);
@@ -123,35 +160,38 @@ export function AstroProfile() {
     }
   }
 
-  // --- Burç seçimi (tek giriş ekranı — kartsız, madalyon-glif tasarım) ---
+  // --- Burç seçimi (akışın 1. adımı — kartsız, tam ekran his) ---
   if (phase === "sign") {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center"
+        transition={{ duration: 0.3 }}
+        className="mx-auto max-w-2xl text-center"
       >
-        <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-          Önce burcunu seç <span aria-hidden>👀</span>
+        <FlowProgress index={0} />
+        <p className="text-sm font-semibold text-gold">✨ İlk adım</p>
+        <h2 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+          Önce burcunu söyle <span aria-hidden>👀</span>
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
           Profilinin çıkış noktası burcun — gerisini birazdan vereceğin
           cevaplar şekillendirecek.
         </p>
-        <div className="mx-auto mt-9 flex max-w-2xl flex-wrap items-start justify-center gap-x-3 gap-y-5 sm:gap-x-5">
+        <div className="mx-auto mt-10 grid max-w-xl grid-cols-3 gap-x-4 gap-y-7 sm:grid-cols-4 lg:grid-cols-6">
           {SIGNS.map((s, i) => (
             <motion.button
               key={s.slug}
               onClick={() => pickSign(s.slug)}
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: Math.min(i * 0.03, 0.3), duration: 0.25 }}
-              className="group flex w-[4.4rem] flex-col items-center gap-2 sm:w-20"
+              transition={{ delay: Math.min(i * 0.025, 0.25), duration: 0.2 }}
+              className="group flex flex-col items-center gap-2"
             >
-              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary/15 to-accent/10 text-3xl text-primary ring-1 ring-primary/15 transition-all duration-200 group-hover:-translate-y-1 group-hover:from-gold/20 group-hover:to-primary/10 group-hover:text-gold group-hover:ring-gold/40 sm:h-20 sm:w-20">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary/40 text-3xl text-primary transition-all duration-200 group-hover:-translate-y-1 group-hover:bg-gold/15 group-hover:text-gold sm:h-[4.5rem] sm:w-[4.5rem]">
                 {s.glyph}
               </span>
-              <span className="text-xs font-semibold text-foreground/85 group-hover:text-foreground">
+              <span className="text-xs font-semibold text-foreground/80 group-hover:text-foreground">
                 {s.name}
               </span>
             </motion.button>
@@ -161,52 +201,34 @@ export function AstroProfile() {
     );
   }
 
-  // --- Test ---
+  // --- Soru (Typeform tarzı: tam ekran his, harf rozetli, kartsız) ---
   if (phase === "quiz") {
     const question = QUESTIONS[step];
-    const isLast = step === QUESTIONS.length - 1;
+    const flowIndex = step + 1;
     return (
-      <div className="rounded-3xl border border-primary/15 bg-card/50 p-6 backdrop-blur-md sm:p-8">
-        <div className="mb-6">
-          <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              Soru {step + 1} / {QUESTIONS.length}
-              {isLast && " · son soru! 🎉"}
-            </span>
-            <span>%{Math.round((step / QUESTIONS.length) * 100)}</span>
-          </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-primary via-accent to-gold"
-              animate={{ width: `${((step + 1) / QUESTIONS.length) * 100}%` }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-            />
-          </div>
-        </div>
+      <div className="mx-auto max-w-2xl">
+        <FlowProgress index={flowIndex} />
 
         {/* mode="popLayout" (mode="wait" DEĞİL): yeni soru animasyon
-            beklemeden hemen render olur — arka plan sekmesi/düşük güç modunda
-            rAF duraklarsa bile ekran donmaz, çıkan soru akıştan çıkarılır. */}
+            beklemeden hemen render olur — düşük güç modunda/arka planda
+            donma riski olmaz, çıkan soru akıştan çıkarılır. */}
         <AnimatePresence mode="popLayout">
           <motion.div
             key={question.id}
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -22 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="flex items-start gap-3">
-              <span
-                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-gold/20 to-primary/15 text-2xl ring-1 ring-gold/20"
-                aria-hidden
-              >
-                {question.emoji}
-              </span>
-              <h2 className="mt-1 font-display text-xl font-semibold leading-snug sm:text-2xl">
-                {question.q}
-              </h2>
-            </div>
-            <div className="mt-5 overflow-hidden rounded-2xl border border-primary/15 bg-card/40">
+            <p className="text-sm font-medium text-gold">
+              <span aria-hidden>{question.emoji}</span> Soru {flowIndex} /{" "}
+              {QUESTIONS.length}
+            </p>
+            <h2 className="mt-3 font-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
+              {question.q}
+            </h2>
+
+            <div className="mt-8 space-y-2">
               {question.options.map((opt, i) => (
                 <button
                   key={i}
@@ -214,29 +236,37 @@ export function AstroProfile() {
                   onClick={() => choose(i)}
                   disabled={transitioning}
                   className={cn(
-                    "group flex w-full items-center gap-3 px-5 py-4 text-left text-[15px] transition-colors",
-                    i !== 0 && "border-t border-border/50",
+                    "group flex w-full items-center gap-4 rounded-xl px-3 py-3.5 text-left text-[15px] transition-colors sm:px-4",
                     transitioning
                       ? "pointer-events-none opacity-50"
-                      : "hover:bg-gold/10 active:bg-gold/15",
+                      : "hover:bg-secondary/50",
                   )}
                 >
-                  <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary/30 transition-colors group-hover:bg-gold" />
+                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border border-border text-xs font-bold text-muted-foreground transition-colors group-hover:border-gold group-hover:text-gold">
+                    {LETTERS[i]}
+                  </span>
                   <span className="flex-1">{opt.text}</span>
-                  <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                 </button>
               ))}
             </div>
+
+            <p className="mt-6 text-xs text-muted-foreground">
+              Klavyeden{" "}
+              <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px]">1</span>
+              –
+              <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px]">4</span>{" "}
+              tuşlarıyla da seçebilirsin.
+            </p>
           </motion.div>
         </AnimatePresence>
       </div>
     );
   }
 
-  // --- "Kahin" hesaplama ---
+  // --- "Kahin" hesaplama (kutusuz, sade) ---
   if (phase === "loading") {
     return (
-      <div className="flex flex-col items-center justify-center rounded-3xl border border-primary/20 bg-card/55 p-12 text-center backdrop-blur-md">
+      <div className="flex flex-col items-center justify-center py-12 text-center">
         <div className="relative h-20 w-20">
           <div className="absolute inset-0 animate-spin rounded-full border-2 border-primary/20 border-t-primary [animation-duration:1.4s]" />
           <div className="absolute inset-0 flex items-center justify-center text-3xl text-primary">
