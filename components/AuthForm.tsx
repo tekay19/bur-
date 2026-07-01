@@ -22,22 +22,29 @@ export function AuthForm({
   initialMode = "login",
   pack,
   next,
+  email: emailProp,
+  daily,
+  sign,
 }: {
   initialMode?: Mode;
   pack?: string;
   next?: string;
+  email?: string;
+  daily?: boolean;
+  sign?: string;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(initialMode);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailProp ?? "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   // KVKK / sözleşme onayı (zorunlu) + ticari ileti onayı (opsiyonel, ayrı)
+  // daily=1 (günlük yorum lead magnet) → ticari onay ön-işaretli gelir.
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [marketing, setMarketing] = useState(false);
+  const [marketing, setMarketing] = useState(!!daily);
 
   // Funnel'da girilen adı kayıt formuna ön-doldur (kolaylık).
   useEffect(() => {
@@ -99,7 +106,11 @@ export function AuthForm({
           email,
           password,
           name,
-          ...(mode === "register" && { kvkkConsent: acceptedTerms, marketing }),
+          ...(mode === "register" && {
+          kvkkConsent: acceptedTerms,
+          marketing,
+          ...(sign ? { sign } : {}),
+        }),
         }),
       });
       const data = await res.json().catch(() => ({}));

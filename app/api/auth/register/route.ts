@@ -16,6 +16,7 @@ import {
 } from "@/lib/dailyTrial";
 import { sendWelcomeEmail } from "@/lib/email";
 import { setUserPrefs } from "@/lib/account";
+import { getSign } from "@/lib/zodiac";
 import { notify } from "@/lib/telegram";
 import { getClientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
@@ -30,6 +31,8 @@ const schema = z.object({
   kvkkConsent: z.boolean().optional(),
   // Ticari elektronik ileti (günlük yorum/pazarlama) onayı — opsiyonel.
   marketing: z.boolean().optional(),
+  // Günlük yorum lead magnet'ten gelen burç (opsiyonel).
+  sign: z.string().max(20).optional(),
 });
 
 // Cihaz başına ücretsiz "ilk analiz" hakkı çerezi. İlk hesap hoş geldin
@@ -64,7 +67,7 @@ export async function POST(req: NextRequest) {
       { status: 422 },
     );
   }
-  const { email, password, name, kvkkConsent, marketing } = parsed.data;
+  const { email, password, name, kvkkConsent, marketing, sign } = parsed.data;
 
   // Sözleşme/KVKK onayı olmadan üyelik oluşturulamaz (sunucu tarafı zorunluluk).
   if (kvkkConsent !== true) {
@@ -115,10 +118,13 @@ export async function POST(req: NextRequest) {
     // Telegram: yeni üye bildirimi (best-effort).
     notify(`🆕 Yeni üye\n${email}${name ? ` — ${name}` : ""}`);
 
-    // Ticari ileti onayı verildiyse günlük e-posta tercihini aç (best-effort).
-    if (marketing) {
+    // Ticari ileti onayı → günlük e-posta; lead magnet burcu → kayıtlı burç.
+    const prefs: { dailyEmail?: boolean; sign?: string } = {};
+    if (marketing) prefs.dailyEmail = true;
+    if (sign && getSign(sign)) prefs.sign = sign;
+    if (Object.keys(prefs).length) {
       try {
-        await setUserPrefs(user.id, { dailyEmail: true });
+        await setUserPrefs(user.id, prefs);
       } catch {
         /* yoksay */
       }

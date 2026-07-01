@@ -11,11 +11,21 @@ export const metadata = {
 export default function AuthPage({
   searchParams,
 }: {
-  searchParams: { mode?: string; pack?: string; next?: string };
+  searchParams: {
+    mode?: string;
+    pack?: string;
+    next?: string;
+    email?: string;
+    daily?: string;
+    sign?: string;
+  };
 }) {
   const initialMode = searchParams.mode === "register" ? "register" : "login";
   const pack = searchParams.pack;
   const next = searchParams.next;
+  const email = searchParams.email;
+  const daily = searchParams.daily === "1";
+  const sign = searchParams.sign;
 
   return (
     <main className="mx-auto w-full max-w-md px-4 py-6 sm:px-6 sm:py-10">
@@ -49,7 +59,14 @@ export default function AuthPage({
         </p>
       </div>
 
-      <AuthForm initialMode={initialMode} pack={pack} next={next} />
+      <AuthForm
+        initialMode={initialMode}
+        pack={pack}
+        next={next}
+        email={email}
+        daily={daily}
+        sign={sign}
+      />
 
       {/* Güven şeridi */}
       <ul className="mx-auto mt-6 flex max-w-md flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
