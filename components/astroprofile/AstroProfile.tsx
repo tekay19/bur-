@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SIGNS, getSign } from "@/lib/zodiac";
 import { QUESTIONS } from "@/lib/astroprofile/data";
@@ -14,7 +13,9 @@ import {
 } from "@/lib/astroprofile/engine";
 import { ProfileResultView } from "./ProfileResult";
 
-type Phase = "welcome" | "sign" | "quiz" | "loading" | "result";
+// Not: ayrı bir "hoş geldin" ekranı yok — sayfa başlığı zaten tanıtımı yapıyor,
+// bileşen doğrudan burç seçimiyle açılır (bir tıklama azalır, tekrar yok).
+type Phase = "sign" | "quiz" | "loading" | "result";
 
 const LOADING_LINES = [
   "Burç enerjini okuyorum… ✨",
@@ -24,7 +25,7 @@ const LOADING_LINES = [
 ];
 
 export function AstroProfile() {
-  const [phase, setPhase] = useState<Phase>("welcome");
+  const [phase, setPhase] = useState<Phase>("sign");
   const [signSlug, setSignSlug] = useState<string | null>(null);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -89,7 +90,7 @@ export function AstroProfile() {
 
   function restart() {
     timers.current.forEach(clearTimeout);
-    setPhase("welcome");
+    setPhase("sign");
     setSignSlug(null);
     setStep(0);
     setAnswers([]);
@@ -122,71 +123,37 @@ export function AstroProfile() {
     }
   }
 
-  // --- Hoş geldin ---
-  if (phase === "welcome") {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl border border-primary/25 bg-gradient-to-br from-primary/10 via-card/55 to-gold/5 p-8 text-center backdrop-blur-md sm:p-12"
-      >
-        <div className="pointer-events-none absolute -right-10 -top-14 h-40 w-40 rounded-full bg-gold/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-primary/15 blur-3xl" />
-
-        <span className="relative inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
-          <Sparkles className="h-3.5 w-3.5" /> AstroProfil™
-        </span>
-        <h2 className="relative mt-5 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Burcun seni <span className="gradient-text">tam olarak</span> anlatmıyor
-        </h2>
-        <p className="relative mx-auto mt-4 max-w-xl leading-relaxed text-muted-foreground">
-          Milyonlarca insan aynı burçla doğuyor ama hiçbiri birbirinin aynısı
-          değil. 10 eğlenceli soruyla burcunu kişiliğinle harmanlıyoruz;{" "}
-          <strong className="text-foreground/90">çıkan profil kimseninkine benzemiyor.</strong>{" "}
-          Hazır mısın?
-        </p>
-
-        <div className="relative mx-auto mt-6 flex max-w-sm flex-wrap items-center justify-center gap-1.5 text-lg text-primary/70" aria-hidden>
-          {SIGNS.map((s) => (
-            <span key={s.slug}>{s.glyph}</span>
-          ))}
-        </div>
-
-        <Button onClick={() => setPhase("sign")} variant="gold" size="lg" className="group relative mt-8">
-          Hadi Başlayalım
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </Button>
-        <p className="relative mt-3 text-xs text-muted-foreground">
-          ~2 dakika · Ücretsiz · Kayıt gerekmez
-        </p>
-      </motion.div>
-    );
-  }
-
-  // --- Burç seçimi ---
+  // --- Burç seçimi (tek giriş ekranı — kartsız, madalyon-glif tasarım) ---
   if (phase === "sign") {
     return (
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-        <h2 className="text-center font-display text-2xl font-bold tracking-tight">
-          Peki, hangi burçtan başlıyoruz? 👀
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+          Önce burcunu seç <span aria-hidden>👀</span>
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-center text-sm text-muted-foreground">
-          Burcun profilinin çıkış noktası — gerisini birazdan vereceğin
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          Profilinin çıkış noktası burcun — gerisini birazdan vereceğin
           cevaplar şekillendirecek.
         </p>
-        <div className="mt-8 grid grid-cols-3 gap-2.5 sm:grid-cols-4 lg:grid-cols-6">
+        <div className="mx-auto mt-9 flex max-w-2xl flex-wrap items-start justify-center gap-x-3 gap-y-5 sm:gap-x-5">
           {SIGNS.map((s, i) => (
             <motion.button
               key={s.slug}
               onClick={() => pickSign(s.slug)}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: Math.min(i * 0.03, 0.3), duration: 0.25 }}
-              className="flex flex-col items-center gap-1 rounded-2xl border border-primary/10 bg-card/50 px-2 py-4 transition-all hover:-translate-y-1 hover:border-gold/40 hover:bg-gold/5"
+              className="group flex w-[4.4rem] flex-col items-center gap-2 sm:w-20"
             >
-              <span className="text-2xl text-primary" aria-hidden>{s.glyph}</span>
-              <span className="text-xs font-medium">{s.name}</span>
-              <span className="text-[10px] text-muted-foreground">{s.dates.split(" – ")[0]}</span>
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary/15 to-accent/10 text-3xl text-primary ring-1 ring-primary/15 transition-all duration-200 group-hover:-translate-y-1 group-hover:from-gold/20 group-hover:to-primary/10 group-hover:text-gold group-hover:ring-gold/40 sm:h-20 sm:w-20">
+                {s.glyph}
+              </span>
+              <span className="text-xs font-semibold text-foreground/85 group-hover:text-foreground">
+                {s.name}
+              </span>
             </motion.button>
           ))}
         </div>
@@ -217,7 +184,10 @@ export function AstroProfile() {
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
+        {/* mode="popLayout" (mode="wait" DEĞİL): yeni soru animasyon
+            beklemeden hemen render olur — arka plan sekmesi/düşük güç modunda
+            rAF duraklarsa bile ekran donmaz, çıkan soru akıştan çıkarılır. */}
+        <AnimatePresence mode="popLayout">
           <motion.div
             key={question.id}
             initial={{ opacity: 0, x: 24 }}
@@ -236,7 +206,7 @@ export function AstroProfile() {
                 {question.q}
               </h2>
             </div>
-            <div className="mt-5 grid gap-3">
+            <div className="mt-5 overflow-hidden rounded-2xl border border-primary/15 bg-card/40">
               {question.options.map((opt, i) => (
                 <button
                   key={i}
@@ -244,14 +214,16 @@ export function AstroProfile() {
                   onClick={() => choose(i)}
                   disabled={transitioning}
                   className={cn(
-                    "group flex items-center justify-between gap-3 rounded-2xl border border-primary/15 bg-card/60 px-5 py-4 text-left text-[15px] transition-all",
+                    "group flex w-full items-center gap-3 px-5 py-4 text-left text-[15px] transition-colors",
+                    i !== 0 && "border-t border-border/50",
                     transitioning
                       ? "pointer-events-none opacity-50"
-                      : "hover:-translate-y-0.5 hover:border-gold/40 hover:bg-gold/5 active:scale-[0.99]",
+                      : "hover:bg-gold/10 active:bg-gold/15",
                   )}
                 >
-                  <span>{opt.text}</span>
-                  <ArrowRight className="h-4 w-4 flex-shrink-0 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-gold" />
+                  <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary/30 transition-colors group-hover:bg-gold" />
+                  <span className="flex-1">{opt.text}</span>
+                  <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                 </button>
               ))}
             </div>
